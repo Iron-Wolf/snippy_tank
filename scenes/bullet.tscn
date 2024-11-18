@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://cgeymtn3bii3y"]
+
+[ext_resource type="Script" path="res://scripts/bullet.gd" id="1_t843r"]
+[ext_resource type="Texture2D" uid="uid://duv4yx70osppy" path="res://assets/Environment/treeSmall.png" id="2_u4y8x"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hihx4"]
+
+[node name="Bullet" type="Node2D"]
+
+[node name="bullet" type="Area2D" parent="."]
+rotation = -1.5708
+script = ExtResource("1_t843r")
+
+[node name="Sprite2D" type="Sprite2D" parent="bullet"]
+scale = Vector2(0.224138, 0.224138)
+texture = ExtResource("2_u4y8x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="bullet"]
+shape = SubResource("CircleShape2D_hihx4")
