@@ -1,7 +1,7 @@
 # https://kidscancode.org/godot_recipes/4.x/2d/car_steering/
 extends CharacterBody2D
 
-@export var Bullet : PackedScene
+@export var Bullet: PackedScene
 
 # constants
 const STEERING_ANGLE: float = 300
@@ -65,4 +65,4 @@ func apply_rotation(delta: float) -> void:
 func shoot():
 	var b = Bullet.instantiate()
 	owner.add_child(b)
-	b.transform = $barrel.global_transform
+	b.transform = $barrel/spawn_bullet.global_transform

@@ -23,7 +23,11 @@ rotation = 1.5708
 texture = ExtResource("3_6jjgp")
 offset = Vector2(0, -20)
 
+[node name="spawn_bullet" type="Marker2D" parent="barrel"]
+position = Vector2(-0.000152111, -42)
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_ewxvm")
