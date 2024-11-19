@@ -66,3 +66,8 @@ func shoot():
 	var b = Bullet.instantiate()
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
+
+
+func _on_area_2d_body_entered(body: Node2D) -> void:
+	# TODO: handle enemy interaction
+	pass # Replace with function body.

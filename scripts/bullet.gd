@@ -7,9 +7,9 @@ const SPEED: float = 1000
 func _physics_process(delta: float) -> void:
 	position += -transform.y * SPEED * delta
 
-func _on_Bullet_body_entered(body):
-	pass
+func _on_bullet_body_entered(body):
 	# TODO : handle colision with other players
 	#if body.is_in_group("mobs"):
 	#	body.queue_free()
 	#queue_free()
+	pass
