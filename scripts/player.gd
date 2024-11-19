@@ -3,6 +3,8 @@ extends CharacterBody2D
 
 ## Projectile fired by the player
 @export var Bullet: PackedScene
+@onready var screen_size = get_viewport_rect().size
+const sl = preload("res://scripts/static_lib.gd")
 
 # constants
 const STEERING_ANGLE: float = 300
@@ -26,6 +28,8 @@ func _physics_process(delta):
 	apply_rotation(delta)
 	velocity += acceleration * delta
 	move_and_slide()
+	# wrap after movement
+	position = sl.apply_screen_wrap(position, screen_size)
 	
 	# aim barrel
 	#var barrel: Sprite2D = get_node("barrel")
@@ -67,7 +71,6 @@ func shoot():
 	var b = Bullet.instantiate()
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
-
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	# TODO: handle enemy interaction
