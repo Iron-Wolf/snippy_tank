@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dwiyul8h7jkoc" path="res://assets/Bullets/bulletBeigeSilver.png" id="2_qtykp"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6mwjr"]
-size = Vector2(14, 27)
+size = Vector2(14, 26)
 
 [node name="Bullet" type="Area2D"]
 script = ExtResource("1_t843r")
@@ -15,7 +15,6 @@ scale = Vector2(0.989715, 0.989715)
 texture = ExtResource("2_qtykp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_6mwjr")
 
 [connection signal="body_entered" from="." to="." method="_on_bullet_body_entered"]

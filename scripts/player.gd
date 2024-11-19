@@ -1,6 +1,7 @@
 # https://kidscancode.org/godot_recipes/4.x/2d/car_steering/
 extends CharacterBody2D
 
+## Projectile fired by the player
 @export var Bullet: PackedScene
 
 # constants
