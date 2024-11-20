@@ -4,7 +4,7 @@ extends CharacterBody2D
 ## Projectile fired by the player
 @export var Bullet: PackedScene
 @onready var screen_size:Vector2 = get_viewport_rect().size
-@onready var audio: AudioStreamPlayer = $"../AudioStreamPlayer"
+@onready var audio: AudioStreamPlayer = $"../background_audio"
 const sl = preload("res://scripts/static_lib.gd")
 
 # constants
@@ -22,7 +22,6 @@ var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 
 func _physics_process(delta):
-	audio.emit_signal("switch_audio")
 	# move tank
 	acceleration = Vector2.ZERO
 	update_accel()
@@ -70,10 +69,11 @@ func apply_rotation(delta: float) -> void:
 	rotation += steer_direction * delta
 
 func shoot():
+	audio.emit_signal("fight_started")
 	var b = Bullet.instantiate()
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
 
-func _on_area_2d_body_entered(body: Node2D) -> void:
+func _on_area_2d_body_entered(_body: Node2D) -> void:
 	# TODO: handle enemy interaction
 	pass # Replace with function body.

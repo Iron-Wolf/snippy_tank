@@ -1,32 +1,51 @@
 extends AudioStreamPlayer
 
-@onready var s: AudioStreamSynchronized = stream
+signal fight_started
+@onready var audio_stream: AudioStreamSynchronized = stream
+@onready var time_in_fight: Timer = $time_in_fight
+@onready var intro_audio: AudioStreamPlayer = $intro_audio
 
+# constants
 const AUDIO_CHILL: int = 0
 const AUDIO_FIGHT: int = 1
+const MAX_TIME_IN_FIGHT: int = 5 # time (seconds) before music chilling again
+const SPEED_TRANSITION: float = 0.4
 
 func _ready() -> void:
-	play()
-	#var s1: AudioStreamMP3 = s.get_sync_stream(0)
-	#var p:AudioStreamPlayback = s1.instantiate_playback()
+	time_in_fight.wait_time = MAX_TIME_IN_FIGHT
+	time_in_fight.one_shot = true
+	# start with a medium volume
+	set_volume(AUDIO_CHILL, -10)
+	intro_audio.play()
 
-func _process(delta: float) -> void:
-	var v = s.get_sync_stream_volume(AUDIO_CHILL)
-	set_chill_volume(v + 0.2)
-
-func _switch_audio() -> void:
-	print("OMG")
-
-func set_chill_volume(volume_db: float) -> void:
-	if volume_db >= 0:
-		s.set_sync_stream_volume(AUDIO_CHILL, 0)
+func _process(_delta: float) -> void:
+	if intro_audio.playing:
+		# wait intro to finish
+		pass
+	elif not playing:
+		# start main loop
+		play()
+		
+	var volume_chill: float = audio_stream.get_sync_stream_volume(AUDIO_CHILL)
+	var volume_fight: float = audio_stream.get_sync_stream_volume(AUDIO_FIGHT)
+	#print(round(time_in_fight.time_left), "/", 
+	#	round(volume_chill), "/", 
+	#	round(volume_fight))
+	if time_in_fight.time_left == 0:
+		# slowly back to chill business,
+		# because we don't want to loose the action !
+		set_volume(AUDIO_CHILL, volume_chill + SPEED_TRANSITION/2)
+		if volume_chill > -20:
+			set_volume(AUDIO_FIGHT, volume_fight - SPEED_TRANSITION/2)
 	else:
-		s.set_sync_stream_volume(AUDIO_CHILL, volume_db)
+		# quiclky jump into the absolute mayhem !
+		set_volume(AUDIO_FIGHT, volume_fight + SPEED_TRANSITION)
+		if volume_fight > -20:
+			set_volume(AUDIO_CHILL, volume_chill - SPEED_TRANSITION)
 
-func set_fight_volume(volume_db: float) -> void:
-	if volume_db >= 0:
-		s.set_sync_stream_volume(AUDIO_FIGHT, 0)
-	else:
-		s.set_sync_stream_volume(AUDIO_FIGHT, volume_db)
+func on_fight_started() -> void:
+	time_in_fight.start(MAX_TIME_IN_FIGHT)
 
-signal switch_audio()
+func set_volume(idx: int, volume: float) -> void:
+	var v = clamp(volume, -60, 0)
+	audio_stream.set_sync_stream_volume(idx, v)
