@@ -3,7 +3,8 @@ extends CharacterBody2D
 
 ## Projectile fired by the player
 @export var Bullet: PackedScene
-@onready var screen_size = get_viewport_rect().size
+@onready var screen_size:Vector2 = get_viewport_rect().size
+@onready var audio: AudioStreamPlayer = $"../AudioStreamPlayer"
 const sl = preload("res://scripts/static_lib.gd")
 
 # constants
@@ -21,6 +22,7 @@ var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 
 func _physics_process(delta):
+	audio.emit_signal("switch_audio")
 	# move tank
 	acceleration = Vector2.ZERO
 	update_accel()
