@@ -29,16 +29,16 @@ offset = Vector2(0, -20)
 [node name="spawn_bullet" type="Marker2D" parent="barrel"]
 position = Vector2(-0.000152111, -42)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="tank_collision" type="CollisionShape2D" parent="."]
 position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_x1tm4")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="hitbox" type="Area2D" parent="."]
 rotation = 1.5708
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="hitbox_collision" type="CollisionShape2D" parent="hitbox"]
 position = Vector2(0, -2)
 shape = SubResource("CapsuleShape2D_hvl3w")
 
-[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="hitbox" to="." method="_on_area_2d_body_entered"]
