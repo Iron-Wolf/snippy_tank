@@ -4,6 +4,7 @@ signal fight_started
 @onready var audio_stream: AudioStreamSynchronized = stream
 @onready var time_in_fight: Timer = $time_in_fight
 @onready var intro_audio: AudioStreamPlayer = $intro_audio
+@onready var master_bus_idx = AudioServer.get_bus_index("Master")
 
 # constants
 const AUDIO_CHILL: int = 0
@@ -19,6 +20,9 @@ func _ready() -> void:
 	intro_audio.play()
 
 func _process(_delta: float) -> void:
+    # TODO : add effects ?
+	var disto: AudioEffectDistortion = AudioServer.get_bus_effect(master_bus_idx, 0)
+	
 	if intro_audio.playing:
 		# wait intro to finish
 		pass

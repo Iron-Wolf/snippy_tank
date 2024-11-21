@@ -18,6 +18,6 @@ func _on_bullet_body_entered(body):
 	#queue_free()
 	
 	# we are colliding with a wall or something
-	if body.name != "player1":
+	if body.name != "player1" && body.name != "player2":
 		queue_free()
 	pass

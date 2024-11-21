@@ -1,11 +1,14 @@
 # https://kidscancode.org/godot_recipes/4.x/2d/car_steering/
 extends CharacterBody2D
 
-## Projectile fired by the player
-@export var Bullet: PackedScene
+## Id used for input action (like "right_1" for "player 1")
+## Need to start at 1 (if not set, the default "0" value is used to throw an error)
+@export var player_id: int = 0
+
 @onready var screen_size:Vector2 = get_viewport_rect().size
 @onready var audio: AudioStreamPlayer = $"../background_audio"
-const sl = preload("res://scripts/static_lib.gd")
+const sl: GDScript = preload("res://scripts/static_lib.gd")
+const bullet: PackedScene = preload("res://scenes/bullet.tscn")
 
 # constants
 const STEERING_ANGLE: float = 300
@@ -20,6 +23,15 @@ var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
+
+func _enter_tree() -> void:
+	if player_id == 0:
+		# pause full game and alert
+		OS.alert("Fatal Error has occured : \n" \
+			+ "'player_id' is not defined for " + self.to_string(), 
+			"ALERT !")
+		# close the game
+		get_tree().quit()
 
 func _physics_process(delta):
 	# move tank
@@ -70,7 +82,7 @@ func apply_rotation(delta: float) -> void:
 
 func shoot():
 	audio.emit_signal("fight_started")
-	var b = Bullet.instantiate()
+	var b = bullet.instantiate()
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
 
