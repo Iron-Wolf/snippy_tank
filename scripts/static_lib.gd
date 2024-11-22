@@ -20,3 +20,8 @@ static func apply_screen_wrap(position: Vector2, screen_size: Vector2) -> Vector
 		position.y = screen_size.y
 	
 	return position
+
+static func log_error(message: String, with_alert: bool = false) -> void:
+	push_error(message)
+	if with_alert:
+		OS.alert(message, "ALERT !")

@@ -1,13 +1,17 @@
-[gd_scene load_steps=17 format=4 uid="uid://dok78wo6lur2l"]
+[gd_scene load_steps=21 format=4 uid="uid://dok78wo6lur2l"]
 
 [ext_resource type="Texture2D" uid="uid://ce8bcqkc0ln7n" path="res://assets/Spritesheet/back_sheet.png" id="1_a34x0"]
 [ext_resource type="PackedScene" uid="uid://cocrreaiubffw" path="res://scenes/player.tscn" id="2_26ecd"]
 [ext_resource type="Texture2D" uid="uid://bria28tm6471e" path="res://assets/Spritesheet/transition_sheet.png" id="2_fkap0"]
 [ext_resource type="Texture2D" uid="uid://qojcxjk2mumb" path="res://assets/Spritesheet/barrel_side_sheet.png" id="3_k44dx"]
 [ext_resource type="Texture2D" uid="uid://cna4d3knisb6c" path="res://assets/Spritesheet/barrel_top_sheet.png" id="4_3g84g"]
+[ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="4_d16pt"]
 [ext_resource type="AudioStream" uid="uid://h7echt0b5iw" path="res://assets/sound/March_and_Play_guitar_loop.mp3" id="5_m7y4h"]
+[ext_resource type="Texture2D" uid="uid://63v6o20qnq8t" path="res://assets/Tanks/barrelRed_outline.png" id="5_xguky"]
 [ext_resource type="AudioStream" uid="uid://bneds153oid4y" path="res://assets/sound/March_and_Play_trumpet_loop.mp3" id="6_dlun8"]
+[ext_resource type="Texture2D" uid="uid://ctb73y5k3eiac" path="res://assets/Tanks/tankBlue.png" id="6_h7v4c"]
 [ext_resource type="Script" path="res://scripts/audio.gd" id="7_7a1p1"]
+[ext_resource type="Texture2D" uid="uid://bjwryy7vy8j7l" path="res://assets/Tanks/barrelBlue_outline.png" id="7_eml6a"]
 [ext_resource type="AudioStream" uid="uid://cv1qjfwqtme64" path="res://assets/sound/March_and_Play_intro.mp3" id="8_ikfit"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8lnnn"]
@@ -99,7 +103,17 @@ tile_map_data = PackedByteArray("AAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAACAAAAAAAAAAA
 tile_set = SubResource("TileSet_sr3t7")
 
 [node name="player1" parent="." instance=ExtResource("2_26ecd")]
-position = Vector2(150, 127)
+position = Vector2(154, 486)
+player_id = 1
+tank_texture = ExtResource("4_d16pt")
+barrel_texture = ExtResource("5_xguky")
+
+[node name="player2" parent="." instance=ExtResource("2_26ecd")]
+position = Vector2(1653, 480)
+rotation = 3.14159
+player_id = 2
+tank_texture = ExtResource("6_h7v4c")
+barrel_texture = ExtResource("7_eml6a")
 
 [node name="walls" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAAAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAYAAAABAAAAAAAAAAcAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAkAAAABAAAAADAAAAoAAAAAAAAAAAAAAAsAAQAAAAAAAAAAAAwAAQAAAAAAAAAAAA0AAAABAAEAAAAAAA4AAAABAAEAAAAAAA8AAAABAAEAAFAcAAUAAAABAAEAAAAcAAYAAAAAAAAAAAAcAAcAAAAAAAEAADAcAAgAAAAAAAAAAAAcAAkAAAAAAAAAAAAcAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAFACAAAAAAAAAAAAAFADAAAAAAAAAAAAAFAEAAAAAAAAAAAAAFAFAAAAAAABAAEAAFAGAAAAAAAAAAEAAFAHAAAAAAABAAEAAFAIAAAAAAABAAEAAFAJAAAAAAAAAAAAAFAKAAAAAAABAAEAAFALAAAAAAABAAEAAFAMAAAAAAABAAEAAFANAAAAAAAAAAAAAFAOAAAAAAAAAAAAAFAPAAAAAAAAAAAAAFAQAAAAAAAAAAAAAFARAAAAAAAAAAAAAFASAAAAAAAAAAAAAFATAAAAAAAAAAAAAFAUAAAAAAABAAAAAFAYAAAAAAAAAAAAAFAZAAAAAAAAAAAAAFAaAAAAAAAAAAAAAFAbAAAAAAAAAAAAAFAcAAAAAAAAAAAAAFAcAAsAAAAAAAAAAAAcAA8AAAABAAEAAAABAA8AAAABAAEAAFACAA8AAAAAAAEAAFADAA8AAAABAAEAAFAEAA8AAAAAAAEAAGAFAA8AAAAAAAEAAFAGAA8AAAAAAAAAAFALAA8AAAAAAAAAAFAMAA8AAAABAAAAAGANAA8AAAABAAAAAFAOAA8AAAABAAAAAFAPAA8AAAAAAAAAAFAQAA8AAAAAAAAAAFARAA8AAQAAAAAAAAASAA8AAQAAAAAAAAATAA8AAQAAAAAAAAAUAA8AAAAAAAAAAFAVAA8AAAAAAAAAAFAWAA8AAAAAAAAAAFAXAA8AAAAAAAAAAFAYAA8AAAAAAAAAAFAZAA8AAAAAAAAAAFAaAA8AAAABAAEAAFAbAA8AAAABAAEAAFANAAcAAAAAAAAAAAANAAYAAAAAAAAAAAANAAUAAAAAAAAAAAANAAQAAAAAAAAAAGAUAAoAAAAAAAAAAGAVAAoAAAAAAAAAAGAWAAoAAAAAAAAAAGAXAAoAAAAAAAAAAGATAAoAAAAAAAAAAGASAAoAAAAAAAAAAGAJAAQAAAAAAAAAAGAKAAQAAAAAAAAAAGALAAQAAAAAAAAAAGAMAAQAAAAAAAAAAGAOAAQAAAAAAAAAAGAPAAQAAAAAAAAAAGAQAAQAAAAAAAAAAGAGAAQAAAAAAAAAAGAHAAQAAAAAAAAAAGAIAAQAAAAAAAAAAGAOAAMAAAAAAAAAAGAPAAMAAAAAAAAAAGANAAgAAQAAAAAAAAAXAAkAAAAAAAAAAAAXAAgAAAAAAAAAAAAXAAcAAAAAAAAAAAAXAAYAAAAAAAAAAAAQAAMAAAAAAAAAAFARAAMAAAAAAAAAAFASAAMAAAAAAAAAAFAMAAwAAQAAAAAAAAANAAwAAQABAAAAAAAOAAUAAQABAAAAAAAcAAQAAAABAAEAAAAcAAIAAQAAAAAAAAAcAAMAAAAAAAAAAAAcAAEAAAAAAAAAAAAHAA8AAQAAAAAAAAAHAAgAAAAAAAAAAAAHAAkAAAAAAAAAAAAHAAoAAAAAAAAAAAAFAAsAAAAAAAAAAGAGAAsAAAAAAAAAAGAHAAsAAQAAAAAAAAAEAAsAAAAAAAAAAGA=")
@@ -114,4 +128,5 @@ script = ExtResource("7_7a1p1")
 [node name="intro_audio" type="AudioStreamPlayer" parent="background_audio"]
 stream = ExtResource("8_ikfit")
 
-[connection signal="fight_started" from="background_audio" to="background_audio" method="on_fight_started"]
+[connection signal="fight_started" from="player1" to="background_audio" method="on_fight_started"]
+[connection signal="fight_started" from="player2" to="background_audio" method="on_fight_started"]
