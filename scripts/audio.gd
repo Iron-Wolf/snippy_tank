@@ -1,6 +1,7 @@
 extends AudioStreamPlayer
 
-signal fight_started
+@export var mute:bool = false
+
 @onready var audio_stream: AudioStreamSynchronized = stream
 @onready var time_in_fight: Timer = $time_in_fight
 @onready var intro_audio: AudioStreamPlayer = $intro_audio
@@ -9,23 +10,29 @@ signal fight_started
 # constants
 const AUDIO_CHILL: int = 0
 const AUDIO_FIGHT: int = 1
-const MAX_TIME_IN_FIGHT: int = 5 # time (seconds) before music chilling again
+const MAX_TIME_IN_FIGHT: int = 4 # time (seconds) before music chilling again
 const SPEED_TRANSITION: float = 0.4
 
 func _ready() -> void:
+	if mute:
+		return
+	
 	time_in_fight.wait_time = MAX_TIME_IN_FIGHT
 	time_in_fight.one_shot = true
-	# start with a medium volume
-	set_volume(AUDIO_CHILL, -10)
+	# "0" is the base volume
+	set_volume(AUDIO_CHILL, 0)
 	intro_audio.play()
 
 func _process(_delta: float) -> void:
-    # TODO : add effects ?
+	if mute:
+		return
+	
+	# TODO : add effects ?
 	var disto: AudioEffectDistortion = AudioServer.get_bus_effect(master_bus_idx, 0)
 	
 	if intro_audio.playing:
 		# wait intro to finish
-		pass
+		return
 	elif not playing:
 		# start main loop
 		play()

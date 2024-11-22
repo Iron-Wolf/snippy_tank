@@ -2,8 +2,11 @@
 extends CharacterBody2D
 
 ## Id used for input action (like "right_1" for "player 1")
-## Need to start at 1 (if not set, the default "0" value is used to throw an error)
+## Need to start at 1 (we use "0" to throw an error)
 @export var player_id: int = 0
+@export var tank_texture: Texture2D
+@export var barrel_texture: Texture2D
+signal fight_started
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
 @onready var audio: AudioStreamPlayer = $"../background_audio"
@@ -11,7 +14,9 @@ const sl: GDScript = preload("res://scripts/static_lib.gd")
 const bullet: PackedScene = preload("res://scenes/bullet.tscn")
 
 # constants
-const STEERING_ANGLE: float = 300
+enum Scheme {BASIC, ARCADE, SIMULATION}
+const CONTROL_SCHEME: Scheme = Scheme.BASIC
+const STEERING_ANGLE: float = 400
 const MAX_SPEED: float = 1000
 const FRICTION: float = -55
 const DRAG: float = -0.06
@@ -21,53 +26,66 @@ const STOP_THRESHOLD: float = 30.0  # stop when speed is below
 # variables
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
+var move_direction: Vector2 = Vector2.ZERO
 var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 
-func _enter_tree() -> void:
+func _ready() -> void:
+	var falat_error: bool = false
 	if player_id == 0:
-		# pause full game and alert
-		OS.alert("Fatal Error has occured : \n" \
-			+ "'player_id' is not defined for " + self.to_string(), 
-			"ALERT !")
-		# close the game
+		sl.log_error("'player_id' is not defined for : " + self.name)
+		falat_error = true
+	if tank_texture == null or barrel_texture == null:
+		sl.log_error("missing texture for : " + self.name)
+		falat_error = true
+	if falat_error:
 		get_tree().quit()
+	
+	$tank.texture = tank_texture;
+	$barrel.texture = barrel_texture;
 
 func _physics_process(delta):
 	# move tank
 	acceleration = Vector2.ZERO
-	update_accel()
+	if CONTROL_SCHEME == Scheme.BASIC:
+		acceleration = move_direction * MAX_SPEED
+		if move_direction:
+			apply_rotation_basic(delta)
+	elif CONTROL_SCHEME == Scheme.ARCADE:
+		update_accel()
+		apply_rotation(delta)
+	
 	apply_friction(delta)
-	apply_rotation(delta)
 	velocity += acceleration * delta
 	move_and_slide()
 	# wrap after movement
 	position = sl.apply_screen_wrap(position, screen_size)
 	
 	# aim barrel
-	#var barrel: Sprite2D = get_node("barrel")
-	if (aim_direction != Vector2.ZERO):
+	if aim_direction:
 		# apply aim globally (offset the tank rotation)
 		var current_aim_direction = aim_direction.rotated(-rotation)
 		$barrel.rotation = current_aim_direction.angle() + PI/2
 		last_aim_direction = aim_direction
-	else:
-		# keep aim to the last inputed direction
-		var current_aim_direction = last_aim_direction.rotated(-rotation)
-		$barrel.rotation = current_aim_direction.angle() + PI/2
 	
-	if Input.is_action_just_pressed("shoot"):
+	if Input.is_action_just_pressed(f("shoot")):
 		shoot()
 	
 func _unhandled_input(_event: InputEvent) -> void:
-	var tank_turn = Input.get_axis("move_left", "move_right")
-	steer_direction = tank_turn * deg_to_rad(STEERING_ANGLE)
-	aim_direction = Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	move_direction = Input.get_vector(
+		f("move_left"), f("move_right"), f("move_up"), f("move_down"))
+	aim_direction = Input.get_vector(
+		f("aim_left"), f("aim_right"), f("aim_up"), f("aim_down"))
+	steer_direction = move_direction.x * deg_to_rad(STEERING_ANGLE)
+
+# format action name with the player_id
+func f(action: String) -> String:
+	return "p%s_"%player_id + action
 
 func update_accel() -> void:
-	if Input.is_action_pressed("move_fw"):
+	if Input.is_action_pressed(f("move_up")):
 		acceleration = transform.x * MAX_SPEED
-	if Input.is_action_pressed("move_bw"):
+	if Input.is_action_pressed(f("move_down")):
 		acceleration = transform.x * BRAKING_SPEED
 
 func apply_friction(delta):
@@ -77,11 +95,17 @@ func apply_friction(delta):
 	var drag_force = velocity * velocity.length() * DRAG * delta
 	acceleration += drag_force + friction_force
 
+func apply_rotation_basic(delta: float) -> void:
+	var currentRotation = rotation
+	var targetRotation = move_direction.angle()
+	rotation = lerp_angle(
+		currentRotation, targetRotation, deg_to_rad(STEERING_ANGLE) * delta)
+
 func apply_rotation(delta: float) -> void:
 	rotation += steer_direction * delta
 
 func shoot():
-	audio.emit_signal("fight_started")
+	fight_started.emit()
 	var b = bullet.instantiate()
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
