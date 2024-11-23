@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cocrreaiubffw"]
+[gd_scene load_steps=5 format=3 uid="uid://cocrreaiubffw"]
 
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="1_53oag"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_mooqp"]
@@ -6,10 +6,6 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x1tm4"]
 radius = 36.0139
-
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hvl3w"]
-radius = 26.0
-height = 70.0
 
 [node name="player" type="CharacterBody2D"]
 script = ExtResource("1_mooqp")
@@ -31,12 +27,3 @@ position = Vector2(-0.000152111, -42)
 position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_x1tm4")
-
-[node name="hitbox" type="Area2D" parent="."]
-rotation = 1.5708
-
-[node name="hitbox_collision" type="CollisionShape2D" parent="hitbox"]
-position = Vector2(0, -2)
-shape = SubResource("CapsuleShape2D_hvl3w")
-
-[connection signal="body_entered" from="hitbox" to="." method="_on_area_2d_body_entered"]

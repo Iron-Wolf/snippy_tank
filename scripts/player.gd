@@ -10,6 +10,9 @@ signal fight_started
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
 @onready var audio: AudioStreamPlayer = $"../background_audio"
+@onready var init_position: Vector2 = position
+@onready var init_rotation: float = rotation
+@onready var init_barrel_rotation: float = $barrel.rotation
 const sl: GDScript = preload("res://scripts/static_lib.gd")
 const bullet: PackedScene = preload("res://scenes/bullet.tscn")
 
@@ -28,8 +31,8 @@ var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
 var aim_direction: Vector2 = Vector2.ZERO
-var last_aim_direction: Vector2 = Vector2.ZERO
 
+#region starting logic
 func _ready() -> void:
 	var falat_error: bool = false
 	if player_id == 0:
@@ -43,34 +46,38 @@ func _ready() -> void:
 	
 	$tank.texture = tank_texture;
 	$barrel.texture = barrel_texture;
+#endregion
 
 func _physics_process(delta):
 	# move tank
 	acceleration = Vector2.ZERO
-	if CONTROL_SCHEME == Scheme.BASIC:
-		acceleration = move_direction * MAX_SPEED
-		if move_direction:
-			apply_rotation_basic(delta)
-	elif CONTROL_SCHEME == Scheme.ARCADE:
-		update_accel()
-		apply_rotation(delta)
+	match CONTROL_SCHEME:
+		Scheme.BASIC:
+			acceleration = move_direction * MAX_SPEED
+			if move_direction:
+				apply_rotation_basic(delta)
+		Scheme.ARCADE:
+			update_accel()
+			apply_rotation(delta)
 	
 	apply_friction(delta)
 	velocity += acceleration * delta
 	move_and_slide()
-	# wrap after movement
+	# screen wrap after movement
 	position = sl.apply_screen_wrap(position, screen_size)
 	
 	# aim barrel
 	if aim_direction:
 		# apply aim globally (offset the tank rotation)
-		var current_aim_direction = aim_direction.rotated(-rotation)
-		$barrel.rotation = current_aim_direction.angle() + PI/2
-		last_aim_direction = aim_direction
+		var target_aim: float = aim_direction.rotated(-rotation).angle()
+		var target_aim_offset: float = target_aim + PI/2
+		$barrel.rotation = lerp_angle(
+			$barrel.rotation, target_aim_offset, deg_to_rad(STEERING_ANGLE) * delta)
 	
 	if Input.is_action_just_pressed(f("shoot")):
 		shoot()
-	
+
+#region inputs
 func _unhandled_input(_event: InputEvent) -> void:
 	move_direction = Input.get_vector(
 		f("move_left"), f("move_right"), f("move_up"), f("move_down"))
@@ -96,20 +103,28 @@ func apply_friction(delta):
 	acceleration += drag_force + friction_force
 
 func apply_rotation_basic(delta: float) -> void:
-	var currentRotation = rotation
-	var targetRotation = move_direction.angle()
+	var currentRotation: float = rotation
+	var targetRotation: float = move_direction.angle()
 	rotation = lerp_angle(
 		currentRotation, targetRotation, deg_to_rad(STEERING_ANGLE) * delta)
 
 func apply_rotation(delta: float) -> void:
 	rotation += steer_direction * delta
+#endregion
 
-func shoot():
+func shoot() -> void:
 	fight_started.emit()
 	var b = bullet.instantiate()
+	b.origin_shoot = self
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
 
-func _on_area_2d_body_entered(_body: Node2D) -> void:
-	# TODO: handle enemy interaction
-	pass # Replace with function body.
+func kill() -> void:
+	# TODO : check if other players are dead (no need for 2)
+	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
+
+func respawn_process() -> void:
+	position = init_position
+	rotation = init_rotation
+	$barrel.rotation = init_barrel_rotation
+	velocity = Vector2.ZERO
