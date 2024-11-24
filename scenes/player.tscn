@@ -27,3 +27,6 @@ position = Vector2(-0.000152111, -42)
 position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_x1tm4")
+
+[node name="ShootTimer" type="Timer" parent="."]
+one_shot = true

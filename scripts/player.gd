@@ -9,12 +9,13 @@ extends CharacterBody2D
 signal fight_started
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
-@onready var audio: AudioStreamPlayer = $"../background_audio"
+#@onready var audio: AudioStreamPlayer = $"../BackgroundAudio"
 @onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $barrel.rotation
 const sl: GDScript = preload("res://scripts/static_lib.gd")
 const bullet: PackedScene = preload("res://scenes/bullet.tscn")
+const track_texture: Texture2D = preload("res://assets/Tanks/tracksSmall.png")
 
 # constants
 enum Scheme {BASIC, ARCADE, SIMULATION}
@@ -24,13 +25,20 @@ const MAX_SPEED: float = 1000
 const FRICTION: float = -55
 const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
-const STOP_THRESHOLD: float = 30.0  # stop when speed is below
+const STOP_THRESHOLD: float = 30  # stop when speed is below
+const SHOOT_TIMER: float = 0.1 # cooldown (sec) before each shoot
+const START_AMMO: int = -1 # "-1" for infinite
+const ANIM_SHAKE_SPEED: int = 15
 
 # variables
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
 var aim_direction: Vector2 = Vector2.ZERO
+var ammo_left: int
+var travel_total: float = 0 # cumulated distance traveled
+var travel_total_previous: float = 0 # detect if player has moved
+var travel_place_track: float = 0 # loop to "0" every 100 units
 
 #region starting logic
 func _ready() -> void:
@@ -44,11 +52,22 @@ func _ready() -> void:
 	if falat_error:
 		get_tree().quit()
 	
-	$tank.texture = tank_texture;
-	$barrel.texture = barrel_texture;
+	$tank.texture = tank_texture
+	$barrel.texture = barrel_texture
+	$ShootTimer.wait_time = SHOOT_TIMER
+	respawn_process()
 #endregion
 
 func _physics_process(delta):
+	var position_before = position
+	
+	@warning_ignore("integer_division")
+	var shake = 1 \
+		if get_tree().get_frame() % ANIM_SHAKE_SPEED*2 > ANIM_SHAKE_SPEED \
+		else -1
+	$tank.position.y = shake
+	$barrel.position.y = shake
+	
 	# move tank
 	acceleration = Vector2.ZERO
 	match CONTROL_SCHEME:
@@ -68,14 +87,32 @@ func _physics_process(delta):
 	
 	# aim barrel
 	if aim_direction:
-		# apply aim globally (offset the tank rotation)
+		# apply aim globally (offset with tank rotation)
 		var target_aim: float = aim_direction.rotated(-rotation).angle()
-		var target_aim_offset: float = target_aim + PI/2
+		var target_aim_offset: float = target_aim + deg_to_rad(90)
 		$barrel.rotation = lerp_angle(
 			$barrel.rotation, target_aim_offset, deg_to_rad(STEERING_ANGLE) * delta)
 	
 	if Input.is_action_just_pressed(f("shoot")):
 		shoot()
+	
+	travel_total += position_before.distance_to(position)
+	if travel_total > travel_total_previous:
+		# actually in movement
+		var travel_actual = travel_total - travel_total_previous
+		travel_total_previous = travel_total
+		# track placement logic
+		travel_place_track -= travel_actual
+		if travel_place_track < 0:
+			travel_place_track = 100
+			var s = Sprite2D.new()
+			s.texture = track_texture
+			s.position = position
+			s.rotation = rotation + deg_to_rad(90)
+			# add texture below the player
+			owner.add_child(s)
+			owner.move_child(s, get_index())
+
 
 #region inputs
 func _unhandled_input(_event: InputEvent) -> void:
@@ -113,17 +150,30 @@ func apply_rotation(delta: float) -> void:
 #endregion
 
 func shoot() -> void:
+	if $ShootTimer.time_left != 0:
+		return
+	if ammo_left == 0:
+		return
+	ammo_left -= 1
 	fight_started.emit()
 	var b = bullet.instantiate()
 	b.origin_shoot = self
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
+	$ShootTimer.start()
 
-func kill() -> void:
+func kill(origin_shoot: String) -> void:
+	if origin_shoot == "Player1":
+		$"../UI/P1Score".increase_score()
+	if origin_shoot == "Player2":
+		$"../UI/P2Score".increase_score()
+	
 	# TODO : check if other players are dead (no need for 2)
 	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
 
 func respawn_process() -> void:
+	ammo_left = START_AMMO
+	$ShootTimer.start(SHOOT_TIMER)
 	position = init_position
 	rotation = init_rotation
 	$barrel.rotation = init_barrel_rotation

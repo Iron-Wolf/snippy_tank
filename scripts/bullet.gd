@@ -21,8 +21,8 @@ func _on_bullet_body_entered(body) -> void:
 	var o = origin_shoot.name if origin_shoot != null else StringName("UNKNOWN")
 	print(o + " kill " + body.name)
 	
-	if body.name == "player1" or body.name == "player2":
-		body.kill();
+	if body.name == "Player1" or body.name == "Player2":
+		body.kill(o);
 	
 	# remove the bullet from the scene
 	queue_free()
