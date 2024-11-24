@@ -17,6 +17,7 @@ const sl: GDScript = preload("res://scripts/static_lib.gd")
 const bullet: PackedScene = preload("res://scenes/bullet.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
+const explosion_sc: PackedScene = preload("res://scenes/explosion.tscn")
 
 # constants
 enum Scheme {BASIC, ARCADE, SIMULATION}
@@ -206,6 +207,13 @@ func shoot() -> void:
 	b.origin_shoot = self
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
+	# TODO : should be a "bullet" property
+	var explosion: CPUParticles2D = explosion_sc.instantiate()
+	explosion.transform = $barrel/spawn_bullet.global_transform
+	explosion.gravity = Vector2(1000, 0).rotated($barrel/spawn_bullet.global_rotation - deg_to_rad(90))
+	explosion.speed_scale = 2
+	owner.add_child(explosion)
+	explosion.emitting = true
 	$ShootTimer.start()
 	modulate = Color.DIM_GRAY
 
@@ -215,10 +223,21 @@ func kill(origin_shoot: String) -> void:
 	if origin_shoot == "Player2":
 		$"../UI/P2Score".increase_score()
 	
+	# TODO : handle this with signals ?
+	var explosion: CPUParticles2D = explosion_sc.instantiate()
+	explosion.transform = transform
+	explosion.scale = Vector2(2,2)
+	owner.add_child(explosion)
+	explosion.emitting = true
+	visible = false
+	
 	# TODO : check if other players are dead (no need for 2)
+	# wait before reloading the scene
+	await get_tree().create_timer(1).timeout
 	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
 
 func respawn_process() -> void:
+	visible = true
 	# reset game logic
 	ammo_left = START_AMMO
 	$ShootTimer.start(SHOOT_TIMER)
