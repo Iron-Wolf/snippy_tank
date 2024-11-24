@@ -39,6 +39,10 @@ var ammo_left: int
 var travel_total: float = 0 # cumulated distance traveled
 var travel_total_previous: float = 0 # detect if player has moved
 var travel_place_track: float = 0 # loop to "0" every 100 units
+var current_loaded_tracks: Array = []
+
+var debug_dict: Dictionary = {}
+const DEBUG: bool = false
 
 #region starting logic
 func _ready() -> void:
@@ -85,6 +89,19 @@ func _physics_process(delta):
 	# screen wrap after movement
 	position = sl.apply_screen_wrap(position, screen_size)
 	
+	var drifting: bool = false
+	var vr: Vector2 = Vector2(100, 0) # vector in front on the player
+	var angle_rot = vr.angle_to(velocity.rotated(-rotation))
+	if abs(angle_rot) > deg_to_rad(60):
+		drifting = true
+	
+	if DEBUG:
+		update_debug({
+			"velocity" = velocity.rotated(-rotation),
+			"move_direction" = move_direction.rotated(-rotation) * 100,
+			"acceleration" = acceleration.rotated(-rotation),
+		})
+	
 	# aim barrel
 	if aim_direction:
 		# apply aim globally (offset with tank rotation)
@@ -103,16 +120,38 @@ func _physics_process(delta):
 		travel_total_previous = travel_total
 		# track placement logic
 		travel_place_track -= travel_actual
+		if drifting:
+			# increase texture without clutering the background
+			travel_place_track /= 10
 		if travel_place_track < 0:
+			# reset to place a track every 100 units
 			travel_place_track = 100
-			var s = Sprite2D.new()
-			s.texture = track_texture
-			s.position = position
-			s.rotation = rotation + deg_to_rad(90)
-			# add texture below the player
-			owner.add_child(s)
-			owner.move_child(s, get_index())
+			draw_tracks()
+	queue_redraw()
 
+func update_debug(dict: Dictionary) -> void:
+	for key in dict:
+		debug_dict[key] = dict[key]
+	
+func _draw() -> void:
+	if debug_dict.size() == 0:
+		return
+	draw_line(debug_dict["acceleration"], Vector2.ZERO, Color.GREEN, 4)
+	draw_line(debug_dict["velocity"], Vector2.ZERO, Color.BLACK, 4)
+	# we rotate the full body, so "rotation" is just displayed in front
+	draw_line(Vector2(100, 0), Vector2.ZERO, Color.BLUE, 4)
+	draw_circle(debug_dict["move_direction"], 10, Color.RED)
+
+# not optimal function (maybe should I use "draw_texture" ?)
+func draw_tracks() -> void:
+	var s = Sprite2D.new()
+	s.texture = track_texture
+	s.position = position
+	s.rotation = rotation + deg_to_rad(90)
+	# add texture below the player AND walls
+	owner.add_child(s)
+	owner.move_child(s, get_index()-1)
+	current_loaded_tracks.push_back(s)
 
 #region inputs
 func _unhandled_input(_event: InputEvent) -> void:
@@ -150,6 +189,7 @@ func apply_rotation(delta: float) -> void:
 #endregion
 
 func shoot() -> void:
+	# check cooldown
 	if $ShootTimer.time_left != 0:
 		return
 	if ammo_left == 0:
@@ -172,9 +212,15 @@ func kill(origin_shoot: String) -> void:
 	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
 
 func respawn_process() -> void:
+	# reset game logic
 	ammo_left = START_AMMO
 	$ShootTimer.start(SHOOT_TIMER)
+	# reset positions
 	position = init_position
 	rotation = init_rotation
 	$barrel.rotation = init_barrel_rotation
 	velocity = Vector2.ZERO
+	# free ressources
+	for s:Sprite2D in current_loaded_tracks:
+		s.queue_free()
+	current_loaded_tracks = []
