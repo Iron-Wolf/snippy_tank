@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://v7kg6b07km5m"
-path="res://.godot/imported/sand.png-2402edba17c6d7c3315fb7f31963b805.ctex"
+uid="uid://cg21v8u07jeyn"
+path="res://.godot/imported/tracksSmall4.png-eb5b3c1c18a5827a802e524949e884f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Environment/sand.png"
-dest_files=["res://.godot/imported/sand.png-2402edba17c6d7c3315fb7f31963b805.ctex"]
+source_file="res://assets/Tanks/tracksSmall4.png"
+dest_files=["res://.godot/imported/tracksSmall4.png-eb5b3c1c18a5827a802e524949e884f2.ctex"]
 
 [params]
 
@@ -24,7 +24,7 @@ compress/channel_pack=0
 mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
-roughness/src_normal="res://assets/Environment/sand.png"
+roughness/src_normal=""
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c04whurkjo0a3"
-path="res://.godot/imported/tracksSmall.png-b0661fa89ce67c6acd1bd97343cc1508.ctex"
+uid="uid://d2j1c2galadlp"
+path="res://.godot/imported/tracksSmall2.png-f4631f96ab3737d77d556646b0fd5592.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Tanks/tracksSmall.png"
-dest_files=["res://.godot/imported/tracksSmall.png-b0661fa89ce67c6acd1bd97343cc1508.ctex"]
+source_file="res://assets/Tanks/tracksSmall2.png"
+dest_files=["res://.godot/imported/tracksSmall2.png-f4631f96ab3737d77d556646b0fd5592.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4wf7bv6mxcsn"
-path="res://.godot/imported/treeLarge.png-144941fa450b3eff81494d496e9ccdba.ctex"
+uid="uid://d1s7jv8yxuj6m"
+path="res://.godot/imported/sandrock_sheet.png-9dfcaa04d0e419b2e095708b2e29fa62.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Environment/treeLarge.png"
-dest_files=["res://.godot/imported/treeLarge.png-144941fa450b3eff81494d496e9ccdba.ctex"]
+source_file="res://assets/Spritesheet/sandrock_sheet.png"
+dest_files=["res://.godot/imported/sandrock_sheet.png-9dfcaa04d0e419b2e095708b2e29fa62.ctex"]
 
 [params]
 
@@ -24,7 +24,7 @@ compress/channel_pack=0
 mipmaps/generate=false
 mipmaps/limit=-1
 roughness/mode=0
-roughness/src_normal="res://assets/Environment/treeLarge.png"
+roughness/src_normal=""
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false

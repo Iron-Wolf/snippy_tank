@@ -15,7 +15,8 @@ signal fight_started
 @onready var init_barrel_rotation: float = $barrel.rotation
 const sl: GDScript = preload("res://scripts/static_lib.gd")
 const bullet: PackedScene = preload("res://scenes/bullet.tscn")
-const track_texture: Texture2D = preload("res://assets/Tanks/tracksSmall.png")
+const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
+const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
 
 # constants
 enum Scheme {BASIC, ARCADE, SIMULATION}
@@ -123,13 +124,15 @@ func _physics_process(delta):
 		travel_total_previous = travel_total
 		# track placement logic
 		travel_place_track -= travel_actual
+		var track_texture = track_normal
 		if drifting:
 			# increase texture without clutering the background
 			travel_place_track /= 10
+			track_texture = track_drift
 		if travel_place_track < 0:
-			# reset to place a track every 100 units
-			travel_place_track = 100
-			draw_tracks()
+			# reset to place a track every X units
+			travel_place_track = 30
+			draw_tracks(track_texture)
 	queue_redraw()
 
 func update_debug(dict: Dictionary) -> void:
@@ -146,9 +149,9 @@ func _draw() -> void:
 	draw_circle(debug_dict["move_direction"], 10, Color.RED)
 
 # not optimal function (maybe should I use "draw_texture" ?)
-func draw_tracks() -> void:
+func draw_tracks(texture: Texture2D) -> void:
 	var s = Sprite2D.new()
-	s.texture = track_texture
+	s.texture = texture
 	s.position = position
 	s.rotation = rotation + deg_to_rad(90)
 	# add texture below the player AND walls
