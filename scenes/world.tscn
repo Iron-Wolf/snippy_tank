@@ -9,11 +9,11 @@
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="4_d16pt"]
 [ext_resource type="AudioStream" uid="uid://h7echt0b5iw" path="res://assets/sound/March_and_Play_guitar_loop.mp3" id="5_m7y4h"]
 [ext_resource type="Texture2D" uid="uid://63v6o20qnq8t" path="res://assets/Tanks/barrelRed_outline.png" id="5_xguky"]
-[ext_resource type="AudioStream" uid="uid://bneds153oid4y" path="res://assets/sound/March_and_Play_trumpet_loop.mp3" id="6_dlun8"]
 [ext_resource type="Texture2D" uid="uid://ctb73y5k3eiac" path="res://assets/Tanks/tankBlue.png" id="6_h7v4c"]
 [ext_resource type="Script" path="res://scripts/audio.gd" id="7_7a1p1"]
 [ext_resource type="Texture2D" uid="uid://bjwryy7vy8j7l" path="res://assets/Tanks/barrelBlue_outline.png" id="7_eml6a"]
 [ext_resource type="AudioStream" uid="uid://cv1qjfwqtme64" path="res://assets/sound/March_and_Play_intro.mp3" id="8_ikfit"]
+[ext_resource type="AudioStream" uid="uid://cmg4itiisuui3" path="res://assets/sound/March_and_Play_trumpet_v2.mp3" id="11_afg07"]
 [ext_resource type="Script" path="res://scripts/score.gd" id="13_ke55v"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pbxqr"]
@@ -114,7 +114,7 @@ sources/1 = SubResource("TileSetAtlasSource_4vbiv")
 
 [sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_j0fkd"]
 stream_count = 2
-stream_0/stream = ExtResource("6_dlun8")
+stream_0/stream = ExtResource("11_afg07")
 stream_0/volume = -60.0
 stream_1/stream = ExtResource("5_m7y4h")
 stream_1/volume = -60.0
@@ -155,13 +155,14 @@ barrel_texture = ExtResource("7_eml6a")
 
 [node name="BackgroundAudio" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamSynchronized_j0fkd")
+volume_db = -5.0
 script = ExtResource("7_7a1p1")
-mute = true
 
 [node name="time_in_fight" type="Timer" parent="BackgroundAudio"]
 
 [node name="intro_audio" type="AudioStreamPlayer" parent="BackgroundAudio"]
 stream = ExtResource("8_ikfit")
+volume_db = -5.0
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3

@@ -207,6 +207,9 @@ func shoot() -> void:
 	b.origin_shoot = self
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
+	
+	$ShootAudio.play(0.4)
+	
 	# TODO : should be a "bullet" property
 	var explosion: CPUParticles2D = explosion_sc.instantiate()
 	explosion.transform = $barrel/spawn_bullet.global_transform
@@ -229,6 +232,8 @@ func kill(origin_shoot: String) -> void:
 	explosion.scale = Vector2(2,2)
 	owner.add_child(explosion)
 	explosion.emitting = true
+	
+	$KillAudio.play()
 	visible = false
 	
 	# TODO : check if other players are dead (no need for 2)
