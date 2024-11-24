@@ -26,7 +26,7 @@ const FRICTION: float = -55
 const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
-const SHOOT_TIMER: float = 0.1 # cooldown (sec) before each shoot
+const SHOOT_TIMER: float = 3 # cooldown (sec) before each shoot
 const START_AMMO: int = -1 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
 
@@ -59,6 +59,9 @@ func _ready() -> void:
 	$tank.texture = tank_texture
 	$barrel.texture = barrel_texture
 	$ShootTimer.wait_time = SHOOT_TIMER
+	$ShootTimer.connect("timeout", func():
+		modulate = Color.WHITE)
+
 	respawn_process()
 #endregion
 
@@ -201,6 +204,7 @@ func shoot() -> void:
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
 	$ShootTimer.start()
+	modulate = Color.DIM_GRAY
 
 func kill(origin_shoot: String) -> void:
 	if origin_shoot == "Player1":
@@ -215,6 +219,7 @@ func respawn_process() -> void:
 	# reset game logic
 	ammo_left = START_AMMO
 	$ShootTimer.start(SHOOT_TIMER)
+	modulate = Color.DIM_GRAY
 	# reset positions
 	position = init_position
 	rotation = init_rotation
