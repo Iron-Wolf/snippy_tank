@@ -7,6 +7,8 @@ extends CharacterBody2D
 @export var tank_texture: Texture2D
 @export var barrel_texture: Texture2D
 signal fight_started
+signal round_started
+signal player_killed
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
 #@onready var audio: AudioStreamPlayer = $"../BackgroundAudio"
@@ -148,6 +150,7 @@ func _draw() -> void:
 	# we rotate the full body, so "rotation" is just displayed in front
 	draw_line(Vector2(100, 0), Vector2.ZERO, Color.BLUE, 4)
 	draw_circle(debug_dict["move_direction"], 10, Color.RED)
+	print(Engine.get_frames_per_second())
 
 # not optimal function (maybe should I use "draw_texture" ?)
 func draw_tracks(texture: Texture2D) -> void:
@@ -162,11 +165,15 @@ func draw_tracks(texture: Texture2D) -> void:
 
 #region inputs
 func _unhandled_input(_event: InputEvent) -> void:
+	var old_aim_direction = aim_direction
 	move_direction = Input.get_vector(
 		f("move_left"), f("move_right"), f("move_up"), f("move_down"))
 	aim_direction = Input.get_vector(
 		f("aim_left"), f("aim_right"), f("aim_up"), f("aim_down"))
 	steer_direction = move_direction.x * deg_to_rad(STEERING_ANGLE)
+	
+	if old_aim_direction and !aim_direction:
+		shoot()
 
 # format action name with the player_id
 func f(action: String) -> String:
@@ -202,12 +209,12 @@ func shoot() -> void:
 	if ammo_left == 0:
 		return
 	ammo_left -= 1
-	fight_started.emit()
 	var b = bullet.instantiate()
 	b.origin_shoot = self
 	owner.add_child(b)
 	b.transform = $barrel/spawn_bullet.global_transform
 	
+	fight_started.emit()
 	$ShootAudio.play(0.4)
 	
 	# TODO : should be a "bullet" property
@@ -233,6 +240,7 @@ func kill(origin_shoot: String) -> void:
 	owner.add_child(explosion)
 	explosion.emitting = true
 	
+	player_killed.emit()
 	$KillAudio.play()
 	visible = false
 	
@@ -240,6 +248,7 @@ func kill(origin_shoot: String) -> void:
 	# wait before reloading the scene
 	await get_tree().create_timer(1).timeout
 	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
+	round_started.emit()
 
 func respawn_process() -> void:
 	visible = true

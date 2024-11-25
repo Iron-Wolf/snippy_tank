@@ -53,9 +53,12 @@ func _process(_delta: float) -> void:
 		if volume_fight > -20:
 			set_volume(AudioIdx.CHILL, volume_chill - SPEED_TRANSITION)
 
-func on_fight_started() -> void:
-	time_in_fight.start(MAX_TIME_IN_FIGHT)
-
 func set_volume(idx: int, volume: float) -> void:
 	var v = clamp(volume, -60, 0)
 	audio_stream.set_sync_stream_volume(idx, v)
+
+func on_fight_started() -> void:
+	time_in_fight.start(MAX_TIME_IN_FIGHT)
+
+func on_round_started() -> void:
+	$NewRoundAudio.play()

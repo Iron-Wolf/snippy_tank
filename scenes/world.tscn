@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://dok78wo6lur2l"]
+[gd_scene load_steps=28 format=4 uid="uid://dok78wo6lur2l"]
 
 [ext_resource type="Texture2D" uid="uid://c4x5rsq50hpic" path="res://assets/Spritesheet/background_sheet.png" id="1_pnfxt"]
 [ext_resource type="PackedScene" uid="uid://cocrreaiubffw" path="res://scenes/player.tscn" id="2_26ecd"]
@@ -15,6 +15,8 @@
 [ext_resource type="AudioStream" uid="uid://cv1qjfwqtme64" path="res://assets/sound/March_and_Play_intro.mp3" id="8_ikfit"]
 [ext_resource type="AudioStream" uid="uid://cmg4itiisuui3" path="res://assets/sound/March_and_Play_trumpet_v2.mp3" id="11_afg07"]
 [ext_resource type="Script" path="res://scripts/score.gd" id="13_ke55v"]
+[ext_resource type="AudioStream" uid="uid://riokircuj4t0" path="res://assets/sound/arcade-ui-2_floraphonic.mp3" id="15_1h2wt"]
+[ext_resource type="Script" path="res://scripts/camera.gd" id="17_cnb27"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pbxqr"]
 texture = ExtResource("1_pnfxt")
@@ -164,6 +166,10 @@ script = ExtResource("7_7a1p1")
 stream = ExtResource("8_ikfit")
 volume_db = -5.0
 
+[node name="NewRoundAudio" type="AudioStreamPlayer" parent="BackgroundAudio"]
+stream = ExtResource("15_1h2wt")
+volume_db = -5.0
+
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -193,5 +199,15 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "BLUE : "
 script = ExtResource("13_ke55v")
 
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(896, 512)
+script = ExtResource("17_cnb27")
+
 [connection signal="fight_started" from="Player1" to="BackgroundAudio" method="on_fight_started"]
+[connection signal="fight_started" from="Player1" to="Camera2D" method="on_fight_started"]
+[connection signal="player_killed" from="Player1" to="Camera2D" method="on_player_killed"]
+[connection signal="round_started" from="Player1" to="BackgroundAudio" method="on_round_started"]
 [connection signal="fight_started" from="Player2" to="BackgroundAudio" method="on_fight_started"]
+[connection signal="fight_started" from="Player2" to="Camera2D" method="on_fight_started"]
+[connection signal="player_killed" from="Player2" to="Camera2D" method="on_player_killed"]
+[connection signal="round_started" from="Player2" to="BackgroundAudio" method="on_round_started"]
