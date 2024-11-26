@@ -8,10 +8,17 @@ var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 
 const SPEED: float = 1000
 const TIME_BEFORE_ACTIVE: float = 0.02 # time (sec) to avoid suicide when spawned
+const KEEP_VELOCITY: bool = false
+
+var translate_direction: Vector2 = Vector2.ZERO
 
 func _physics_process(delta: float) -> void:
+	# continuous forward movement until we hit something
 	position += -transform.y * SPEED * delta
 	position = sl.apply_screen_wrap(position, screen_size)
+	if KEEP_VELOCITY:
+		# apply player momentum to the bullet
+		translate(translate_direction * delta)
 
 func _on_bullet_body_entered(collided_body) -> void:
 	# wait before bullet is really active

@@ -40,6 +40,7 @@ const ANIM_SHAKE_SPEED: int = 15
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
+var current_speed: float = 0
 var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 var ammo_left: int
@@ -143,6 +144,7 @@ func _physics_process(delta):
 			draw_tracks(track_texture)
 	#endregion
 	
+	current_speed = Vector2.ZERO.distance_to(velocity)
 	if DEBUG:
 		update_debug({
 			"velocity" = velocity.rotated(-rotation),
@@ -255,6 +257,7 @@ func shoot_triggered() -> void:
 	ammo_left -= 1
 	var b:Area2D = bullet_ps.instantiate()
 	b.origin_body = self
+	b.translate_direction = velocity
 	owner.add_child(b)
 	b.transform = $Barrel/SpawnBullet.global_transform
 	
