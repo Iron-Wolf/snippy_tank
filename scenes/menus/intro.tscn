@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8orh6vco5k6d"]
+
+[ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="1_pdx40"]
+[ext_resource type="Script" path="res://scripts/menus/intro.gd" id="1_x65vl"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_x65vl")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(895, 516)
+scale = Vector2(1.05, 1.05)
+texture = ExtResource("1_pdx40")
