@@ -159,6 +159,7 @@ barrel_texture = ExtResource("7_eml6a")
 stream = SubResource("AudioStreamSynchronized_j0fkd")
 volume_db = -5.0
 script = ExtResource("7_7a1p1")
+mute = true
 
 [node name="time_in_fight" type="Timer" parent="BackgroundAudio"]
 
@@ -178,6 +179,7 @@ offset_bottom = 40.0
 theme = SubResource("Theme_j82xi")
 
 [node name="P1Score" type="Label" parent="UI"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 88.0
 offset_top = 57.0
@@ -189,6 +191,7 @@ text = "RED : "
 script = ExtResource("13_ke55v")
 
 [node name="P2Score" type="Label" parent="UI"]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 1532.0
 offset_top = 61.0

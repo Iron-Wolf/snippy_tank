@@ -7,9 +7,6 @@ extends Camera2D
 var trauma: float = 0  # Current shake strength.
 var trauma_power: int = 2  # Trauma exponent. Use [2, 3].
 
-func _ready():
-	randomize()
-
 func _process(delta):
 	if trauma:
 		trauma = max(trauma - decay * delta, 0)

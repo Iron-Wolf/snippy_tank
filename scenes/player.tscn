@@ -10,22 +10,23 @@
 radius = 36.0139
 
 [node name="player" type="CharacterBody2D"]
+platform_on_leave = 2
 script = ExtResource("1_mooqp")
 
-[node name="tank" type="Sprite2D" parent="."]
+[node name="Tank" type="Sprite2D" parent="."]
 position = Vector2(2, 0)
 rotation = 1.5708
 texture = ExtResource("1_53oag")
 
-[node name="barrel" type="Sprite2D" parent="."]
+[node name="Barrel" type="Sprite2D" parent="."]
 rotation = 1.5708
 texture = ExtResource("3_6jjgp")
 offset = Vector2(0, -20)
 
-[node name="spawn_bullet" type="Marker2D" parent="barrel"]
+[node name="SpawnBullet" type="Marker2D" parent="Barrel"]
 position = Vector2(-0.000152111, -42)
 
-[node name="tank_collision" type="CollisionShape2D" parent="."]
+[node name="TankCollision" type="CollisionShape2D" parent="."]
 position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_x1tm4")
