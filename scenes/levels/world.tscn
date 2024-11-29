@@ -159,6 +159,7 @@ barrel_texture = ExtResource("10_c8eiq")
 stream = SubResource("AudioStreamSynchronized_j0fkd")
 volume_db = -5.0
 script = ExtResource("13_lhgkq")
+mute = true
 
 [node name="time_in_fight" type="Timer" parent="BackgroundAudio"]
 
@@ -188,6 +189,7 @@ theme_override_colors/font_color = Color(0.750102, 0.254084, 0, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "RED : "
 script = ExtResource("16_7d3p8")
+player_id = 1
 
 [node name="P2Score" type="Label" parent="UI"]
 unique_name_in_owner = true
@@ -200,6 +202,7 @@ theme_override_colors/font_color = Color(0.183202, 0.414188, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "BLUE : "
 script = ExtResource("16_7d3p8")
+player_id = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(896, 512)

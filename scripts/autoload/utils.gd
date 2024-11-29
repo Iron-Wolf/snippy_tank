@@ -1,6 +1,6 @@
-extends Object
+extends Node
 
-static func apply_screen_wrap(position: Vector2, screen_size: Vector2) -> Vector2:
+func apply_screen_wrap(position: Vector2, screen_size: Vector2) -> Vector2:
 	# basic screen wrap
 	#position.x = wrapf(position.x, 0, screen_size.x)
 	#position.y = wrapf(position.y, 0, screen_size.y)
@@ -21,7 +21,7 @@ static func apply_screen_wrap(position: Vector2, screen_size: Vector2) -> Vector
 	
 	return position
 
-static func log_error(message: String, with_alert: bool = false) -> void:
+func log_error(message: String, with_alert: bool = false) -> void:
 	push_error(message)
 	if with_alert:
 		OS.alert(message, "ALERT !")

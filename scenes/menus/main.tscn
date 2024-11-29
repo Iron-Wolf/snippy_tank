@@ -1,60 +1,119 @@
-[gd_scene load_steps=4 format=3 uid="uid://llrdda7eqe8k"]
+[gd_scene load_steps=5 format=3 uid="uid://llrdda7eqe8k"]
 
 [ext_resource type="Script" path="res://scripts/menus/main.gd" id="1_50ggu"]
+[ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="2_q2v8e"]
+[ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui_theme.tres" id="3_1mea8"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i2uhy"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_17b6u"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 20
-corner_radius_top_right = 20
-corner_radius_bottom_right = 20
-corner_radius_bottom_left = 20
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kiaen"]
+texture = ExtResource("2_q2v8e")
+modulate_color = Color(0.430057, 0.430057, 0.430057, 1)
 
 [node name="Control" type="Control"]
 layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 script = ExtResource("1_50ggu")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_kiaen")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -398.5
+offset_right = 398.5
+offset_bottom = 186.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 136
+text = "Snippy Tank"
+
+[node name="HBoxMain" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -241.0
-offset_top = -275.0
-offset_right = 241.0
-offset_bottom = 275.0
+offset_left = -524.5
+offset_top = -193.0
+offset_right = 524.5
+offset_bottom = -56.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("3_1mea8")
+theme_override_constants/separation = 50
 
-[node name="PlayBtn" type="Button" parent="VBoxContainer"]
+[node name="VsMode" type="Button" parent="HBoxMain"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 200
-theme_override_styles/normal = SubResource("StyleBoxFlat_i2uhy")
-text = "PLAY"
+size_flags_horizontal = 3
+text = "Versus"
 
-[node name="ExitBtn" type="Button" parent="VBoxContainer"]
+[node name="CoopMode" type="Button" parent="HBoxMain"]
+layout_mode = 2
+size_flags_horizontal = 3
+disabled = true
+text = "Coop"
+
+[node name="Label" type="Label" parent="HBoxMain/CoopMode"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 43.0
+offset_top = -127.5
+offset_right = 297.0
+offset_bottom = -17.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 0.326377
+theme_override_colors/font_color = Color(0.900606, 1.37173e-06, 5.77569e-07, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
+theme_override_font_sizes/font_size = 80
+text = "Soon™"
+
+[node name="HBoxMisc" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -399.5
+offset_top = -191.0
+offset_right = 399.5
+offset_bottom = -54.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = ExtResource("3_1mea8")
+theme_override_constants/separation = 20
+
+[node name="SettingsBtn" type="Button" parent="HBoxMisc"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/font_size = 200
-theme_override_styles/normal = SubResource("StyleBoxFlat_17b6u")
-text = "EXIT"
+size_flags_horizontal = 3
+text = "Settings
+"
+
+[node name="ExitBtn" type="Button" parent="HBoxMisc"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Exit"

@@ -15,23 +15,18 @@ signal player_killed
 @onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
-const sl: GDScript = preload("res://scripts/static_lib.gd")
 const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
 const explosion_ps: PackedScene = preload("res://scenes/explosion.tscn")
 
 # constants
-enum Scheme {BASIC, ARCADE, SIMULATION}
-const CONTROL_SCHEME: Scheme = Scheme.BASIC
 const STEERING_ANGLE: float = 400
 const MAX_SPEED: float = 1000
 const FRICTION: float = -55
 const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
-const LAST_AIM_SCHEME: bool = false
-const SLINGSHOT_SCHEME: bool = false
 const SHOOT_TIMER: float = 3 # cooldown (sec) before each shoot
 const START_AMMO: int = -1 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
@@ -56,10 +51,10 @@ const DEBUG: bool = false
 func _ready() -> void:
 	var falat_error: bool = false
 	if player_id == 0:
-		sl.log_error("'player_id' is not defined for : " + self.name)
+		Utils.log_error("'player_id' is not defined for : " + self.name)
 		falat_error = true
 	if tank_texture == null or barrel_texture == null:
-		sl.log_error("missing texture for : " + self.name)
+		Utils.log_error("missing texture for : " + self.name)
 		falat_error = true
 	if falat_error:
 		get_tree().quit()
@@ -78,12 +73,12 @@ func _physics_process(delta):
 	
 	#region movement
 	acceleration = Vector2.ZERO
-	match CONTROL_SCHEME:
-		Scheme.BASIC:
+	match PlayerState.control_scheme:
+		PlayerState.Scheme.BASIC:
 			acceleration = move_direction * MAX_SPEED
 			if move_direction:
 				apply_rotation_basic(delta)
-		Scheme.ARCADE:
+		PlayerState.Scheme.ARCADE:
 			update_accel()
 			apply_rotation(delta)
 	
@@ -95,7 +90,7 @@ func _physics_process(delta):
 		apply_collistion()
 	
 	# screen wrap after movement
-	position = sl.apply_screen_wrap(position, screen_size)
+	position = Utils.apply_screen_wrap(position, screen_size)
 	#endregion
 	
 	#region aim and shoot
@@ -103,7 +98,7 @@ func _physics_process(delta):
 		# apply aim globally
 		apply_aim(aim_direction)
 		last_aim_direction = aim_direction
-	elif LAST_AIM_SCHEME and last_aim_direction:
+	elif PlayerState.last_aim_scheme and last_aim_direction:
 		# keep aim to the last inputed direction
 		apply_aim(last_aim_direction)
 	
@@ -188,7 +183,7 @@ func _unhandled_input(_event: InputEvent) -> void:
 		f("aim_left"), f("aim_right"), f("aim_up"), f("aim_down"))
 	steer_direction = move_direction.x * deg_to_rad(STEERING_ANGLE)
 	
-	if SLINGSHOT_SCHEME and \
+	if PlayerState.slingshot_scheme and \
 		old_aim_direction and !aim_direction:
 		shoot_triggered()
 

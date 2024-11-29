@@ -1,11 +1,14 @@
 extends Label
 
-var score: int = 0
-var base_text: String = text
+@export var player_id: int = 0
+var init_text: String = text
 
 func _ready() -> void:
-	text = base_text + str(score)
+	_update_score()
 
 func push_score(add: int) -> void:
-	score += add
-	text = base_text + str(score)
+	GameState.scores[str(player_id)] += add
+	_update_score()
+
+func _update_score() -> void:
+	text = init_text + str(GameState.scores[str(player_id)])

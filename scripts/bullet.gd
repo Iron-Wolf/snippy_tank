@@ -2,7 +2,6 @@
 extends Area2D
 
 @onready var screen_size = get_viewport_rect().size
-const sl = preload("res://scripts/static_lib.gd")
 @onready var time_before_active = get_tree().create_timer(TIME_BEFORE_ACTIVE)
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 
@@ -15,7 +14,7 @@ var translate_direction: Vector2 = Vector2.ZERO
 func _physics_process(delta: float) -> void:
 	# continuous forward movement until we hit something
 	position += -transform.y * SPEED * delta
-	position = sl.apply_screen_wrap(position, screen_size)
+	position = Utils.apply_screen_wrap(position, screen_size)
 	if KEEP_VELOCITY:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
