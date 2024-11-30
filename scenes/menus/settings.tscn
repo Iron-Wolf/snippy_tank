@@ -5,31 +5,27 @@
 
 [node name="Option" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+offset_right = 1480.0
+offset_bottom = 830.0
 theme = ExtResource("1_hjl3g")
 script = ExtResource("2_jfttx")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
+layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.589817, 0.386306, 0.999987, 1)
+color = Color(0.588235, 0.388235, 1, 0.823529)
 
 [node name="TabContainer" type="TabContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
+layout_mode = 2
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 40
 current_tab = 0
 
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
@@ -56,12 +52,11 @@ columns = 2
 layout_mode = 2
 text = "Controles : "
 
-[node name="OptionButton" type="OptionButton" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+[node name="Control" type="OptionButton" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
-selected = 0
-item_count = 1
-popup/item_0/text = "Basique"
+theme_override_constants/modulate_arrow = 1
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
@@ -70,15 +65,14 @@ metadata/_tab_index = 1
 
 [node name="BackBtn" type="Button" parent="."]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
+layout_mode = 2
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -115.5
-offset_top = -189.0
-offset_right = 115.5
+offset_left = -115.0
+offset_top = -162.0
+offset_right = 116.0
 offset_bottom = -52.0
 grow_horizontal = 2
 grow_vertical = 0

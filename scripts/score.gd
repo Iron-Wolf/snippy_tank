@@ -4,6 +4,9 @@ extends Label
 var init_text: String = text
 
 func _ready() -> void:
+	if player_id == 0:
+		Utils.log_error("'player_id' is not defined for : " + self.name)
+		get_tree().quit()
 	_update_score()
 
 func push_score(add: int) -> void:
