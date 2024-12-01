@@ -1,0 +1,63 @@
+[gd_scene load_steps=3 format=3 uid="uid://gfblg58edgbm"]
+
+[ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui_theme.tres" id="1_jsc31"]
+[ext_resource type="Script" path="res://scripts/menus/end_results.gd" id="2_h67ut"]
+
+[node name="EndResults" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_jsc31")
+script = ExtResource("2_h67ut")
+
+[node name="Panel" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.171637, 0.171637, 0.171637, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -331.0
+offset_right = 332.0
+offset_bottom = 223.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.903271, 0.804833, 0.215592, 1)
+text = "WINNER WINNER
+CHICKEN DINNER !"
+horizontal_alignment = 1
+
+[node name="ScoreBoard" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+offset_left = 162.0
+offset_top = 276.0
+offset_right = 817.0
+offset_bottom = 933.0
+
+[node name="Label" type="Label" parent="ScoreBoard"]
+layout_mode = 2
+text = "Scores"
+horizontal_alignment = 1
+
+[node name="GameStats" type="VBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+offset_left = 998.0
+offset_top = 277.0
+offset_right = 1649.0
+offset_bottom = 938.0
+
+[node name="Label" type="Label" parent="GameStats"]
+layout_mode = 2
+text = "Stats"
+horizontal_alignment = 1

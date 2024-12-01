@@ -1,15 +1,24 @@
-[gd_scene load_steps=4 format=3 uid="uid://c8orh6vco5k6d"]
+[gd_scene load_steps=5 format=3 uid="uid://c8orh6vco5k6d"]
 
+[ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui_theme.tres" id="1_2ac3j"]
 [ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="1_pdx40"]
 [ext_resource type="Script" path="res://scripts/menus/intro.gd" id="1_x65vl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ot3dr"]
 texture = ExtResource("1_pdx40")
 
-[node name="Node" type="Node"]
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_2ac3j")
 script = ExtResource("1_x65vl")
 
 [node name="Panel" type="Panel" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

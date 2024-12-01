@@ -6,12 +6,11 @@ extends CharacterBody2D
 @export var player_id: int = 0
 @export var tank_texture: Texture2D
 @export var barrel_texture: Texture2D
+var parent_owner: Node # reference to the scene (the level) containing the player
 signal fight_started
-signal round_started
 signal player_killed
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
-#@onready var audio: AudioStreamPlayer = $"../BackgroundAudio"
 @onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
@@ -19,6 +18,13 @@ const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
 const explosion_ps: PackedScene = preload("res://scenes/explosion.tscn")
+# Need this because "_physics_process" can run during "respawn_process".
+# So, "velocity" could receive strange values from "move_and_slide".
+# Can be avoided with a high enought KNOCKBACK_ON_COLLIDE or a push back 
+# of the collided Node.
+# The Timer is a good middle-ground option, and should be
+# hidden behind a "3,2,1 Go" animation at the start of the round.
+var time_before_active: SceneTreeTimer
 
 # constants
 const STEERING_ANGLE: float = 400
@@ -27,11 +33,14 @@ const FRICTION: float = -55
 const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
+const KNOCKBACK_ON_COLLIDE: int = 40
 const SHOOT_TIMER: float = 3 # cooldown (sec) before each shoot
 const START_AMMO: int = -1 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
+const KNOCKBACK_ON_SHOOT: int = 0
 
 # variables
+var is_killed: bool = false
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
@@ -69,9 +78,11 @@ func _ready() -> void:
 #endregion
 
 func _physics_process(delta):
-	var position_before = position
+	if time_before_active.time_left != 0 or is_killed:
+		return
 	
 	#region movement
+	var position_before = position
 	acceleration = Vector2.ZERO
 	match PlayerState.control_scheme:
 		PlayerState.Scheme.BASIC:
@@ -84,7 +95,7 @@ func _physics_process(delta):
 	
 	apply_friction(delta)
 	velocity += acceleration * delta
-	
+
 	# actual move and resolve collision
 	if move_and_slide():
 		apply_collistion()
@@ -134,7 +145,7 @@ func _physics_process(delta):
 			travel_place_track /= 10
 			track_texture = track_drift
 		if travel_place_track < 0:
-			# reset to place a track every X units
+			# reset to place a track every 30 units
 			travel_place_track = 30
 			draw_tracks(track_texture)
 	#endregion
@@ -155,10 +166,10 @@ func update_debug(dict: Dictionary) -> void:
 func _draw() -> void:
 	if debug_dict.size() == 0:
 		return
-	draw_line(debug_dict["acceleration"], Vector2.ZERO, Color.GREEN, 4)
+	draw_line(debug_dict["acceleration"], Vector2.ZERO, Color.GREEN, 5)
 	draw_line(debug_dict["velocity"], Vector2.ZERO, Color.BLACK, 4)
 	# we rotate the full body, so "rotation" is just displayed in front
-	draw_line(Vector2(100, 0), Vector2.ZERO, Color.BLUE, 4)
+	draw_line(Vector2(100, 0), Vector2.ZERO, Color.BLUE, 3)
 	draw_circle(debug_dict["move_direction"], 10, Color.RED)
 	#print(Engine.get_frames_per_second())
 
@@ -169,9 +180,9 @@ func draw_tracks(texture: Texture2D) -> void:
 	track_sprite.position = position
 	track_sprite.rotation = rotation + deg_to_rad(90)
 	track_sprite.modulate = Color.BROWN
-	owner.add_child(track_sprite)
+	parent_owner.add_child(track_sprite)
 	# move texture below the player AND walls
-	owner.move_child(track_sprite, get_index()-1)
+	parent_owner.move_child(track_sprite, 1)
 	current_loaded_tracks.push_back(track_sprite)
 
 #region movement inputs
@@ -216,7 +227,7 @@ func apply_collistion() -> void:
 		# when "move_and_slide()" is called (with absurd values).
 		# So, we move backward (applying inverse colision vector),
 		# as a countermeasure to Godot's moving logic.
-		velocity -= 40 * c.get_normal().rotated(deg_to_rad(180))
+		velocity -= KNOCKBACK_ON_COLLIDE * c.get_normal().rotated(deg_to_rad(180))
 		# We can apply a "push" movement if we want
 		# (friction will be handled by player's logic)
 		c.get_collider().velocity -= 0 * c.get_normal()
@@ -253,18 +264,19 @@ func shoot_triggered() -> void:
 	var b:Area2D = bullet_ps.instantiate()
 	b.origin_body = self
 	b.translate_direction = velocity
-	owner.add_child(b)
+	parent_owner.add_child(b)
 	b.transform = $Barrel/SpawnBullet.global_transform
 	
 	fight_started.emit()
 	$ShootAudio.play(0.4)
+	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0).rotated($Barrel.global_rotation - deg_to_rad(90))
 	
 	# TODO : should be a property in the "bullet" object
 	var explosion: CPUParticles2D = explosion_ps.instantiate()
 	explosion.transform = $Barrel/SpawnBullet.global_transform
 	explosion.gravity = Vector2(1000, 0).rotated($Barrel/SpawnBullet.global_rotation - deg_to_rad(90))
 	explosion.speed_scale = 2
-	owner.add_child(explosion)
+	parent_owner.add_child(explosion)
 	explosion.emitting = true
 	$ShootTimer.start()
 	modulate = Color.DIM_GRAY
@@ -272,37 +284,38 @@ func shoot_triggered() -> void:
 
 func killed(origin_player_id: int) -> void:
 	var score_label = "%" + "P%sScore" % origin_player_id
-	get_node(score_label).push_score(1 if origin_player_id != player_id else -1)
+	parent_owner \
+		.get_node(score_label) \
+		.push_score(1 if origin_player_id != player_id else -1)
 	
 	# TODO : handle this with signals ?
 	var explosion: CPUParticles2D = explosion_ps.instantiate()
 	explosion.transform = transform
 	explosion.scale = Vector2(2,2)
-	owner.add_child(explosion)
+	parent_owner.add_child(explosion)
 	explosion.emitting = true
 	
+	is_killed = true
+	$Barrel.visible = false
+	# spread info when all is set
 	player_killed.emit()
 	$KillAudio.play()
-	visible = false
-	
-	# TODO : check if other players are dead (no need for 2)
-	# wait before reloading the scene
-	await get_tree().create_timer(1).timeout
-	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
-	round_started.emit()
 
 func respawn_process() -> void:
-	visible = true
+	is_killed = false
+	$Barrel.visible = true
 	# reset game logic
 	ammo_left = START_AMMO
 	$ShootTimer.start(SHOOT_TIMER)
+	time_before_active = get_tree().create_timer(0.3)
 	modulate = Color.DIM_GRAY
 	# reset positions
+	velocity = Vector2.ZERO
 	position = init_position
 	rotation = init_rotation
 	$Barrel.rotation = init_barrel_rotation
-	velocity = Vector2.ZERO
 	# free ressources
 	for track_sprite:Sprite2D in current_loaded_tracks:
 		track_sprite.queue_free()
 	current_loaded_tracks = []
+	

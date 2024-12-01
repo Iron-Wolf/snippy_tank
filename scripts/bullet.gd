@@ -27,8 +27,8 @@ func _on_bullet_body_entered(collided_body) -> void:
 	var origin_name:String = origin_body.name if origin_body != null else StringName("UNKNOWN")
 	print(origin_name + " kill " + collided_body.name)
 	
-	if collided_body.name == "Player1" \
-		or collided_body.name == "Player2":
+	var player_array = ["P1", "P2", "P3", "P4"]
+	if collided_body.name in player_array:
 		collided_body.killed(origin_body.player_id);
 	
 	# remove the bullet from the scene

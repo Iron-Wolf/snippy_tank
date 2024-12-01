@@ -1,4 +1,4 @@
-extends Node
+extends Control
 
 func _input(_event: InputEvent) -> void:
 	if Input.is_anything_pressed():
