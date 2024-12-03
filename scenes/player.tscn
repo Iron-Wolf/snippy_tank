@@ -1,10 +1,17 @@
-[gd_scene load_steps=7 format=3 uid="uid://cocrreaiubffw"]
+[gd_scene load_steps=9 format=3 uid="uid://cocrreaiubffw"]
 
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="1_53oag"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_mooqp"]
 [ext_resource type="Texture2D" uid="uid://63v6o20qnq8t" path="res://assets/Tanks/barrelRed_outline.png" id="3_6jjgp"]
 [ext_resource type="AudioStream" uid="uid://ccn3pxli06mon" path="res://assets/sound/explosion-v2_cyberwave_orchestra.mp3" id="4_u2mkc"]
 [ext_resource type="AudioStream" uid="uid://b24windnrssea" path="res://assets/sound/cannon-fire_LordSonny.mp3" id="5_hf28c"]
+
+[sub_resource type="Curve" id="Curve_mgk5h"]
+_data = [Vector2(0, 0.302857), 0.0, 0.0, 0, 0, Vector2(0.196226, 1), 0.0, 0.0, 0, 0, Vector2(0.498113, 0.489352), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_dlffp"]
+colors = PackedColorArray(0.808998, 0.808998, 0.808998, 1, 0.369107, 0.369107, 0.369107, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x1tm4"]
 radius = 36.0139
@@ -17,6 +24,27 @@ script = ExtResource("1_mooqp")
 position = Vector2(2, 0)
 rotation = 1.5708
 texture = ExtResource("1_53oag")
+
+[node name="Smoke" type="CPUParticles2D" parent="."]
+position = Vector2(-34, -10)
+rotation = -3.14159
+emitting = false
+amount = 50
+speed_scale = 0.7
+lifetime_randomness = 0.7
+emission_shape = 1
+emission_sphere_radius = 3.0
+particle_flag_align_y = true
+spread = 15.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 50.0
+tangential_accel_min = -30.0
+tangential_accel_max = 30.0
+scale_amount_min = 20.0
+scale_amount_max = 25.0
+scale_amount_curve = SubResource("Curve_mgk5h")
+color_ramp = SubResource("Gradient_dlffp")
 
 [node name="Barrel" type="Sprite2D" parent="."]
 rotation = 1.5708

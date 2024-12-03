@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=4 uid="uid://dok78wo6lur2l"]
+[gd_scene load_steps=25 format=4 uid="uid://dok78wo6lur2l"]
 
 [ext_resource type="Script" path="res://scripts/levels/lvl_1.gd" id="1_c0ddf"]
 [ext_resource type="Texture2D" uid="uid://c4x5rsq50hpic" path="res://assets/Spritesheet/background_sheet.png" id="2_hvur0"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cna4d3knisb6c" path="res://assets/Spritesheet/barrel_top_sheet.png" id="6_5075b"]
 [ext_resource type="AudioStream" uid="uid://cmg4itiisuui3" path="res://assets/sound/March_and_Play_trumpet_v2.mp3" id="12_1wo5w"]
 [ext_resource type="AudioStream" uid="uid://h7echt0b5iw" path="res://assets/sound/March_and_Play_guitar_loop.mp3" id="13_1ivrx"]
+[ext_resource type="Texture2D" uid="uid://b0572qaw7wa2x" path="res://assets/ui/warning-stripes.jpg" id="13_tqodt"]
 [ext_resource type="Script" path="res://scripts/audio.gd" id="14_46tgb"]
 [ext_resource type="AudioStream" uid="uid://cv1qjfwqtme64" path="res://assets/sound/March_and_Play_intro.mp3" id="15_by6rl"]
 [ext_resource type="AudioStream" uid="uid://riokircuj4t0" path="res://assets/sound/arcade-ui-2_floraphonic.mp3" id="16_jldyn"]
@@ -143,6 +144,7 @@ tile_set = SubResource("TileSet_mb338")
 stream = SubResource("AudioStreamSynchronized_j0fkd")
 volume_db = -5.0
 script = ExtResource("14_46tgb")
+mute = true
 
 [node name="time_in_fight" type="Timer" parent="BackgroundAudio"]
 
@@ -216,6 +218,67 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 text = "GREEN : "
 script = ExtResource("17_12j5d")
 player_id = 4
+
+[node name="WinBanner" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WinnerBack" type="Control" parent="WinBanner"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = 1792.0
+offset_right = 1792.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="WinBanner/WinnerBack"]
+position = Vector2(896, 0)
+scale = Vector2(0.932292, 0.282)
+texture = ExtResource("13_tqodt")
+
+[node name="RoundLabel" type="Label" parent="WinBanner"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -321.0
+offset_top = -135.0
+offset_right = -7.0
+offset_bottom = 2.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 100
+text = "Round 1"
+horizontal_alignment = 1
+
+[node name="PlayerLabel" type="Label" parent="WinBanner"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 1.0
+offset_right = 303.0
+offset_bottom = 141.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 100
+text = "Player"
+horizontal_alignment = 1
+
+[node name="TimerShowBanner" type="Timer" parent="WinBanner"]
+unique_name_in_owner = true
+one_shot = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(896, 512)

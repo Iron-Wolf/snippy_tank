@@ -16,4 +16,4 @@ func on_control_selected(index: int) -> void:
 	PlayerState.control_scheme = index as PlayerState.Scheme
 
 func on_back_pressed() -> void:
-	queue_free()
+	hide()

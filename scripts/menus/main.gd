@@ -29,7 +29,7 @@ func _process(_delta: float) -> void:
 		scale_switch = 0.5
 
 func on_vs_mode_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/levels/lvl_1.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/user_control.tscn")
 
 func on_settings_pressed() -> void:
 	# Kind of a hack just because I can't design the settings
@@ -42,7 +42,7 @@ func on_settings_pressed() -> void:
 	p.visible = true
 	add_child(p)
 	var s = settings_ps.instantiate()
-	s.connect("tree_exited", func():
+	s.connect("hidden", func():
 		# kill popup containing the scene, when she is exited
 		p.queue_free())
 	p.add_child(s)

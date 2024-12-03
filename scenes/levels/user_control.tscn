@@ -1,0 +1,98 @@
+[gd_scene load_steps=4 format=3 uid="uid://ccv7ioqdhgnpb"]
+
+[ext_resource type="Script" path="res://scripts/levels/user_control.gd" id="1_qayxy"]
+[ext_resource type="Texture2D" uid="uid://dvnn80vwxft7e" path="res://assets/ui/Xbox_Control_Scheme.png" id="1_qgobq"]
+
+[sub_resource type="Curve" id="Curve_pxdtg"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.221174), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="UserControl" type="Node"]
+script = ExtResource("1_qayxy")
+
+[node name="Panel" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.270222, 0.270222, 0.270222, 1)
+
+[node name="BaseImage" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="BaseImage"]
+texture = ExtResource("1_qgobq")
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MoveLine" type="Line2D" parent="Container"]
+position = Vector2(429, 375)
+points = PackedVector2Array(0, 0, 200, 0)
+width_curve = SubResource("Curve_pxdtg")
+
+[node name="MoveLabel" type="Label" parent="Container"]
+offset_left = 155.0
+offset_top = 281.0
+offset_right = 420.0
+offset_bottom = 418.0
+theme_override_font_sizes/font_size = 100
+text = "Move"
+
+[node name="AmeLine" type="Line2D" parent="Container"]
+position = Vector2(1023, 538)
+points = PackedVector2Array(300, 0, 0, 0)
+width_curve = SubResource("Curve_pxdtg")
+
+[node name="AimLabel" type="Label" parent="Container"]
+offset_left = 1334.0
+offset_top = 446.0
+offset_right = 1599.0
+offset_bottom = 583.0
+theme_override_font_sizes/font_size = 100
+text = "Aim"
+
+[node name="ShootLine" type="Line2D" parent="Container"]
+position = Vector2(1122, 233)
+points = PackedVector2Array(200, 0, 0, 0)
+width_curve = SubResource("Curve_pxdtg")
+
+[node name="shootLabel" type="Label" parent="Container"]
+offset_left = 1330.0
+offset_top = 141.0
+offset_right = 1610.0
+offset_bottom = 278.0
+theme_override_font_sizes/font_size = 100
+text = "Shoot
+"
+
+[node name="StartLine" type="Line2D" parent="."]
+position = Vector2(874, 809)
+points = PackedVector2Array(0, 0, 50, -400)
+width_curve = SubResource("Curve_pxdtg")
+
+[node name="StartLabel" type="RichTextLabel" parent="."]
+offset_left = 567.0
+offset_top = 799.0
+offset_right = 1186.0
+offset_bottom = 937.0
+theme_override_font_sizes/normal_font_size = 100
+bbcode_enabled = true
+text = "[wave amp=50 freq=10][rainbow]Start Game !"

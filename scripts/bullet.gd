@@ -20,6 +20,11 @@ func _physics_process(delta: float) -> void:
 		translate(translate_direction * delta)
 
 func _on_bullet_body_entered(collided_body) -> void:
+	if !GameState.in_game_scene:
+		# doing nothing
+		queue_free()
+		return
+	
 	# wait before bullet is really active
 	if time_before_active.time_left > 0:
 		return

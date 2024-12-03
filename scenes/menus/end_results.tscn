@@ -22,19 +22,19 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.171637, 0.171637, 0.171637, 1)
 
-[node name="Label" type="Label" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -331.0
-offset_right = 332.0
-offset_bottom = 223.0
+offset_left = -376.0
+offset_right = 376.0
+offset_bottom = 244.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.903271, 0.804833, 0.215592, 1)
-text = "WINNER WINNER
-CHICKEN DINNER !"
-horizontal_alignment = 1
+theme_override_colors/default_color = Color(0.901961, 0.803922, 0.215686, 1)
+bbcode_enabled = true
+text = "[tornado freq=5] WINNER WINNER
+ CHICKEN DINNER !"
 
 [node name="ScoreBoard" type="VBoxContainer" parent="."]
 unique_name_in_owner = true
@@ -61,3 +61,19 @@ offset_bottom = 938.0
 layout_mode = 2
 text = "Stats"
 horizontal_alignment = 1
+
+[node name="BottomLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -437.5
+offset_top = -136.0
+offset_right = 437.5
+grow_horizontal = 2
+grow_vertical = 0
+bbcode_enabled = true
+text = "[pulse]Press anything to quit"

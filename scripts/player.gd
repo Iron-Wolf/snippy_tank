@@ -21,7 +21,7 @@ const explosion_ps: PackedScene = preload("res://scenes/explosion.tscn")
 # Need this because "_physics_process" can run during "respawn_process".
 # So, "velocity" could receive strange values from "move_and_slide".
 # Can be avoided with a high enought KNOCKBACK_ON_COLLIDE or a push back 
-# of the collided Node.
+# of the collided Node (or when "_physics_process" is skipped...)
 # The Timer is a good middle-ground option, and should be
 # hidden behind a "3,2,1 Go" animation at the start of the round.
 var time_before_active: SceneTreeTimer
@@ -72,7 +72,7 @@ func _ready() -> void:
 	$Barrel.texture = barrel_texture
 	$ShootTimer.wait_time = SHOOT_TIMER
 	$ShootTimer.connect("timeout", func():
-		modulate = Color.WHITE)
+		_shoot_cooldown(Color.WHITE))
 
 	respawn_process()
 #endregion
@@ -85,7 +85,7 @@ func _physics_process(delta):
 	var position_before = position
 	acceleration = Vector2.ZERO
 	match PlayerState.control_scheme:
-		PlayerState.Scheme.BASIC:
+		PlayerState.Scheme.SIMPLE:
 			acceleration = move_direction * MAX_SPEED
 			if move_direction:
 				apply_rotation_basic(delta)
@@ -101,6 +101,7 @@ func _physics_process(delta):
 		apply_collistion()
 	
 	# screen wrap after movement
+	# TODO : move this in each level's script
 	position = Utils.apply_screen_wrap(position, screen_size)
 	#endregion
 	
@@ -124,6 +125,8 @@ func _physics_process(delta):
 		else -1
 	$Tank.position.y = shake
 	$Barrel.position.y = shake
+	
+	$Smoke.emitting = move_direction != Vector2.ZERO
 	
 	var drifting: bool = false
 	var vr: Vector2 = Vector2(100, 0) # vector in front on the player
@@ -269,17 +272,23 @@ func shoot_triggered() -> void:
 	
 	fight_started.emit()
 	$ShootAudio.play(0.4)
-	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0).rotated($Barrel.global_rotation - deg_to_rad(90))
+	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0) \
+		.rotated($Barrel.global_rotation - deg_to_rad(90))
 	
 	# TODO : should be a property in the "bullet" object
 	var explosion: CPUParticles2D = explosion_ps.instantiate()
 	explosion.transform = $Barrel/SpawnBullet.global_transform
-	explosion.gravity = Vector2(1000, 0).rotated($Barrel/SpawnBullet.global_rotation - deg_to_rad(90))
+	explosion.gravity = Vector2(1000, 0) \
+		.rotated($Barrel/SpawnBullet.global_rotation - deg_to_rad(90))
 	explosion.speed_scale = 2
 	parent_owner.add_child(explosion)
 	explosion.emitting = true
 	$ShootTimer.start()
-	modulate = Color.DIM_GRAY
+	_shoot_cooldown(Color.DIM_GRAY)
+
+func _shoot_cooldown(color: Color) -> void:
+	$Tank.modulate = color
+	$Barrel.modulate = color
 #endregion
 
 func killed(origin_player_id: int) -> void:
@@ -306,9 +315,9 @@ func respawn_process() -> void:
 	$Barrel.visible = true
 	# reset game logic
 	ammo_left = START_AMMO
-	$ShootTimer.start(SHOOT_TIMER)
+	$ShootTimer.start()
+	_shoot_cooldown(Color.DIM_GRAY)
 	time_before_active = get_tree().create_timer(0.3)
-	modulate = Color.DIM_GRAY
 	# reset positions
 	velocity = Vector2.ZERO
 	position = init_position
