@@ -1,17 +1,23 @@
-extends Node
+extends Control
 
-@onready var screen_size: Vector2 = get_viewport().get_visible_rect().size
+@onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
+@onready var t_show_banner: Timer = %TimerShowBanner
+@onready var t_hide_banner: Timer = %TimerHideBanner
 
 const WIN_BANNER_SPEED: float = 0.05
-const TIMER_SHOW_WIN_BANNER: int = 2
+const TIMER_WIN_BANNER: float = 1.5
+const GRP_RESPAWN: String = "respawn"
 
 var players: Array[CharacterBody2D] = []
-var show_win_banner:bool = true
 
 func _ready() -> void:
-	%TimerShowBanner.wait_time = TIMER_SHOW_WIN_BANNER
-	%TimerShowBanner.start()
+	_respawn_process()
+	t_hide_banner.wait_time = TIMER_WIN_BANNER
+	t_show_banner.wait_time = TIMER_WIN_BANNER
+	t_show_banner.connect("timeout", func():
+		t_hide_banner.start())
+	t_show_banner.start()
 	
 	if GameState.player_number >= 1:
 		var p:CharacterBody2D = player.instantiate()
@@ -65,17 +71,23 @@ func _ready() -> void:
 		%P4Score.visible = true
 
 func _process(_delta: float) -> void:
-	if %TimerShowBanner.time_left > 0 :
+	if t_show_banner.time_left > 0 :
+		%WinBanner.visible = true
 		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, 0, WIN_BANNER_SPEED)
-		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x/2, WIN_BANNER_SPEED/4)
-		%PlayerLabel.position.x = lerpf(%PlayerLabel.position.x, screen_size.x/2, WIN_BANNER_SPEED/4)
+		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x/2-%RoundLabel.size.x/2, WIN_BANNER_SPEED/2)
+	elif t_hide_banner.time_left > 0 :
+		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, -screen_size.x, WIN_BANNER_SPEED)
+		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x, WIN_BANNER_SPEED)
 	else:
-		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, screen_size.x+50, WIN_BANNER_SPEED)
-		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, 0 - %RoundLabel.size.x-50, WIN_BANNER_SPEED)
-		%PlayerLabel.position.x = lerpf(%PlayerLabel.position.x, screen_size.x+50, WIN_BANNER_SPEED)
+		_respawn_process()
+
+func _respawn_process() -> void:
+	%WinBanner.visible = false
+	%WinnerBack.position.x = screen_size.x
+	%RoundLabel.position.x = -%RoundLabel.size.x
 
 func _add_common_properties(p: CharacterBody2D) -> void:
-	p.add_to_group("respawn")
+	p.add_to_group(GRP_RESPAWN)
 	p.parent_owner = self
 	p.connect("fight_started", $BackgroundAudio.on_fight_started)
 	p.connect("fight_started", $Camera2D.on_fight_started)
@@ -95,7 +107,7 @@ func _reload_level() -> void:
 	
 	GameState.current_round += 1
 	%RoundLabel.text = "Round %s" % (GameState.current_round + 1)
-	%TimerShowBanner.start()
+	t_show_banner.start()
 	
 	if GameState.scores.values().max() >= GameState.winning_score:
 		get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
@@ -103,5 +115,5 @@ func _reload_level() -> void:
 	
 	elif GameState.current_round % GameState.max_round_by_level == 0:
 		print("changing level... when there will be more...")
-	get_tree().call_group("respawn", "respawn_process")# respawn ALL objetcs
+	get_tree().call_group(GRP_RESPAWN, "respawn_process")# respawn ALL objetcs
 	$BackgroundAudio.on_round_started()

@@ -7,7 +7,7 @@
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1480.0
-offset_bottom = 830.0
+offset_bottom = 903.0
 theme = ExtResource("1_hjl3g")
 script = ExtResource("2_jfttx")
 

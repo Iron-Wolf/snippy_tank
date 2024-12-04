@@ -21,7 +21,7 @@ const explosion_ps: PackedScene = preload("res://scenes/explosion.tscn")
 # Need this because "_physics_process" can run during "respawn_process".
 # So, "velocity" could receive strange values from "move_and_slide".
 # Can be avoided with a high enought KNOCKBACK_ON_COLLIDE or a push back 
-# of the collided Node (or when "_physics_process" is skipped...)
+# of the collided Node (for now, I just skip "_physics_process"...)
 # The Timer is a good middle-ground option, and should be
 # hidden behind a "3,2,1 Go" animation at the start of the round.
 var time_before_active: SceneTreeTimer

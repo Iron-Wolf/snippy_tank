@@ -17,4 +17,6 @@ texture = ExtResource("2_f5gbg")
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_6mwjr")
 
-[connection signal="body_entered" from="." to="." method="_on_bullet_body_entered"]
+[node name="TimeBeforeActive" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true

@@ -121,10 +121,16 @@ stream_1/volume = -60.0
 [sub_resource type="Theme" id="Theme_j82xi"]
 default_font_size = 40
 
-[node name="Lvl1" type="Node"]
+[node name="Lvl1" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_c0ddf")
 
-[node name="BackTileMap" type="Node" parent="."]
+[node name="BackTileMap" type="Node2D" parent="."]
 
 [node name="Background" type="TileMapLayer" parent="BackTileMap"]
 scale = Vector2(0.5, 0.5)
@@ -144,7 +150,6 @@ tile_set = SubResource("TileSet_mb338")
 stream = SubResource("AudioStreamSynchronized_j0fkd")
 volume_db = -5.0
 script = ExtResource("14_46tgb")
-mute = true
 
 [node name="time_in_fight" type="Timer" parent="BackgroundAudio"]
 
@@ -221,7 +226,7 @@ player_id = 4
 
 [node name="WinBanner" type="Control" parent="."]
 unique_name_in_owner = true
-layout_mode = 3
+layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
@@ -231,15 +236,7 @@ grow_vertical = 2
 
 [node name="WinnerBack" type="Control" parent="WinBanner"]
 unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 14
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = 1792.0
-offset_right = 1792.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="WinBanner/WinnerBack"]
 position = Vector2(896, 0)
@@ -249,34 +246,35 @@ texture = ExtResource("13_tqodt")
 [node name="RoundLabel" type="Label" parent="WinBanner"]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = -321.0
-offset_top = -135.0
-offset_right = -7.0
-offset_bottom = 2.0
-grow_vertical = 0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -198.5
+offset_top = -68.5
+offset_right = 198.5
+offset_bottom = 68.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 100
 text = "Round 1"
-horizontal_alignment = 1
 
 [node name="PlayerLabel" type="Label" parent="WinBanner"]
 unique_name_in_owner = true
 visible = false
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = 1.0
-offset_right = 303.0
-offset_bottom = 141.0
-grow_horizontal = 0
+layout_mode = 0
+offset_right = 302.0
+offset_bottom = 137.0
 theme_override_font_sizes/font_size = 100
 text = "Player"
-horizontal_alignment = 1
 
 [node name="TimerShowBanner" type="Timer" parent="WinBanner"]
+unique_name_in_owner = true
+one_shot = true
+
+[node name="TimerHideBanner" type="Timer" parent="WinBanner"]
 unique_name_in_owner = true
 one_shot = true
 

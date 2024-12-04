@@ -1,4 +1,4 @@
-extends Node
+extends Control
 
 @onready var screen_size: Vector2 = get_viewport().get_visible_rect().size
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
@@ -47,6 +47,11 @@ func _ready() -> void:
 		p.position = screen_center + Vector2(100, 100)
 		p.parent_owner = self
 		add_child(p)
+	
+	# setup scene out of the viewport
+	self.position.x = screen_size.x
+	# bring it back inside
+	await Utils.ease_out(self, 0)
 
 func _unhandled_input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("p_start"):
