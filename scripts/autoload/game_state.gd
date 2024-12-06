@@ -4,10 +4,8 @@ var player_number: int = 2
 
 # track score of players between levels
 var scores: Dictionary = {
-	"1" = 0,
-	"2" = 0,
-	"3" = 0,
-	"4" = 0,
+	1: PlayerInfo.new(),
+	2: PlayerInfo.new(),
 }
 
 # score to win the game
@@ -19,4 +17,10 @@ var current_round: int = 0
 
 # "true" for full feature gameplay scenes 
 # and "false" for others (like : user control)
-var in_game_scene = true
+var in_game_scene: bool = true
+
+class PlayerInfo:
+	var name: String = ""
+	var score: int = 0
+	var travel_total: float = 0
+	

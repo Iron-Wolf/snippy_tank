@@ -4,6 +4,7 @@ extends Control
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var pvp_mode: Button = %PvpMode
 @onready var soon_tm: Label = %SoonTm
+@onready var control_btn: Button = %ControlBtn
 @onready var settings_btn: Button = %SettingsBtn
 @onready var exit_btn: Button = %ExitBtn
 @onready var settings_ps: PackedScene = preload("res://scenes/menus/settings.tscn")
@@ -14,20 +15,25 @@ var clock_sign: int = 1
 func _ready() -> void:
 	# reset global variables
 	GameState.current_round = 0
-	for k in GameState.scores.keys():
-		GameState.scores[k] = 0
+	for k in GameState.player_number:
+		GameState.scores[k+1] = GameState.PlayerInfo.new()
 	pvp_mode.pressed.connect(on_vs_mode_pressed)
+	control_btn.pressed.connect(on_control_pressed)
 	settings_btn.pressed.connect(on_settings_pressed)
 	exit_btn.pressed.connect(on_exit_pressed)
 	# alternate sign on each clock cycle
 	%Clock.connect("timeout", func():
 		clock_sign *= -1)
+	await Utils.scene_uc(self)
 
 func _process(_delta: float) -> void:
 	soon_tm.scale += clock_sign * Vector2(clock_size, clock_size)
 
 func on_vs_mode_pressed() -> void:
-	await Utils.ease_in(self, -screen_size.x)
+	get_tree().change_scene_to_file("res://scenes/levels/lvl_1.tscn")
+
+func on_control_pressed():
+	await Utils.scene_cr(self)
 	get_tree().change_scene_to_file("res://scenes/levels/user_control.tscn")
 
 func on_settings_pressed() -> void:

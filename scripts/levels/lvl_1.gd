@@ -95,8 +95,9 @@ func _add_common_properties(p: CharacterBody2D) -> void:
 	p.connect("player_killed", _on_player_killed)
 
 func _on_player_killed() -> void:
-	var dead_count:int = players.filter(func(body2d): 
-		return body2d.is_killed).size()
+	var dead_count:int = players \
+		.filter(func(body2d): return body2d.is_killed) \
+		.size()
 	if dead_count >= GameState.player_number - 1:
 		# 1 or 0 player left
 		_reload_level()
@@ -104,16 +105,17 @@ func _on_player_killed() -> void:
 func _reload_level() -> void:
 	# wait before reloading/changing the scene
 	await get_tree().create_timer(1).timeout
-	
 	GameState.current_round += 1
+	
+	for k in GameState.scores.keys():
+		if GameState.scores[k].score >= GameState.winning_score:
+			# at least one player has win
+			get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
+			return
+	if GameState.current_round % GameState.max_round_by_level == 0:
+		print("changing level... when there will be more...")
+	
 	%RoundLabel.text = "Round %s" % (GameState.current_round + 1)
 	t_show_banner.start()
-	
-	if GameState.scores.values().max() >= GameState.winning_score:
-		get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
-		return
-	
-	elif GameState.current_round % GameState.max_round_by_level == 0:
-		print("changing level... when there will be more...")
 	get_tree().call_group(GRP_RESPAWN, "respawn_process")# respawn ALL objetcs
 	$BackgroundAudio.on_round_started()

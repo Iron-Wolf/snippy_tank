@@ -96,10 +96,10 @@ width_curve = SubResource("Curve_pxdtg")
 
 [node name="StartLabel" type="RichTextLabel" parent="."]
 layout_mode = 0
-offset_left = 586.0
-offset_top = 817.0
-offset_right = 1205.0
-offset_bottom = 955.0
+offset_left = 504.0
+offset_top = 818.0
+offset_right = 1285.0
+offset_bottom = 956.0
 theme_override_font_sizes/normal_font_size = 100
 bbcode_enabled = true
-text = "[wave amp=50 freq=10][rainbow]Start Game !"
+text = "[wave amp=50 freq=10]Return to menu"

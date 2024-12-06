@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/menus/main.gd" id="1_50ggu"]
 [ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="2_q2v8e"]
-[ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui_theme.tres" id="3_1mea8"]
+[ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="3_1mea8"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kiaen"]
 texture = ExtResource("2_q2v8e")
@@ -15,8 +15,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
 script = ExtResource("1_50ggu")
 
 [node name="Panel" type="Panel" parent="."]
@@ -28,17 +26,17 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_kiaen")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -398.5
-offset_right = 398.5
-offset_bottom = 186.0
+offset_left = -336.5
+offset_right = 336.5
+offset_bottom = 135.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 136
-text = "Snippy Tank"
+bbcode_enabled = true
+text = "[wave amp=50 freq=5][rainbow freq=0.5][p align=c][font_size=90]Snippy Tank"
 
 [node name="HBoxMain" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -102,19 +100,27 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -399.5
-offset_top = -221.0
-offset_right = 399.5
-offset_bottom = -84.0
+offset_left = -378.0
+offset_top = -176.0
+offset_right = 378.0
+offset_bottom = -82.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = ExtResource("3_1mea8")
 theme_override_constants/separation = 20
 
+[node name="ControlBtn" type="Button" parent="HBoxMisc"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 50
+text = "Controls"
+
 [node name="SettingsBtn" type="Button" parent="HBoxMisc"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 50
 text = "Settings
 "
 
@@ -122,4 +128,5 @@ text = "Settings
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 50
 text = "Exit"

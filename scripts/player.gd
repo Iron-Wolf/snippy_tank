@@ -11,6 +11,7 @@ signal fight_started
 signal player_killed
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
+@onready var spw:Node = parent_owner.get_node_or_null("%SpawnTracks")
 @onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
@@ -59,7 +60,7 @@ const DEBUG: bool = false
 #region starting logic
 func _ready() -> void:
 	var falat_error: bool = false
-	if player_id == 0:
+	if (player_id == 0):
 		Utils.log_error("'player_id' is not defined for : " + self.name)
 		falat_error = true
 	if tank_texture == null or barrel_texture == null:
@@ -183,10 +184,10 @@ func draw_tracks(texture: Texture2D) -> void:
 	track_sprite.position = position
 	track_sprite.rotation = rotation + deg_to_rad(90)
 	track_sprite.modulate = Color.BROWN
-	parent_owner.add_child(track_sprite)
-	# move texture below the player AND walls
-	parent_owner.move_child(track_sprite, 1)
-	current_loaded_tracks.push_back(track_sprite)
+	# put texture below the player AND walls
+	if (spw != null):
+		spw.add_child(track_sprite)
+		current_loaded_tracks.push_back(track_sprite)
 
 #region movement inputs
 func _unhandled_input(_event: InputEvent) -> void:
@@ -325,6 +326,10 @@ func respawn_process() -> void:
 	$Barrel.rotation = init_barrel_rotation
 	# free ressources
 	for track_sprite:Sprite2D in current_loaded_tracks:
-		track_sprite.queue_free()
+		#track_sprite.queue_free()
+		pass
 	current_loaded_tracks = []
-	
+
+func _exit_tree() -> void:
+	var pi: GameState.PlayerInfo = GameState.scores[player_id]
+	pi.travel_total = travel_total
