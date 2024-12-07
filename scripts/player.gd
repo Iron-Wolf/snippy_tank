@@ -35,7 +35,6 @@ const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
 const KNOCKBACK_ON_COLLIDE: int = 40
-const SHOOT_TIMER: float = 3 # cooldown (sec) before each shoot
 const START_AMMO: int = -1 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
 const KNOCKBACK_ON_SHOOT: int = 0
@@ -71,7 +70,7 @@ func _ready() -> void:
 	
 	$Tank.texture = tank_texture
 	$Barrel.texture = barrel_texture
-	$ShootTimer.wait_time = SHOOT_TIMER
+	$ShootTimer.wait_time = PlayerState.shoot_timer
 	$ShootTimer.connect("timeout", func():
 		_shoot_cooldown(Color.WHITE))
 
@@ -331,5 +330,6 @@ func respawn_process() -> void:
 	current_loaded_tracks = []
 
 func _exit_tree() -> void:
-	var pi: GameState.PlayerInfo = GameState.scores[player_id]
-	pi.travel_total = travel_total
+	var pi: GameState.PlayerInfo = GameState.p_infos[player_id]
+	# scale travel distance to a somewhat "meter" unit
+	pi.travel_total = travel_total * 0.03

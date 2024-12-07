@@ -28,16 +28,17 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_ot3dr")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
-anchors_preset = 7
+anchors_preset = 8
 anchor_left = 0.5
-anchor_top = 1.0
+anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -451.5
-offset_top = -142.0
-offset_right = 451.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = -57.5
+offset_right = 260.0
+offset_bottom = 57.5
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 theme_override_constants/outline_size = 45
 bbcode_enabled = true
-text = "[pulse]Press anything to start"
+text = "[pulse][p align=c]Press START"

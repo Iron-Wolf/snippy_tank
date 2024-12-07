@@ -10,10 +10,10 @@ func _ready() -> void:
 	_update_score()
 
 func push_score(add: int) -> void:
-	GameState.scores[player_id].score += add
+	GameState.p_infos[player_id].score += add
 	_update_score()
 
 func _update_score() -> void:
-	var pi: GameState.PlayerInfo = GameState.scores.get(player_id)
+	var pi: GameState.PlayerInfo = GameState.p_infos.get(player_id)
 	if pi != null:
 		text = init_text + str(pi.score)

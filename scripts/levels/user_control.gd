@@ -3,10 +3,6 @@ extends Control
 @onready var screen_size: Vector2 = get_viewport().get_visible_rect().size
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
 
-# block input with a local variable, because _unhandled_input
-# can be triggered even if the scene animation is not finished
-var handle_input: bool = false;
-
 func _ready() -> void:
 	GameState.in_game_scene = false
 	var screen_center: Vector2 = Vector2 \
@@ -53,10 +49,9 @@ func _ready() -> void:
 		add_child(p)
 	
 	await Utils.scene_lc(self)
-	handle_input = true
 
 func _unhandled_input(_event: InputEvent) -> void:
-	if handle_input and Input.is_action_just_pressed("p_start"):
+	if Input.is_action_just_pressed("p_start"):
 		await Utils.scene_cl(self)
 		get_tree().change_scene_to_file("res://scenes/menus/main.tscn")
 

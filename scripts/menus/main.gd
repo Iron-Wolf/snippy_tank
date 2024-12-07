@@ -14,17 +14,25 @@ var clock_sign: int = 1
 
 func _ready() -> void:
 	# reset global variables
-	GameState.current_round = 0
-	for k in GameState.player_number:
-		GameState.scores[k+1] = GameState.PlayerInfo.new()
-	pvp_mode.pressed.connect(on_vs_mode_pressed)
-	control_btn.pressed.connect(on_control_pressed)
-	settings_btn.pressed.connect(on_settings_pressed)
-	exit_btn.pressed.connect(on_exit_pressed)
+	GameState.reset_state()
 	# alternate sign on each clock cycle
 	%Clock.connect("timeout", func():
 		clock_sign *= -1)
+	
 	await Utils.scene_uc(self)
+	
+	pvp_mode.pressed.connect(on_vs_mode_pressed)
+	pvp_mode.grab_focus()
+	control_btn.pressed.connect(on_control_pressed)
+	settings_btn.pressed.connect(on_settings_pressed)
+	exit_btn.pressed.connect(on_exit_pressed)
+
+func _input(_event: InputEvent) -> void:
+	# trigger GamePad action on Button
+	if Input.is_action_just_pressed("p_btn0"):
+		var gui: Button = get_viewport().gui_get_focus_owner()
+		if gui != null:
+			gui.pressed.emit()
 
 func _process(_delta: float) -> void:
 	soon_tm.scale += clock_sign * Vector2(clock_size, clock_size)
@@ -37,8 +45,8 @@ func on_control_pressed():
 	get_tree().change_scene_to_file("res://scenes/levels/user_control.tscn")
 
 func on_settings_pressed() -> void:
-	# Kind of a hack just because I can't design the settings
-	# in Godot, when the root node is a Popup :/
+	# Kind of a hack. I cannot use the Godot designer, 
+	# when the root node is a Popup :/
 	# So, I create a Popup here add put the scene inside.
 	var s = settings_ps.instantiate()
 	var p = Popup.new()

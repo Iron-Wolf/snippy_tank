@@ -11,13 +11,13 @@ func _ready() -> void:
 	%BottomLabel.visible = false
 	
 	var max_val: int = 0
-	for k in GameState.scores.keys():
-		var pi: GameState.PlayerInfo = GameState.scores[k]
+	for k in GameState.p_infos.keys():
+		var pi: GameState.PlayerInfo = GameState.p_infos[k]
 		max_val = pi.score if pi.score > max_val else max_val
 	
 	for i in range(max_val, -1, -1):
-		for k in GameState.scores.keys():
-			var pi: GameState.PlayerInfo = GameState.scores[k]
+		for k in GameState.p_infos.keys():
+			var pi: GameState.PlayerInfo = GameState.p_infos[k]
 			if pi.score == i: 
 				keys_order.push_back(k)
 				if GameState.player_number >= 1 and k == 1:

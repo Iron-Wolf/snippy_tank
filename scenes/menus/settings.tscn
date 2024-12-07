@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dfjer4rq1r45l"]
 
-[ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="1_hjl3g"]
+[ext_resource type="Theme" uid="uid://ckwi2b4wkjmq7" path="res://assets/ui/ui_settings_theme.tres" id="1_epsj4"]
 [ext_resource type="Script" path="res://scripts/menus/settings.gd" id="2_jfttx"]
 
 [node name="Option" type="Control"]
@@ -8,7 +8,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 1480.0
 offset_bottom = 903.0
-theme = ExtResource("1_hjl3g")
+theme = ExtResource("1_epsj4")
 script = ExtResource("2_jfttx")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -32,6 +32,42 @@ current_tab = 0
 layout_mode = 2
 metadata/_tab_index = 0
 
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/General"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 160.0
+offset_right = -145.0
+offset_bottom = -123.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GridContainer" type="GridContainer" parent="TabContainer/General/MarginContainer"]
+layout_mode = 2
+columns = 2
+
+[node name="Label" type="Label" parent="TabContainer/General/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Score to Win"
+
+[node name="WinningScore" type="SpinBox" parent="TabContainer/General/MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+min_value = 1.0
+max_value = 30.0
+value = 1.0
+
+[node name="Label2" type="Label" parent="TabContainer/General/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Number of player"
+
+[node name="PlayerCount" type="OptionButton" parent="TabContainer/General/MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+
 [node name="Gameplay" type="TabBar" parent="TabContainer"]
 visible = false
 layout_mode = 2
@@ -42,10 +78,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 30.0
-offset_top = 30.0
-offset_right = -54.0
-offset_bottom = -30.0
+offset_left = 143.0
+offset_top = 5.0
+offset_right = -123.0
+offset_bottom = -121.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -55,13 +91,23 @@ columns = 2
 
 [node name="Label" type="Label" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
 layout_mode = 2
-text = "Controles : "
+text = "Controls"
 
 [node name="Control" type="OptionButton" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_constants/modulate_arrow = 1
+
+[node name="Label2" type="Label" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+layout_mode = 2
+text = "Shot cooldown"
+
+[node name="ShotCooldown" type="SpinBox" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+max_value = 3.0
 
 [node name="Audio" type="TabBar" parent="TabContainer"]
 visible = false
@@ -76,9 +122,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -115.0
-offset_top = -162.0
+offset_top = -124.0
 offset_right = 116.0
-offset_bottom = -52.0
+offset_bottom = -14.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Back"

@@ -9,6 +9,7 @@ const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
 const GRP_RESPAWN: String = "respawn"
 
+var win_banner_base_speed: float = 1
 var players: Array[CharacterBody2D] = []
 
 func _ready() -> void:
@@ -75,9 +76,11 @@ func _process(_delta: float) -> void:
 		%WinBanner.visible = true
 		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, 0, WIN_BANNER_SPEED)
 		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x/2-%RoundLabel.size.x/2, WIN_BANNER_SPEED/2)
+		win_banner_base_speed = 1
 	elif t_hide_banner.time_left > 0 :
-		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, -screen_size.x, WIN_BANNER_SPEED)
-		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x, WIN_BANNER_SPEED)
+		win_banner_base_speed *= 1.1
+		%WinnerBack.position.x = move_toward(%WinnerBack.position.x, -screen_size.x, win_banner_base_speed)
+		%RoundLabel.position.x = move_toward(%RoundLabel.position.x, screen_size.x, win_banner_base_speed)
 	else:
 		_respawn_process()
 
@@ -107,8 +110,8 @@ func _reload_level() -> void:
 	await get_tree().create_timer(1).timeout
 	GameState.current_round += 1
 	
-	for k in GameState.scores.keys():
-		if GameState.scores[k].score >= GameState.winning_score:
+	for k in GameState.p_infos.keys():
+		if GameState.p_infos[k].score >= GameState.winning_score:
 			# at least one player has win
 			get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
 			return

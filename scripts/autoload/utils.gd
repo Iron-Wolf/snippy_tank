@@ -52,6 +52,8 @@ func scene_cu(node: Control) -> void:
 
 # move "node" : fast to slow
 func ease_out(node: Control, target: Vector2) -> void:
+	# block ALL inputs durring the animation
+	get_viewport().gui_disable_input = true
 	# "lerp" doesn't always finish on whole number, so we must
 	# check if the two Vector are close enough (> 1).
 	# Also, we use "length" to compare Vector size (otherwise, Godot
@@ -60,9 +62,12 @@ func ease_out(node: Control, target: Vector2) -> void:
 		node.position = lerp(node.position, target, 0.5)
 		# timer to actually see the transition
 		await get_tree().create_timer(0.01).timeout
+	get_viewport().gui_disable_input = false
 
 # move "node" : slow to fast
 func ease_in(node: Control, target: Vector2) -> void:
+	# block ALL inputs durring the animation
+	get_viewport().gui_disable_input = true
 	var base_speed: float = 1
 	while node != null and node.position != target:
 		base_speed *= 1.5
@@ -70,3 +75,4 @@ func ease_in(node: Control, target: Vector2) -> void:
 		node.position.y = move_toward(node.position.y, target.y, base_speed)
 		# timer to actually see the transition
 		await get_tree().create_timer(0.01).timeout
+	get_viewport().gui_disable_input = false
