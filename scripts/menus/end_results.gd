@@ -22,16 +22,16 @@ func _ready() -> void:
 				keys_order.push_back(k)
 				if GameState.player_number >= 1 and k == 1:
 					_add_score("RED: "+str(i), COLOR_1)
-					_add_stats(str(roundi(pi.travel_total)), COLOR_1)
+					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_1)
 				elif GameState.player_number >= 2 and k == 2:
 					_add_score("BLUE: "+str(i), COLOR_2)
-					_add_stats(str(roundi(pi.travel_total)), COLOR_2)
+					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_2)
 				elif GameState.player_number >= 3 and k == 3:
 					_add_score("WHITE: "+str(i), COLOR_3)
-					_add_stats(str(roundi(pi.travel_total)), COLOR_3)
+					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_3)
 				elif GameState.player_number >= 4 and k == 4:
 					_add_score("GREEN: "+str(i), COLOR_4)
-					_add_stats(str(roundi(pi.travel_total)), COLOR_4)
+					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_4)
 
 func _add_score(txt: String, color: Color) -> void:
 	var l = Label.new()
