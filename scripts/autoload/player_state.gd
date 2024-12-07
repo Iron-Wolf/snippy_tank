@@ -3,7 +3,7 @@ extends Node
 # movement
 enum Scheme {SIMPLE, 
 	ARCADE, 
-	#EXPERT,
+	EXPERT,
 }
 var control_scheme: Scheme = Scheme.SIMPLE
 

@@ -59,6 +59,27 @@ position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_x1tm4")
 
+[node name="KillSmoke" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
+emitting = false
+amount = 35
+lifetime = 2.0
+explosiveness = 0.1
+lifetime_randomness = 0.7
+emission_shape = 1
+emission_sphere_radius = 30.0
+particle_flag_align_y = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 10.0
+tangential_accel_min = -30.0
+tangential_accel_max = 30.0
+scale_amount_min = 20.0
+scale_amount_max = 25.0
+scale_amount_curve = SubResource("Curve_mgk5h")
+color_ramp = SubResource("Gradient_dlffp")
+
 [node name="ShootTimer" type="Timer" parent="."]
 one_shot = true
 

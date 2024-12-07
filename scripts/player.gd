@@ -77,7 +77,7 @@ func _ready() -> void:
 	respawn_process()
 #endregion
 
-func _physics_process(delta):
+func _physics_process(delta) -> void:
 	if time_before_active.time_left != 0 or is_killed:
 		return
 	
@@ -92,6 +92,11 @@ func _physics_process(delta):
 		PlayerState.Scheme.ARCADE:
 			update_accel()
 			apply_rotation(delta)
+		PlayerState.Scheme.EXPERT:
+			var x_axis = Input.get_axis(f("move_down"),f("move_up"))
+			var y_axis = Input.get_axis(f("aim_down"),f("aim_up"))
+			rotation += (x_axis-y_axis) * deg_to_rad(STEERING_ANGLE/2) * delta
+			acceleration = transform.x * (x_axis+y_axis) * MAX_SPEED/2
 	
 	apply_friction(delta)
 	velocity += acceleration * delta
@@ -252,6 +257,9 @@ func apply_rotation(delta: float) -> void:
 
 #region aim and shoot inputs
 func apply_aim(direction: Vector2) -> void:
+	if PlayerState.control_scheme == PlayerState.Scheme.EXPERT:
+		return
+	
 	var target_aim: float = direction.rotated(-rotation).angle()
 	# offset with tank rotation
 	var target_aim_offset: float = target_aim + deg_to_rad(90)
@@ -275,7 +283,6 @@ func shoot_triggered() -> void:
 	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0) \
 		.rotated($Barrel.global_rotation - deg_to_rad(90))
 	
-	# TODO : should be a property in the "bullet" object
 	var explosion: CPUParticles2D = explosion_ps.instantiate()
 	explosion.transform = $Barrel/SpawnBullet.global_transform
 	explosion.gravity = Vector2(1000, 0) \
@@ -297,15 +304,9 @@ func killed(origin_player_id: int) -> void:
 		.get_node(score_label) \
 		.push_score(1 if origin_player_id != player_id else -1)
 	
-	# TODO : handle this with signals ?
-	var explosion: CPUParticles2D = explosion_ps.instantiate()
-	explosion.transform = transform
-	explosion.scale = Vector2(2,2)
-	parent_owner.add_child(explosion)
-	explosion.emitting = true
-	
 	is_killed = true
 	$Barrel.visible = false
+	%KillSmoke.emitting = true
 	# spread info when all is set
 	player_killed.emit()
 	$KillAudio.play()
@@ -313,6 +314,7 @@ func killed(origin_player_id: int) -> void:
 func respawn_process() -> void:
 	is_killed = false
 	$Barrel.visible = true
+	%KillSmoke.emitting = false
 	# reset game logic
 	ammo_left = START_AMMO
 	$ShootTimer.start()

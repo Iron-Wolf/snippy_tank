@@ -1,21 +1,73 @@
-[gd_scene load_steps=4 format=3 uid="uid://cgeymtn3bii3y"]
+[gd_scene load_steps=7 format=3 uid="uid://cgeymtn3bii3y"]
 
 [ext_resource type="Script" path="res://scripts/bullet.gd" id="1_t843r"]
 [ext_resource type="Texture2D" uid="uid://b37uvjebqvrpw" path="res://assets/Bullets/bulletBeigeSilver_outline.png" id="2_f5gbg"]
 
+[sub_resource type="Curve" id="Curve_n6gax"]
+_data = [Vector2(0, 0.302857), 0.0, 0.0, 0, 0, Vector2(0.196226, 1), 0.0, 0.0, 0, 0, Vector2(0.498113, 0.489352), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_ii6cg"]
+colors = PackedColorArray(0.808998, 0.808998, 0.808998, 1, 0.369107, 0.369107, 0.369107, 1)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6mwjr"]
 size = Vector2(16, 18)
+
+[sub_resource type="Curve" id="Curve_1g0q1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [node name="Bullet" type="Area2D"]
 script = ExtResource("1_t843r")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Smoke" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, 20)
+rotation = -3.14159
+amount = 50
+speed_scale = 0.7
+lifetime_randomness = 0.7
+emission_shape = 1
+emission_sphere_radius = 3.0
+particle_flag_align_y = true
+direction = Vector2(0, -1)
+spread = 15.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 40.0
+initial_velocity_max = 50.0
+tangential_accel_min = -30.0
+tangential_accel_max = 30.0
+scale_amount_min = 20.0
+scale_amount_max = 25.0
+scale_amount_curve = SubResource("Curve_n6gax")
+color_ramp = SubResource("Gradient_ii6cg")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(-9.53674e-07, -9.53674e-07)
 texture = ExtResource("2_f5gbg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="Collision" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_6mwjr")
+
+[node name="Explosion" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
+scale = Vector2(2, 2)
+emitting = false
+amount = 80
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+particle_flag_align_y = true
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+scale_amount_min = 8.76
+scale_amount_max = 21.51
+scale_amount_curve = SubResource("Curve_1g0q1")
 
 [node name="TimeBeforeActive" type="Timer" parent="."]
 unique_name_in_owner = true

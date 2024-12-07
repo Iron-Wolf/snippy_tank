@@ -3,6 +3,8 @@ extends Area2D
 
 @onready var screen_size = get_viewport_rect().size
 @onready var time_before_active: Timer = %TimeBeforeActive
+@onready var smoke: CPUParticles2D = %Smoke
+@onready var explosion: CPUParticles2D = %Explosion
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 
 const SPEED: float = 1000
@@ -14,8 +16,13 @@ var translate_direction: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	time_before_active.start(TIME_BEFORE_ACTIVE)
 	connect("body_entered", _on_bullet_body_entered)
+	# smoke is slower than the explosion
+	smoke.connect("finished", func():
+		queue_free())
 
 func _physics_process(delta: float) -> void:
+	if explosion.emitting:
+		return
 	# continuous forward movement until we hit something
 	position += -transform.y * SPEED * delta
 	position = Utils.apply_screen_wrap(position, screen_size)
@@ -45,4 +52,7 @@ func _on_bullet_body_entered(collided_body) -> void:
 		collided_body.killed(origin_body.player_id);
 	
 	# remove the bullet from the scene
-	queue_free()
+	%Sprite.visible = false
+	%Collision.set_deferred("disabled", true)
+	explosion.emitting = true
+	smoke.emitting = false
