@@ -5,8 +5,7 @@ extends Node
 var player_number: int = 2
 # track player's info between levels
 var p_infos: Dictionary = {
-	1: PlayerInfo.new(),
-	2: PlayerInfo.new(),
+	#1: C.PlayerInfo.new(),
 }
 
 # score to win the game
@@ -25,12 +24,25 @@ var in_game_scene: bool = true
 const MAX_PLAYER: int = 4
 
 # === OTHER ===
-class PlayerInfo:
-	var name: String = ""
-	var score: int = 0
-	var travel_total: float = 0
-
 func reset_state() -> void:
 	current_round = 0
-	for k in range(1, MAX_PLAYER+1):
-		p_infos[k] = PlayerInfo.new()
+	for k in range(1, player_number+1):
+		p_infos[k] = C.PlayerInfo.new()
+		match k:
+			1:
+				p_infos[k].name = "P1"
+				p_infos[k].color = COLOR_1
+			2:
+				p_infos[k].name = "P2"
+				p_infos[k].color = COLOR_2
+			3:
+				p_infos[k].name = "P3"
+				p_infos[k].color = COLOR_3
+			4:
+				p_infos[k].name = "P4"
+				p_infos[k].color = COLOR_4
+
+var COLOR_1: Color = Color.from_string("#bf4100", Color.RED)
+var COLOR_2: Color = Color.from_string("#2f6aff", Color.BLUE)
+var COLOR_3: Color = Color.from_string("#978961", Color.BEIGE)
+var COLOR_4: Color = Color.from_string("#00892b", Color.FOREST_GREEN)

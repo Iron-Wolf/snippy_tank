@@ -59,7 +59,7 @@ offset_bottom = 938.0
 
 [node name="Label" type="Label" parent="GameStats"]
 layout_mode = 2
-text = "Stats"
+text = "Distance|Shot"
 horizontal_alignment = 1
 
 [node name="BottomLabel" type="RichTextLabel" parent="."]

@@ -1,7 +1,6 @@
 extends Label
 
 @export var player_id: int = 0
-var init_text: String = text
 
 func _ready() -> void:
 	if player_id == 0:
@@ -14,6 +13,6 @@ func push_score(add: int) -> void:
 	_update_score()
 
 func _update_score() -> void:
-	var pi: GameState.PlayerInfo = GameState.p_infos.get(player_id)
-	if pi != null:
-		text = init_text + str(pi.score)
+	if GameState.p_infos.has(player_id):
+		var pi: C.PlayerInfo = GameState.p_infos[player_id]
+		text = pi.to_score_format()

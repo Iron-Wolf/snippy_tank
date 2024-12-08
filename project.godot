@@ -17,6 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+C="*res://scripts/autoload/class.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 PlayerState="*res://scripts/autoload/player_state.gd"
 Utils="*res://scripts/autoload/utils.gd"

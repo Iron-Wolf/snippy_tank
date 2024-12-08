@@ -15,6 +15,7 @@ var translate_direction: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
 	time_before_active.start(TIME_BEFORE_ACTIVE)
+	connect("area_entered", _on_area_entered)
 	connect("body_entered", _on_bullet_body_entered)
 	# smoke is slower than the explosion
 	smoke.connect("finished", func():
@@ -29,6 +30,12 @@ func _physics_process(delta: float) -> void:
 	if KEEP_VELOCITY:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
+
+func _on_area_entered(area: Area2D) -> void:
+	# preloaded object doesn't have static name
+	var isBullet = area.get_meta("isBullet")
+	if isBullet:
+		area.goodbye_little_one()
 
 func _on_bullet_body_entered(collided_body) -> void:
 	if !GameState.in_game_scene:
@@ -47,10 +54,15 @@ func _on_bullet_body_entered(collided_body) -> void:
 		and time_before_active.time_left > 0:
 		return
 	
-	var player_array = ["P1", "P2", "P3", "P4"]
-	if collided_body.name in player_array and !collided_body.is_killed:
-		collided_body.killed(origin_body.player_id);
+	# check if a player is killed
+	for k in GameState.p_infos.keys():
+		if collided_body.name in GameState.p_infos[k].name \
+			and !collided_body.is_killed:
+			collided_body.killed(origin_body.player_id);
 	
+	goodbye_little_one()
+
+func goodbye_little_one() -> void:
 	# remove the bullet from the scene
 	%Sprite.visible = false
 	%Collision.set_deferred("disabled", true)

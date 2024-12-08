@@ -1,10 +1,5 @@
 extends Control
 
-var COLOR_1: Color = Color.from_string("#bf4100", Color.RED)
-var COLOR_2: Color = Color.from_string("#2f6aff", Color.BLUE)
-var COLOR_3: Color = Color.from_string("#978961", Color.BEIGE)
-var COLOR_4: Color = Color.from_string("#00892b", Color.FOREST_GREEN)
-
 func _ready() -> void:
 	# order scores by value
 	var keys_order: Array[int] = []
@@ -12,40 +7,30 @@ func _ready() -> void:
 	
 	var max_val: int = 0
 	for k in GameState.p_infos.keys():
-		var pi: GameState.PlayerInfo = GameState.p_infos[k]
+		var pi: C.PlayerInfo = GameState.p_infos[k]
 		max_val = pi.score if pi.score > max_val else max_val
 	
 	for i in range(max_val, -1, -1):
 		for k in GameState.p_infos.keys():
-			var pi: GameState.PlayerInfo = GameState.p_infos[k]
+			var pi: C.PlayerInfo = GameState.p_infos[k]
 			if pi.score == i: 
 				keys_order.push_back(k)
-				if GameState.player_number >= 1 and k == 1:
-					_add_score("RED: "+str(i), COLOR_1)
-					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_1)
-				elif GameState.player_number >= 2 and k == 2:
-					_add_score("BLUE: "+str(i), COLOR_2)
-					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_2)
-				elif GameState.player_number >= 3 and k == 3:
-					_add_score("WHITE: "+str(i), COLOR_3)
-					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_3)
-				elif GameState.player_number >= 4 and k == 4:
-					_add_score("GREEN: "+str(i), COLOR_4)
-					_add_stats(str(roundi(pi.travel_total))+"m", COLOR_4)
+				_add_score(pi)
+				_add_stats(pi)
 
-func _add_score(txt: String, color: Color) -> void:
+func _add_score(pi: C.PlayerInfo) -> void:
 	var l = Label.new()
-	l.text = txt
-	l.add_theme_color_override("font_color", color)
+	l.text = pi.to_score_format()
+	l.add_theme_color_override("font_color", pi.color)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	get_node("%ScoreBoard").add_child(l)
+	%ScoreBoard.add_child(l)
 
-func _add_stats(txt: String, color: Color) -> void:
+func _add_stats(pi: C.PlayerInfo) -> void:
 	var l = Label.new()
-	l.text = txt
-	l.add_theme_color_override("font_color", color)
+	l.text = pi.to_stats_format()
+	l.add_theme_color_override("font_color", pi.color)
 	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	get_node("%GameStats").add_child(l)
+	%GameStats.add_child(l)
 
 func _process(_delta: float) -> void:
 	# wait 2s before we resume to the main screen

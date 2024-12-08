@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhbl8qhw3fqkw"]
+
+[ext_resource type="Script" path="res://scripts/bullet_casing.gd" id="1_kbedw"]
+
+[node name="BulletCasing" type="Sprite2D"]
+script = ExtResource("1_kbedw")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -7.5
+offset_top = -5.5
+offset_right = 6.5
+offset_bottom = 6.5
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.375612, 0.389716, 0.395735, 1)

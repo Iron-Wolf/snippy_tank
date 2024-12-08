@@ -16,6 +16,7 @@ signal player_killed
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
 const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
+const bullet_casing_ps: PackedScene = preload("res://scenes/bullet_casing.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
 const explosion_ps: PackedScene = preload("res://scenes/explosion.tscn")
@@ -48,6 +49,7 @@ var current_speed: float = 0
 var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 var ammo_left: int
+var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
 var travel_total_previous: float = 0 # detect if player has moved
 var travel_place_track: float = 0 # loop to "0" every 100 units
@@ -272,11 +274,19 @@ func shoot_triggered() -> void:
 	if ammo_left == 0:
 		return
 	ammo_left -= 1
+	shot_total += 1
+	
 	var b:Area2D = bullet_ps.instantiate()
 	b.origin_body = self
+	b.set_meta("isBullet", true)
 	b.translate_direction = velocity
 	parent_owner.add_child(b)
 	b.transform = $Barrel/SpawnBullet.global_transform
+	
+	var bc = bullet_casing_ps.instantiate()
+	bc.transform = $Barrel/SpawnBullet.global_transform
+	if (spw != null):
+		spw.add_child(bc)
 	
 	fight_started.emit()
 	$ShootAudio.play(0.4)
@@ -332,6 +342,6 @@ func respawn_process() -> void:
 	current_loaded_tracks = []
 
 func _exit_tree() -> void:
-	var pi: GameState.PlayerInfo = GameState.p_infos[player_id]
-	# scale travel distance to a somewhat "meter" unit
-	pi.travel_total = travel_total * 0.03
+	var pi: C.PlayerInfo = GameState.p_infos[player_id]
+	pi.travel_total = travel_total
+	pi.shot_total = shot_total

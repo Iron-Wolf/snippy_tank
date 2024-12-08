@@ -171,7 +171,6 @@ offset_right = 197.0
 offset_bottom = 112.0
 theme_override_colors/font_color = Color(0.750102, 0.254084, 0, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "RED : "
 script = ExtResource("17_12j5d")
 player_id = 1
 
@@ -185,7 +184,6 @@ offset_right = 1664.0
 offset_bottom = 116.0
 theme_override_colors/font_color = Color(0.183202, 0.414188, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "BLUE : "
 script = ExtResource("17_12j5d")
 player_id = 2
 
@@ -199,7 +197,6 @@ offset_right = 216.0
 offset_bottom = 964.0
 theme_override_colors/font_color = Color(0.825805, 0.776458, 0.635643, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "WHITE : "
 script = ExtResource("17_12j5d")
 player_id = 3
 
@@ -213,7 +210,6 @@ offset_right = 1673.0
 offset_bottom = 967.0
 theme_override_colors/font_color = Color(0, 0.537255, 0.168627, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-text = "GREEN : "
 script = ExtResource("17_12j5d")
 player_id = 4
 

@@ -14,6 +14,8 @@ var players: Array[CharacterBody2D] = []
 
 func _ready() -> void:
 	_respawn_process()
+	if (GameState.p_infos.is_empty()): 
+		GameState.reset_state()
 	t_hide_banner.wait_time = TIMER_WIN_BANNER
 	t_show_banner.wait_time = TIMER_WIN_BANNER
 	t_show_banner.connect("timeout", func():

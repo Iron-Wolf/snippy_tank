@@ -13,7 +13,6 @@ var clock_size: float = 0.002
 var clock_sign: int = 1
 
 func _ready() -> void:
-	# reset global variables
 	GameState.reset_state()
 	# alternate sign on each clock cycle
 	%Clock.connect("timeout", func():
