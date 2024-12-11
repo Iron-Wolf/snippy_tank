@@ -1,4 +1,3 @@
-# https://www.youtube.com/watch?v=zHYkcJyE52g
 extends Control
 
 @onready var screen_size: Vector2 = get_viewport_rect().size

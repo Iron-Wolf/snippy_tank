@@ -1,11 +1,11 @@
-# https://kidscancode.org/godot_recipes/4.x/2d/2d_shooting/
-extends Area2D
+class_name Bullet extends Area2D
 
 @onready var screen_size = get_viewport_rect().size
 @onready var time_before_active: Timer = %TimeBeforeActive
 @onready var smoke: CPUParticles2D = %Smoke
 @onready var explosion: CPUParticles2D = %Explosion
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
+var bounce_buller: float = false
 
 const SPEED: float = 1000
 const TIME_BEFORE_ACTIVE: float = 0.5 # time (sec) to avoid suicide when spawned
@@ -16,7 +16,7 @@ var translate_direction: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	time_before_active.start(TIME_BEFORE_ACTIVE)
 	connect("area_entered", _on_area_entered)
-	connect("body_entered", _on_bullet_body_entered)
+	connect("body_entered", _on_body_entered)
 	# smoke is slower than the explosion
 	smoke.connect("finished", func():
 		queue_free())
@@ -31,13 +31,12 @@ func _physics_process(delta: float) -> void:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
 
+# handle collision for other Bullet (they are not RigidBody or stuff like that)
 func _on_area_entered(area: Area2D) -> void:
-	# preloaded object doesn't have static name
-	var isBullet = area.get_meta("isBullet")
-	if isBullet:
+	if area as Bullet:
 		area.goodbye_little_one()
 
-func _on_bullet_body_entered(collided_body) -> void:
+func _on_body_entered(collided_body: Node2D) -> void:
 	if !GameState.in_game_scene:
 		# doing nothing
 		queue_free()
@@ -55,10 +54,13 @@ func _on_bullet_body_entered(collided_body) -> void:
 		return
 	
 	# check if a player is killed
-	for k in GameState.p_infos.keys():
-		if collided_body.name in GameState.p_infos[k].name \
-			and !collided_body.is_killed:
-			collided_body.killed(origin_body.player_id);
+	var p: Player = collided_body as Player
+	if p and !p.is_killed:
+		p.killed(origin_body.player_id)
+	
+	if collided_body.name == "Walls":
+		print(rad_to_deg(rotation))
+		pass
 	
 	goodbye_little_one()
 

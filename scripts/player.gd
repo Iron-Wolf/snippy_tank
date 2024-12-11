@@ -1,5 +1,4 @@
-# https://kidscancode.org/godot_recipes/4.x/2d/car_steering/
-extends CharacterBody2D
+class_name Player extends CharacterBody2D
 
 ## Id used for input action (like "right_1" for "player 1")
 ## Need to start at 1 (we use "0" to throw an error)
@@ -11,7 +10,7 @@ signal fight_started
 signal player_killed
 
 @onready var screen_size:Vector2 = get_viewport_rect().size
-@onready var spw:Node = parent_owner.get_node_or_null("%SpawnTracks")
+@onready var spw_tracks:Marker2D = parent_owner.get_node_or_null("%SpawnTracks")
 @onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
@@ -49,6 +48,7 @@ var current_speed: float = 0
 var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 var ammo_left: int
+var bounce_bullet: bool = false
 var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
 var travel_total_previous: float = 0 # detect if player has moved
@@ -105,7 +105,7 @@ func _physics_process(delta) -> void:
 
 	# actual move and resolve collision
 	if move_and_slide():
-		apply_collistion()
+		apply_collision()
 	
 	# screen wrap after movement
 	# TODO : move this in each level's script
@@ -185,15 +185,15 @@ func _draw() -> void:
 
 # not optimal function (maybe should I use "draw_texture" ?)
 func draw_tracks(texture: Texture2D) -> void:
+	if (spw_tracks == null): return
 	var track_sprite = Sprite2D.new()
 	track_sprite.texture = texture
 	track_sprite.position = position
 	track_sprite.rotation = rotation + deg_to_rad(90)
 	track_sprite.modulate = Color.BROWN
 	# put texture below the player AND walls
-	if (spw != null):
-		spw.add_child(track_sprite)
-		current_loaded_tracks.push_back(track_sprite)
+	spw_tracks.add_child(track_sprite)
+	current_loaded_tracks.push_back(track_sprite)
 
 #region movement inputs
 func _unhandled_input(_event: InputEvent) -> void:
@@ -226,7 +226,7 @@ func apply_friction(delta):
 	acceleration += drag_force + friction_force
 
 # code is from : https://catlikecoding.com/godot/true-top-down-2d/3-movable-objects/
-func apply_collistion() -> void:
+func apply_collision() -> void:
 	var c:KinematicCollision2D = get_last_slide_collision()
 	if c.get_collider() is CharacterBody2D:
 		# Certainly a one of a kind fix to a weird bug.
@@ -278,15 +278,15 @@ func shoot_triggered() -> void:
 	
 	var b:Area2D = bullet_ps.instantiate()
 	b.origin_body = self
-	b.set_meta("isBullet", true)
 	b.translate_direction = velocity
+	b.bounce_buller = bounce_bullet
 	parent_owner.add_child(b)
 	b.transform = $Barrel/SpawnBullet.global_transform
 	
 	var bc = bullet_casing_ps.instantiate()
 	bc.transform = $Barrel/SpawnBullet.global_transform
-	if (spw != null):
-		spw.add_child(bc)
+	if (spw_tracks != null):
+		spw_tracks.add_child(bc)
 	
 	fight_started.emit()
 	$ShootAudio.play(0.4)

@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcn2aycn14wk7"]
+
+[ext_resource type="Script" path="res://scripts/levels/power_up.gd" id="1_ouu45"]
+[ext_resource type="Texture2D" uid="uid://bso4wp5hmlmk4" path="res://assets/Obstacles/crateWood.png" id="2_ui0ay"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_alcce"]
+size = Vector2(52, 52)
+
+[node name="PowerUp" type="RigidBody2D"]
+gravity_scale = 0.0
+script = ExtResource("1_ouu45")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("2_ui0ay")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+unique_name_in_owner = true
+shape = SubResource("RectangleShape2D_alcce")
+disabled = true

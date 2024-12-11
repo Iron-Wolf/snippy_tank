@@ -2,11 +2,15 @@ extends Control
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
+@onready var power_up: PackedScene = preload("res://scenes/levels/power_up.tscn")
+@onready var spw_power_up_1:Marker2D = get_node_or_null("%SpawnPowerUp1")
 @onready var t_show_banner: Timer = %TimerShowBanner
 @onready var t_hide_banner: Timer = %TimerHideBanner
+@onready var t_spw_item: Timer = %SpawnItem
 
 const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
+const TIMER_POWER_UP: float = 60
 const GRP_RESPAWN: String = "respawn"
 
 var win_banner_base_speed: float = 1
@@ -16,11 +20,17 @@ func _ready() -> void:
 	_respawn_process()
 	if (GameState.p_infos.is_empty()): 
 		GameState.reset_state()
+	
 	t_hide_banner.wait_time = TIMER_WIN_BANNER
 	t_show_banner.wait_time = TIMER_WIN_BANNER
 	t_show_banner.connect("timeout", func():
 		t_hide_banner.start())
 	t_show_banner.start()
+	
+	t_spw_item.start(0.1)
+	t_spw_item.wait_time = TIMER_POWER_UP
+	t_spw_item.connect("timeout", func():
+		_start_item_spawn())
 	
 	if GameState.player_number >= 1:
 		var p:CharacterBody2D = player.instantiate()
@@ -98,6 +108,12 @@ func _add_common_properties(p: CharacterBody2D) -> void:
 	p.connect("fight_started", $Camera2D.on_fight_started)
 	p.connect("player_killed", $Camera2D.on_player_killed)
 	p.connect("player_killed", _on_player_killed)
+
+func _start_item_spawn() -> void:
+	if spw_power_up_1 == null: return
+	var pu = power_up.instantiate()
+	pu.parent_owner = spw_power_up_1
+	spw_power_up_1.add_child(pu)
 
 func _on_player_killed() -> void:
 	var dead_count:int = players \
