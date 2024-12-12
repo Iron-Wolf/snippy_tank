@@ -276,12 +276,13 @@ func shoot_triggered() -> void:
 	ammo_left -= 1
 	shot_total += 1
 	
-	var b:Area2D = bullet_ps.instantiate()
+	var b:Bullet = bullet_ps.instantiate()
 	b.origin_body = self
 	b.translate_direction = velocity
-	b.bounce_buller = bounce_bullet
-	parent_owner.add_child(b)
+	b.bounce_bullet = bounce_bullet
 	b.transform = $Barrel/SpawnBullet.global_transform
+	parent_owner.add_child(b)
+	
 	
 	var bc = bullet_casing_ps.instantiate()
 	bc.transform = $Barrel/SpawnBullet.global_transform

@@ -156,7 +156,7 @@ tile_set = SubResource("TileSet_mb338")
 
 [node name="SpawnPowerUp1" type="Marker2D" parent="Map"]
 unique_name_in_owner = true
-position = Vector2(217, 166)
+position = Vector2(1157, 458)
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
@@ -311,6 +311,7 @@ volume_db = -5.0
 
 [node name="SpawnItem" type="Timer" parent="."]
 unique_name_in_owner = true
+one_shot = true
 autostart = true
 
 [node name="Camera2D" type="Camera2D" parent="."]

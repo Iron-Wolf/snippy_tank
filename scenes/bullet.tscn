@@ -10,14 +10,16 @@ point_count = 3
 [sub_resource type="Gradient" id="Gradient_ii6cg"]
 colors = PackedColorArray(0.808998, 0.808998, 0.808998, 1, 0.369107, 0.369107, 0.369107, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6mwjr"]
-size = Vector2(16, 18)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sql0q"]
+size = Vector2(16, 19)
 
 [sub_resource type="Curve" id="Curve_1g0q1"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="Bullet" type="Area2D"]
+[node name="Bullet" type="RigidBody2D"]
+gravity_scale = 0.0
+continuous_cd = 2
 script = ExtResource("1_t843r")
 
 [node name="Smoke" type="CPUParticles2D" parent="."]
@@ -49,8 +51,8 @@ texture = ExtResource("2_f5gbg")
 
 [node name="Collision" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(0, -6)
-shape = SubResource("RectangleShape2D_6mwjr")
+position = Vector2(0, -5.5)
+shape = SubResource("RectangleShape2D_sql0q")
 
 [node name="Explosion" type="CPUParticles2D" parent="."]
 unique_name_in_owner = true
