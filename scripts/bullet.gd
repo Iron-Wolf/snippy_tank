@@ -1,22 +1,26 @@
-# https://kidscancode.org/godot_recipes/4.x/2d/2d_shooting/
-extends Area2D
+class_name Bullet extends RigidBody2D
 
 @onready var screen_size = get_viewport_rect().size
 @onready var time_before_active: Timer = %TimeBeforeActive
 @onready var smoke: CPUParticles2D = %Smoke
 @onready var explosion: CPUParticles2D = %Explosion
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
+var bounce_bullet: float = false
 
 const SPEED: float = 1000
-const TIME_BEFORE_ACTIVE: float = 0.5 # time (sec) to avoid suicide when spawned
+const TIME_BEFORE_ACTIVE: float = 0.01 # time (sec) to avoid suicide when spawned
 const KEEP_VELOCITY: bool = false
 
 var translate_direction: Vector2 = Vector2.ZERO
+var velocity: Vector2 = Vector2.ZERO
+var _spawned: bool = true # prevent stuck bullet on first frame
 
 func _ready() -> void:
 	time_before_active.start(TIME_BEFORE_ACTIVE)
-	connect("area_entered", _on_area_entered)
-	connect("body_entered", _on_bullet_body_entered)
+	# prevent posibly "circling" bullets (from the physics collision)
+	lock_rotation=true
+	# continuous forward movement until we hit something
+	velocity = -transform.y * SPEED
 	# smoke is slower than the explosion
 	smoke.connect("finished", func():
 		queue_free())
@@ -24,20 +28,27 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if explosion.emitting:
 		return
-	# continuous forward movement until we hit something
-	position += -transform.y * SPEED * delta
+	
 	position = Utils.apply_screen_wrap(position, screen_size)
 	if KEEP_VELOCITY:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
+	
+	var col_info = move_and_collide(velocity * delta)
+	if col_info:
+		if _spawned: queue_free()
+		_on_body_entered(col_info.get_collider())
+		_apply_bounce(col_info.get_normal())
+	_spawned = false
 
-func _on_area_entered(area: Area2D) -> void:
-	# preloaded object doesn't have static name
-	var isBullet = area.get_meta("isBullet")
-	if isBullet:
-		area.goodbye_little_one()
+func _apply_bounce(normal: Vector2) -> void:
+	var v_before = velocity
+	velocity = velocity.bounce(normal)
+	translate_direction = translate_direction.bounce(normal)
+	var ro = v_before.angle_to(velocity)
+	rotate(ro)
 
-func _on_bullet_body_entered(collided_body) -> void:
+func _on_body_entered(collided_body) -> void:
 	if !GameState.in_game_scene:
 		# doing nothing
 		queue_free()
@@ -55,10 +66,13 @@ func _on_bullet_body_entered(collided_body) -> void:
 		return
 	
 	# check if a player is killed
-	for k in GameState.p_infos.keys():
-		if collided_body.name in GameState.p_infos[k].name \
-			and !collided_body.is_killed:
-			collided_body.killed(origin_body.player_id);
+	var p: Player = collided_body as Player
+	if p and !p.is_killed:
+		p.killed(origin_body.player_id)
+	
+	if collided_body.name == "Walls" and bounce_bullet:
+		# let's "_physics_process" handle the bounce
+		return
 	
 	goodbye_little_one()
 

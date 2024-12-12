@@ -25,6 +25,10 @@ position = Vector2(2, 0)
 rotation = 1.5708
 texture = ExtResource("1_53oag")
 
+[node name="PowerUpSnap" type="Marker2D" parent="Tank"]
+unique_name_in_owner = true
+position = Vector2(0.00011222, 31)
+
 [node name="Smoke" type="CPUParticles2D" parent="."]
 position = Vector2(-34, -10)
 rotation = -3.14159
@@ -52,7 +56,7 @@ texture = ExtResource("3_6jjgp")
 offset = Vector2(0, -20)
 
 [node name="SpawnBullet" type="Marker2D" parent="Barrel"]
-position = Vector2(-0.000152111, -42)
+position = Vector2(-0.000188311, -52)
 
 [node name="TankCollision" type="CollisionShape2D" parent="."]
 position = Vector2(2, 0)
