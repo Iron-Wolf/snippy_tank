@@ -1,17 +1,18 @@
 class_name PowerUp extends RigidBody2D
 
-# reference to the player getting the power-up
-var player: CharacterBody2D 
 # used to replace the power-up in the original scene
 var parent_owner: Node
-signal powerup_despawned
+signal despawned
+signal duplicated_player
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
+@onready var player_ps: PackedScene = preload("res://scenes/player.tscn")
 
+var type: PlayerState.PowerUpType = randi_range(0, 1) as PlayerState.PowerUpType
 const ANIM_SHAKE_SPEED: int = 15
-var start_animation: bool = true
-var size_animation: float = 200
-var _snap_player: Player
+var spawn_anim: bool = true
+var spawn_anim_size: float = 200
+var _snap_player: Player # reference to the player getting the power-up
 
 func _ready() -> void:
 	%Sprite.visible = false
@@ -28,7 +29,7 @@ func _ready() -> void:
 	queue_redraw()
 
 func _physics_process(_delta: float) -> void:
-	if start_animation:
+	if spawn_anim:
 		queue_redraw()
 		return
 	if !%Sprite.visible:
@@ -45,12 +46,12 @@ func _physics_process(_delta: float) -> void:
 	$Sprite.scale.y = 1 - shake
 
 func _draw() -> void:
-	if start_animation and size_animation > 0:
-		size_animation -= 1
+	if spawn_anim and spawn_anim_size > 0:
+		spawn_anim_size -= 1
 		modulate.a = lerpf(modulate.a, 1, 0.05)
-		draw_circle(position, size_animation, Color.WHITE, false, 4)
+		draw_circle(position, spawn_anim_size, Color.WHITE, false, 4)
 	else:
-		start_animation = false
+		spawn_anim = false
 
 func _spawn_item() -> void:
 	%Sprite.visible = true
@@ -80,14 +81,32 @@ func _disable_collision() -> void:
 
 func _on_body_entered(collided_body: Node) -> void:
 	_snap_player = collided_body as Player
-	if _snap_player:
-		_snap_player.bounce_bullet = true
-		# reparent to leave transform logic to the player's body
-		call_deferred("reparent", collided_body.get_node("%PowerUpSnap"))
-		call_deferred("_disable_collision")
+	if _snap_player == null:
+		return
+	
+	match type:
+		PlayerState.PowerUpType.BOUNCE_BULLET:
+			call_deferred("_bounce_bullet")
+		PlayerState.PowerUpType.DUPLICATE_PLAYER:
+			call_deferred("_duplicate_player")
+
+func _bounce_bullet() -> void:
+	_snap_player.bounce_bullet = true
+	# reparent to leave transform logic to the player's body
+	reparent(_snap_player.get_node("%PowerUpSnap"))
+	_disable_collision()
+
+func _duplicate_player() -> void:
+	%Sprite.visible = false
+	disconnect("body_entered", _on_body_entered)
+	process_mode = Node.PROCESS_MODE_DISABLED
+	duplicated_player.emit(_snap_player)
+	get_tree().create_timer(10).connect("timeout", func():
+		print("end 'duplicate' power up")
+		dispawn())
 
 func dispawn() -> void:
 	if _snap_player:
 		_snap_player.bounce_bullet = false
-	powerup_despawned.emit()
+	despawned.emit()
 	queue_free()

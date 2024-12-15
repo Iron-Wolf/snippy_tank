@@ -4,9 +4,9 @@ extends Control
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
 @onready var power_up: PackedScene = preload("res://scenes/levels/power_up.tscn")
 @onready var spw_power_up_1:Marker2D = get_node_or_null("%SpawnPowerUp1")
-@onready var t_show_banner: Timer = %TimerShowBanner
-@onready var t_hide_banner: Timer = %TimerHideBanner
-@onready var t_spw_item: Timer = %SpawnItem
+@onready var t_show_banner: Timer = %ShowBannerTimer
+@onready var t_hide_banner: Timer = %HideBannerTimer
+@onready var t_spw_item: Timer = %SpawnItemTimer
 
 const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
@@ -15,6 +15,7 @@ const GRP_RESPAWN: String = "respawn"
 
 var _win_banner_base_speed: float = 1
 var _players: Array[Player] = []
+var _players_dup: Array[Player] = []
 var _power_up: PowerUp
 
 func _ready() -> void:
@@ -31,10 +32,10 @@ func _ready() -> void:
 	t_spw_item.wait_time = TIMER_POWER_UP
 	t_spw_item.start()
 	t_spw_item.connect("timeout", func():
-		_start_item_spawn())
+		_spawn_power_up())
 	
 	if GameState.player_number >= 1:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P1"
 		p.player_id = 1
 		p.tank_texture = PlayerState.p1_tank_texture
@@ -46,7 +47,7 @@ func _ready() -> void:
 		%P1Score.visible = true
 	
 	if GameState.player_number >= 2:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P2"
 		p.player_id = 2
 		p.tank_texture = PlayerState.p2_tank_texture
@@ -59,7 +60,7 @@ func _ready() -> void:
 		%P2Score.visible = true
 		
 	if GameState.player_number >= 3:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P3"
 		p.player_id = 3
 		p.tank_texture = PlayerState.p3_tank_texture
@@ -72,7 +73,7 @@ func _ready() -> void:
 		%P3Score.visible = true
 		
 	if GameState.player_number >= 4:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P4"
 		p.player_id = 4
 		p.tank_texture = PlayerState.p4_tank_texture
@@ -102,7 +103,7 @@ func _respawn_process() -> void:
 	%WinnerBack.position.x = screen_size.x
 	%RoundLabel.position.x = -%RoundLabel.size.x
 
-func _add_common_properties(p: CharacterBody2D) -> void:
+func _add_common_properties(p: Player) -> void:
 	p.add_to_group(GRP_RESPAWN)
 	p.parent_owner = self
 	p.connect("fight_started", $BackgroundAudio.on_fight_started)
@@ -110,23 +111,44 @@ func _add_common_properties(p: CharacterBody2D) -> void:
 	p.connect("player_killed", $Camera2D.on_player_killed)
 	p.connect("player_killed", _on_player_killed)
 
-func _start_item_spawn() -> void:
+func _spawn_power_up() -> void:
 	if spw_power_up_1 == null or \
 		_power_up != null: 
 		return
 	var pu: PowerUp = power_up.instantiate()
 	pu.parent_owner = spw_power_up_1
-	pu.powerup_despawned.connect(func():
+	pu.despawned.connect(func():
 		_power_up = null
 		t_spw_item.start())
+	pu.duplicated_player.connect(func(op:Player):
+		var p:Player = player.instantiate()
+		p.name = op.name
+		p.player_id = op.player_id
+		p.tank_texture = op.tank_texture
+		p.barrel_texture = op.barrel_texture
+		p.position = op.position
+		p.is_duplicate = true
+		_add_common_properties(p)
+		add_child(p)
+		_players_dup.push_back(p))
+	
 	spw_power_up_1.add_child(pu)
 	# only 1 Power Up at a time
 	_power_up = pu
 
-func _on_player_killed() -> void:
-	var dead_count:int = _players \
-		.filter(func(body2d:Player): return body2d.is_killed) \
-		.size()
+func _on_player_killed() -> void:	
+	var dead_count:int = 0
+	for p:Player in _players:
+		if p.is_killed:
+			var dup = _players_dup \
+				.filter(func(dp): if dp.player_id == p.player_id:
+					return dp)
+			if dup.size() > 0:
+				if dup.any(func(dp): return dp.is_killed):
+					dead_count += 1
+			else:
+				dead_count += 1
+	
 	if dead_count >= GameState.player_number - 1:
 		# 1 or 0 player left
 		_reload_level()
@@ -137,10 +159,10 @@ func _reload_level() -> void:
 	GameState.current_round += 1
 	
 	var winner_count: int = GameState.p_infos.values() \
-		.filter(func(pi: C.PlayerInfo): 
+		.filter(func(pi: PlayerInfo): 
 			return pi.score >= GameState.winning_score) \
 		.size()
-	if winner_count > 1:
+	if winner_count >= 1:
 		# at least one player has win
 		get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
 		return
@@ -154,3 +176,7 @@ func _reload_level() -> void:
 	$BackgroundAudio.on_round_started()
 	if _power_up != null:
 		_power_up.dispawn()
+	
+	for p:Player in _players_dup:
+		p.queue_free()
+	_players_dup = []

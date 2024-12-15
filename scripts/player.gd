@@ -18,7 +18,6 @@ const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const bullet_casing_ps: PackedScene = preload("res://scenes/bullet_casing.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
-const explosion_ps: PackedScene = preload("res://scenes/explosion.tscn")
 # Need this because "_physics_process" can run during "respawn_process".
 # So, "velocity" could receive strange values from "move_and_slide".
 # Can be avoided with a high enought KNOCKBACK_ON_COLLIDE or a push back 
@@ -40,6 +39,7 @@ const ANIM_SHAKE_SPEED: int = 15
 const KNOCKBACK_ON_SHOOT: int = 0
 
 # variables
+var is_duplicate: bool = false
 var is_killed: bool = false
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
@@ -53,7 +53,7 @@ var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
 var travel_total_previous: float = 0 # detect if player has moved
 var travel_place_track: float = 0 # loop to "0" every 100 units
-var current_loaded_tracks: Array = []
+var _current_loaded_tracks: Array = []
 
 var debug_dict: Dictionary = {}
 const DEBUG: bool = false
@@ -133,7 +133,7 @@ func _physics_process(delta) -> void:
 	$Tank.position.y = shake
 	$Barrel.position.y = shake
 	
-	$Smoke.emitting = move_direction != Vector2.ZERO
+	$EngineSmoke.emitting = move_direction != Vector2.ZERO
 	
 	var drifting: bool = false
 	var vr: Vector2 = Vector2(100, 0) # vector in front on the player
@@ -190,10 +190,10 @@ func draw_tracks(texture: Texture2D) -> void:
 	track_sprite.texture = texture
 	track_sprite.position = position
 	track_sprite.rotation = rotation + deg_to_rad(90)
-	track_sprite.modulate = Color.BROWN
+	track_sprite.modulate = Color(Color.BROWN, 0.3)
 	# put texture below the player AND walls
 	spw_tracks.add_child(track_sprite)
-	current_loaded_tracks.push_back(track_sprite)
+	_current_loaded_tracks.push_back(track_sprite)
 
 #region movement inputs
 func _unhandled_input(_event: InputEvent) -> void:
@@ -283,7 +283,6 @@ func shoot_triggered() -> void:
 	b.transform = $Barrel/SpawnBullet.global_transform
 	parent_owner.add_child(b)
 	
-	
 	var bc = bullet_casing_ps.instantiate()
 	bc.transform = $Barrel/SpawnBullet.global_transform
 	if (spw_tracks != null):
@@ -294,19 +293,13 @@ func shoot_triggered() -> void:
 	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0) \
 		.rotated($Barrel.global_rotation - deg_to_rad(90))
 	
-	var explosion: CPUParticles2D = explosion_ps.instantiate()
-	explosion.transform = $Barrel/SpawnBullet.global_transform
-	explosion.gravity = Vector2(1000, 0) \
-		.rotated($Barrel/SpawnBullet.global_rotation - deg_to_rad(90))
-	explosion.speed_scale = 2
-	parent_owner.add_child(explosion)
-	explosion.emitting = true
+	%ShootSmoke.emitting = true
 	$ShootTimer.start()
 	_shoot_cooldown(Color.DIM_GRAY)
 
 func _shoot_cooldown(color: Color) -> void:
 	$Tank.modulate = color
-	$Barrel.modulate = color
+	$Barrel.self_modulate = color
 #endregion
 
 func killed(origin_player_id: int) -> void:
@@ -322,7 +315,7 @@ func killed(origin_player_id: int) -> void:
 	player_killed.emit()
 	$KillAudio.play()
 
-func respawn_process() -> void:
+func respawn_process() -> void:	
 	is_killed = false
 	$Barrel.visible = true
 	%KillSmoke.emitting = false
@@ -337,12 +330,12 @@ func respawn_process() -> void:
 	rotation = init_rotation
 	$Barrel.rotation = init_barrel_rotation
 	# free ressources
-	for track_sprite:Sprite2D in current_loaded_tracks:
+	for track_sprite:Sprite2D in _current_loaded_tracks:
 		#track_sprite.queue_free()
 		pass
-	current_loaded_tracks = []
+	_current_loaded_tracks = []
 
 func _exit_tree() -> void:
-	var pi: C.PlayerInfo = GameState.p_infos[player_id]
+	var pi: PlayerInfo = GameState.p_infos[player_id]
 	pi.travel_total = travel_total
 	pi.shot_total = shot_total

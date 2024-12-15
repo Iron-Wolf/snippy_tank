@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cocrreaiubffw"]
+[gd_scene load_steps=10 format=3 uid="uid://cocrreaiubffw"]
 
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="1_53oag"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_mooqp"]
@@ -12,6 +12,10 @@ point_count = 3
 
 [sub_resource type="Gradient" id="Gradient_dlffp"]
 colors = PackedColorArray(0.808998, 0.808998, 0.808998, 1, 0.369107, 0.369107, 0.369107, 1)
+
+[sub_resource type="Curve" id="Curve_1g0q1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.75, 0), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x1tm4"]
 radius = 36.0139
@@ -29,7 +33,7 @@ texture = ExtResource("1_53oag")
 unique_name_in_owner = true
 position = Vector2(0.00011222, 31)
 
-[node name="Smoke" type="CPUParticles2D" parent="."]
+[node name="EngineSmoke" type="CPUParticles2D" parent="."]
 position = Vector2(-34, -10)
 rotation = -3.14159
 emitting = false
@@ -54,6 +58,25 @@ color_ramp = SubResource("Gradient_dlffp")
 rotation = 1.5708
 texture = ExtResource("3_6jjgp")
 offset = Vector2(0, -20)
+
+[node name="ShootSmoke" type="CPUParticles2D" parent="Barrel"]
+unique_name_in_owner = true
+position = Vector2(-0.000184619, -51)
+rotation = -1.5708
+emitting = false
+amount = 80
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+emission_shape = 1
+emission_sphere_radius = 10.0
+particle_flag_align_y = true
+gravity = Vector2(0, 0)
+initial_velocity_min = 140.0
+initial_velocity_max = 320.0
+scale_amount_min = 8.76
+scale_amount_max = 21.51
+scale_amount_curve = SubResource("Curve_1g0q1")
 
 [node name="SpawnBullet" type="Marker2D" parent="Barrel"]
 position = Vector2(-0.000188311, -52)

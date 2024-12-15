@@ -14,5 +14,5 @@ func push_score(add: int) -> void:
 
 func _update_score() -> void:
 	if GameState.p_infos.has(player_id):
-		var pi: C.PlayerInfo = GameState.p_infos[player_id]
+		var pi: PlayerInfo = GameState.p_infos[player_id]
 		text = pi.to_score_format()

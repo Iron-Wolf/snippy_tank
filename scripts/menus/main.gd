@@ -36,7 +36,7 @@ func _process(_delta: float) -> void:
 	soon_tm.scale += clock_sign * Vector2(clock_size, clock_size)
 
 func on_vs_mode_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/levels/lvl_1.tscn")
+	get_tree().change_scene_to_file("res://scenes/levels/world.tscn")
 
 func on_control_pressed():
 	await Utils.scene_cr(self)

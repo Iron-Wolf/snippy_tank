@@ -1,17 +1,29 @@
 extends Node
 
+# === EXPOSED VARIABLES ===
+var control_scheme: Scheme = Scheme.SIMPLE
+ # cooldown (sec) before each shoot
+var shoot_timer: float = 3
+
+# === INTERNAL VARIABLES ===
 # movement
-enum Scheme {SIMPLE, 
+enum Scheme {
+	SIMPLE, 
 	ARCADE, 
 	EXPERT,
 }
-var control_scheme: Scheme = Scheme.SIMPLE
-
 # aim
 var last_aim_scheme: bool = false
 var slingshot_scheme: bool = false
-var shoot_timer: float = 3 # cooldown (sec) before each shoot
 
+enum PowerUpType {
+	BOUNCE_BULLET, 
+	DUPLICATE_PLAYER, 
+	#SHIELD,
+	#TRIPLE_SHOT
+}
+
+# === OTHER ===
 var p1_tank_texture: Texture2D = preload("res://assets/Tanks/tankRed.png")
 var p1_barrel_texture: Texture2D = preload("res://assets/Tanks/barrelRed_outline.png")
 var p2_tank_texture: Texture2D = preload("res://assets/Tanks/tankBlue.png")
