@@ -11,7 +11,6 @@ extends Control
 const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
 const TIMER_POWER_UP: float = 60
-const GRP_RESPAWN: String = "respawn"
 
 var _win_banner_base_speed: float = 1
 var _players: Array[Player] = []
@@ -104,7 +103,7 @@ func _respawn_process() -> void:
 	%RoundLabel.position.x = -%RoundLabel.size.x
 
 func _add_common_properties(p: Player) -> void:
-	p.add_to_group(GRP_RESPAWN)
+	p.add_to_group(GameState.GRP_RESPAWN)
 	p.parent_owner = self
 	p.connect("fight_started", $BackgroundAudio.on_fight_started)
 	p.connect("fight_started", $Camera2D.on_fight_started)
@@ -118,6 +117,7 @@ func _spawn_power_up() -> void:
 	var pu: PowerUp = power_up.instantiate()
 	pu.parent_owner = spw_power_up_1
 	pu.despawned.connect(func():
+		# allow a new power up to spawn
 		_power_up = null
 		t_spw_item.start())
 	pu.duplicated_player.connect(func(op:Player):
@@ -172,7 +172,10 @@ func _reload_level() -> void:
 	
 	%RoundLabel.text = "Round %s" % (GameState.current_round + 1)
 	t_show_banner.start()
-	get_tree().call_group(GRP_RESPAWN, "respawn_process")# respawn ALL objetcs
+	t_spw_item.start()
+	
+	# respawn ALL objetcs
+	get_tree().call_group(GameState.GRP_RESPAWN, GameState.GRP_RESPAWN)
 	$BackgroundAudio.on_round_started()
 	if _power_up != null:
 		_power_up.dispawn()

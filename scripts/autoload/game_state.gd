@@ -45,3 +45,5 @@ var COLOR_1: Color = Color.from_string("#bf4100", Color.RED)
 var COLOR_2: Color = Color.from_string("#2f6aff", Color.BLUE)
 var COLOR_3: Color = Color.from_string("#978961", Color.BEIGE)
 var COLOR_4: Color = Color.from_string("#00892b", Color.FOREST_GREEN)
+
+var GRP_RESPAWN = "respawn_process"

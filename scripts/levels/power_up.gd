@@ -108,5 +108,6 @@ func _duplicate_player() -> void:
 func dispawn() -> void:
 	if _snap_player:
 		_snap_player.bounce_bullet = false
+	# notify the level that we can spawn a new power up
 	despawned.emit()
 	queue_free()

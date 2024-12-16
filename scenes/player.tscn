@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://cocrreaiubffw"]
+[gd_scene load_steps=11 format=3 uid="uid://cocrreaiubffw"]
 
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="1_53oag"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_mooqp"]
 [ext_resource type="Texture2D" uid="uid://63v6o20qnq8t" path="res://assets/Tanks/barrelRed_outline.png" id="3_6jjgp"]
+[ext_resource type="Texture2D" uid="uid://bwcgj2a0gqcgk" path="res://assets/Bullets/bulletSilverSilver_outline.png" id="4_pbjan"]
 [ext_resource type="AudioStream" uid="uid://ccn3pxli06mon" path="res://assets/sound/explosion-v2_cyberwave_orchestra.mp3" id="4_u2mkc"]
 [ext_resource type="AudioStream" uid="uid://b24windnrssea" path="res://assets/sound/cannon-fire_LordSonny.mp3" id="5_hf28c"]
 
@@ -25,15 +26,21 @@ platform_on_leave = 2
 script = ExtResource("1_mooqp")
 
 [node name="Tank" type="Sprite2D" parent="."]
+clip_children = 2
 position = Vector2(2, 0)
 rotation = 1.5708
 texture = ExtResource("1_53oag")
 
-[node name="PowerUpSnap" type="Marker2D" parent="Tank"]
-unique_name_in_owner = true
-position = Vector2(0.00011222, 31)
+[node name="ColorRect" type="ColorRect" parent="Tank"]
+visible = false
+offset_left = -50.0
+offset_top = -52.0
+offset_right = 49.0
+offset_bottom = 49.0
+color = Color(0, 0, 0, 0.603922)
 
 [node name="EngineSmoke" type="CPUParticles2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(-34, -10)
 rotation = -3.14159
 emitting = false
@@ -53,6 +60,11 @@ scale_amount_min = 20.0
 scale_amount_max = 25.0
 scale_amount_curve = SubResource("Curve_mgk5h")
 color_ramp = SubResource("Gradient_dlffp")
+
+[node name="PowerUpSnap" type="Marker2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-29, 3.0559e-10)
+rotation = 1.5708
 
 [node name="Barrel" type="Sprite2D" parent="."]
 rotation = 1.5708
@@ -79,7 +91,7 @@ scale_amount_max = 21.51
 scale_amount_curve = SubResource("Curve_1g0q1")
 
 [node name="SpawnBullet" type="Marker2D" parent="Barrel"]
-position = Vector2(-0.000188311, -52)
+position = Vector2(-0.000188239, -52)
 
 [node name="TankCollision" type="CollisionShape2D" parent="."]
 position = Vector2(2, 0)
@@ -106,6 +118,18 @@ scale_amount_min = 20.0
 scale_amount_max = 25.0
 scale_amount_curve = SubResource("Curve_mgk5h")
 color_ramp = SubResource("Gradient_dlffp")
+
+[node name="UI" type="Node" parent="."]
+unique_name_in_owner = true
+
+[node name="ReloadBar" type="TextureProgressBar" parent="UI"]
+unique_name_in_owner = true
+offset_right = 20.0
+offset_bottom = 34.0
+scale = Vector2(0.785, 0.785)
+value = 100.0
+fill_mode = 4
+texture_progress = ExtResource("4_pbjan")
 
 [node name="ShootTimer" type="Timer" parent="."]
 one_shot = true

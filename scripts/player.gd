@@ -34,7 +34,7 @@ const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
 const KNOCKBACK_ON_COLLIDE: int = 40
-const START_AMMO: int = -1 # "-1" for infinite
+const MAX_AMMO: int = 3 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
 const KNOCKBACK_ON_SHOOT: int = 0
 
@@ -74,7 +74,15 @@ func _ready() -> void:
 	$Barrel.texture = barrel_texture
 	$ShootTimer.wait_time = PlayerState.shoot_timer
 	$ShootTimer.connect("timeout", func():
-		_shoot_cooldown(Color.WHITE))
+		# reload ALL ammo
+		if ammo_left == 0:
+			ammo_left = MAX_AMMO
+			return
+		# reload and restart timer, until we are maxed
+		ammo_left += 1
+		if ammo_left != MAX_AMMO:
+			$ShootTimer.start(PlayerState.shoot_timer))
+	%ReloadBar.value = 0
 
 	respawn_process()
 #endregion
@@ -125,6 +133,10 @@ func _physics_process(delta) -> void:
 		shoot_triggered()
 	#endregion
 	
+	%ReloadBar.position = position
+	%ReloadBar.position.x += 20
+	%ReloadBar.position.y += 20
+	
 	#region miscellaneous feedback
 	@warning_ignore("integer_division")
 	var shake = 1 \
@@ -133,7 +145,21 @@ func _physics_process(delta) -> void:
 	$Tank.position.y = shake
 	$Barrel.position.y = shake
 	
-	$EngineSmoke.emitting = move_direction != Vector2.ZERO
+	# animate brightness related to shoot cooldown
+	var percent_time_left: float = $ShootTimer.time_left / $ShootTimer.wait_time
+	if $ShootTimer.time_left == 0:
+		_shoot_cooldown(Color.WHITE)
+	elif ammo_left <= 0 and $ShootTimer.time_left < 0.5:
+		$Tank.modulate.v = 1.0 if shake == 1 else 0.3
+		$Barrel.self_modulate.v = 1.0 if shake == 1 else 0.3
+	elif ammo_left <= 0:
+		# increasing value to 1
+		var percent_time_opposite: float = 1 - percent_time_left
+		$Tank.modulate.v = percent_time_opposite
+		$Barrel.self_modulate.v = percent_time_opposite
+	%ReloadBar.value = percent_time_left * 100
+	
+	%EngineSmoke.emitting = move_direction != Vector2.ZERO
 	
 	var drifting: bool = false
 	var vr: Vector2 = Vector2(100, 0) # vector in front on the player
@@ -269,7 +295,7 @@ func apply_aim(direction: Vector2) -> void:
 
 func shoot_triggered() -> void:
 	# check cooldown
-	if $ShootTimer.time_left != 0:
+	if ammo_left <= 0 and $ShootTimer.time_left != 0:
 		return
 	if ammo_left == 0:
 		return
@@ -281,6 +307,7 @@ func shoot_triggered() -> void:
 	b.translate_direction = velocity
 	b.bounce_bullet = bounce_bullet
 	b.transform = $Barrel/SpawnBullet.global_transform
+	b.add_to_group(GameState.GRP_RESPAWN)
 	parent_owner.add_child(b)
 	
 	var bc = bullet_casing_ps.instantiate()
@@ -290,12 +317,14 @@ func shoot_triggered() -> void:
 	
 	fight_started.emit()
 	$ShootAudio.play(0.4)
+	%ShootSmoke.emitting = true
 	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0) \
 		.rotated($Barrel.global_rotation - deg_to_rad(90))
 	
-	%ShootSmoke.emitting = true
-	$ShootTimer.start()
-	_shoot_cooldown(Color.DIM_GRAY)
+	if ammo_left == 0:
+		$ShootTimer.start(PlayerState.shoot_timer * 1.5)
+	else:
+		$ShootTimer.start(PlayerState.shoot_timer * 0.75)
 
 func _shoot_cooldown(color: Color) -> void:
 	$Tank.modulate = color
@@ -315,14 +344,14 @@ func killed(origin_player_id: int) -> void:
 	player_killed.emit()
 	$KillAudio.play()
 
-func respawn_process() -> void:	
+func respawn_process() -> void:
 	is_killed = false
 	$Barrel.visible = true
 	%KillSmoke.emitting = false
 	# reset game logic
-	ammo_left = START_AMMO
-	$ShootTimer.start()
-	_shoot_cooldown(Color.DIM_GRAY)
+	ammo_left = MAX_AMMO
+	_shoot_cooldown(Color.WHITE)
+	$ShootTimer.stop()
 	time_before_active = get_tree().create_timer(0.3)
 	# reset positions
 	velocity = Vector2.ZERO

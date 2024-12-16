@@ -24,6 +24,8 @@ func _ready() -> void:
 	# smoke is slower than the explosion
 	smoke.connect("finished", func():
 		queue_free())
+	# prevent self shoot bug
+	add_collision_exception_with(origin_body)
 
 func _physics_process(delta: float) -> void:
 	if explosion.emitting:
@@ -36,12 +38,15 @@ func _physics_process(delta: float) -> void:
 	
 	var col_info = move_and_collide(velocity * delta)
 	if col_info:
-		if _spawned: queue_free()
 		_on_body_entered(col_info.get_collider())
 		_apply_bounce(col_info.get_normal())
+	else:
+		remove_collision_exception_with(origin_body)
 	_spawned = false
 
 func _apply_bounce(normal: Vector2) -> void:
+	if !bounce_bullet:
+		return
 	var v_before = velocity
 	velocity = velocity.bounce(normal)
 	translate_direction = translate_direction.bounce(normal)
@@ -58,12 +63,7 @@ func _on_body_entered(collided_body) -> void:
 	var origin_name:String = origin_body.name \
 		if origin_body != null \
 		else StringName("UNKNOWN")
-	print(origin_name + " kill " + collided_body.name)
-	
-	# wait before bullet is really active
-	if origin_name == collided_body.name \
-		and time_before_active.time_left > 0:
-		return
+	print(origin_name, " hit ", collided_body.name)
 	
 	# check if a player is killed
 	var p: Player = collided_body as Player
@@ -71,7 +71,9 @@ func _on_body_entered(collided_body) -> void:
 		p.killed(origin_body.player_id)
 	
 	if collided_body.name == "Walls" and bounce_bullet:
-		# let's "_physics_process" handle the bounce
+		# avoid infinite bounce inside a wall
+		if _spawned: queue_free()
+		# let's "_physics_process()" handle the bounce
 		return
 	
 	goodbye_little_one()
@@ -82,3 +84,7 @@ func goodbye_little_one() -> void:
 	%Collision.set_deferred("disabled", true)
 	explosion.emitting = true
 	smoke.emitting = false
+
+func respawn_process() -> void:
+	# dispawn when level is restarting
+	queue_free()
