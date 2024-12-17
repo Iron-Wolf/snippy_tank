@@ -49,6 +49,7 @@ var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 var ammo_left: int
 var bounce_bullet: bool = false
+var lob_shot: bool = true
 var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
 var travel_total_previous: float = 0 # detect if player has moved
@@ -306,6 +307,7 @@ func shoot_triggered() -> void:
 	b.origin_body = self
 	b.translate_direction = velocity
 	b.bounce_bullet = bounce_bullet
+	b.lob_shot = lob_shot
 	b.transform = $Barrel/SpawnBullet.global_transform
 	b.add_to_group(GameState.GRP_RESPAWN)
 	parent_owner.add_child(b)

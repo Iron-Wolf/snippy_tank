@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cgeymtn3bii3y"]
+[gd_scene load_steps=8 format=3 uid="uid://cgeymtn3bii3y"]
 
 [ext_resource type="Script" path="res://scripts/bullet.gd" id="1_t843r"]
 [ext_resource type="Texture2D" uid="uid://b37uvjebqvrpw" path="res://assets/Bullets/bulletBeigeSilver_outline.png" id="2_f5gbg"]
@@ -16,6 +16,9 @@ size = Vector2(16, 19)
 [sub_resource type="Curve" id="Curve_1g0q1"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tr22s"]
+size = Vector2(26, 27.5)
 
 [node name="Bullet" type="RigidBody2D"]
 gravity_scale = 0.0
@@ -71,6 +74,9 @@ scale_amount_min = 8.76
 scale_amount_max = 21.51
 scale_amount_curve = SubResource("Curve_1g0q1")
 
-[node name="TimeBeforeActive" type="Timer" parent="."]
+[node name="AreaLobbed" type="Area2D" parent="."]
 unique_name_in_owner = true
-one_shot = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AreaLobbed"]
+position = Vector2(0, -5.75)
+shape = SubResource("RectangleShape2D_tr22s")

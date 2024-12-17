@@ -70,7 +70,7 @@ func _disable_collision() -> void:
 	get_tree().create_timer(10).connect("timeout", func():
 		dispawn()
 		return
-		
+		# some shitty code, to test some stuff...
 		linear_velocity = Vector2.ZERO
 		angular_velocity = 0
 		%Collision.disabled = false
