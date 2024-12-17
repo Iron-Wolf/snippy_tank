@@ -6,7 +6,7 @@ class_name Bullet extends RigidBody2D
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 var bounce_bullet: float = false
 var lob_shot: float = false
-var lob_distance: float = 500 # maximum distance for the lobbed shot
+var lob_distance: float = 300 # maximum distance for the lobbed shot
 
 const SPEED: float = 1000
 const KEEP_VELOCITY: bool = false
@@ -41,8 +41,8 @@ func _physics_process(delta: float) -> void:
 	if explosion.emitting:
 		return
 	
-	var _position_before = position
 	position = Utils.apply_screen_wrap(position, screen_size)
+	var position_before = position # call this AFTER screen warping
 	if KEEP_VELOCITY:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
@@ -57,9 +57,8 @@ func _physics_process(delta: float) -> void:
 	
 	if !lob_shot:
 		return
-	# add the result of "_position_before.distance_to(position)" but not working
-	# because of the screen warping (the "position" will have non-continuous values)
-	travel_total += 10 
+	
+	travel_total += position_before.distance_to(position)
 	var progress: float = _get_progress(travel_total, init_position, target_position)
 	if progress == 100:
 		# disable "lob" logic for all remaining frames

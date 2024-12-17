@@ -49,10 +49,10 @@ var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
 var ammo_left: int
 var bounce_bullet: bool = false
-var lob_shot: bool = true
+var lob_shot: bool = false
+var lob_distance: float = 300
 var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
-var travel_total_previous: float = 0 # detect if player has moved
 var travel_place_track: float = 0 # loop to "0" every 100 units
 var _current_loaded_tracks: Array = []
 
@@ -83,6 +83,8 @@ func _ready() -> void:
 		ammo_left += 1
 		if ammo_left != MAX_AMMO:
 			$ShootTimer.start(PlayerState.shoot_timer))
+	%LobShotTimer.connect("timeout", func():
+		lob_shot = true)
 	%ReloadBar.value = 0
 
 	respawn_process()
@@ -93,7 +95,10 @@ func _physics_process(delta) -> void:
 		return
 	
 	#region movement
-	var position_before = position
+	# TODO : move this in each level's script
+	position = Utils.apply_screen_wrap(position, screen_size)
+	var position_before = position # call this AFTER screen warping
+	
 	acceleration = Vector2.ZERO
 	match PlayerState.control_scheme:
 		PlayerState.Scheme.SIMPLE:
@@ -115,10 +120,6 @@ func _physics_process(delta) -> void:
 	# actual move and resolve collision
 	if move_and_slide():
 		apply_collision()
-	
-	# screen wrap after movement
-	# TODO : move this in each level's script
-	position = Utils.apply_screen_wrap(position, screen_size)
 	#endregion
 	
 	#region aim and shoot
@@ -168,12 +169,12 @@ func _physics_process(delta) -> void:
 	if abs(angle_rot) > deg_to_rad(60):
 		drifting = true
 	
-	travel_total += position_before.distance_to(position)
-	if travel_total > travel_total_previous:
-		# actually in movement
-		var travel_actual = travel_total - travel_total_previous
-		travel_total_previous = travel_total
-		# track placement logic
+	var travel_actual = position_before.distance_to(position)
+	travel_total += travel_actual
+	if velocity != Vector2.ZERO:
+		%LobShotTimer.stop()
+		lob_shot = false
+		# check if we place a track on the background
 		travel_place_track -= travel_actual
 		var track_texture = track_normal
 		if drifting:
@@ -185,6 +186,10 @@ func _physics_process(delta) -> void:
 			# reset to place a track every 30 units
 			travel_place_track = 30
 			draw_tracks(track_texture)
+	else:
+		# not moving
+		if !lob_shot and %LobShotTimer.is_stopped():
+			%LobShotTimer.start()
 	#endregion
 	
 	current_speed = Vector2.ZERO.distance_to(velocity)
@@ -201,14 +206,23 @@ func update_debug(dict: Dictionary) -> void:
 		debug_dict[key] = dict[key]
 	
 func _draw() -> void:
-	if debug_dict.size() == 0:
-		return
-	draw_line(debug_dict["acceleration"], Vector2.ZERO, Color.GREEN, 5)
-	draw_line(debug_dict["velocity"], Vector2.ZERO, Color.BLACK, 4)
-	# we rotate the full body, so "rotation" is just displayed in front
-	draw_line(Vector2(100, 0), Vector2.ZERO, Color.BLUE, 3)
-	draw_circle(debug_dict["move_direction"], 10, Color.RED)
-	#print(Engine.get_frames_per_second())
+	if lob_shot:
+		var offset_spawn_bullet = 55
+		var target_center = aim_direction.rotated(-rotation) * (lob_distance+offset_spawn_bullet)
+		draw_line(Vector2(target_center.x-10, target_center.y), \
+			Vector2(target_center.x+10, target_center.y), \
+			Color.WHITE, 5)
+		draw_line(Vector2(target_center.x, target_center.y-10), \
+			Vector2(target_center.x, target_center.y+10), \
+			Color.WHITE, 5)
+	
+	if debug_dict.size() != 0:
+		draw_line(debug_dict["acceleration"], Vector2.ZERO, Color.GREEN, 5)
+		draw_line(debug_dict["velocity"], Vector2.ZERO, Color.BLACK, 4)
+		# we rotate the full body, so "rotation" is just displayed in front
+		draw_line(Vector2(100, 0), Vector2.ZERO, Color.BLUE, 3)
+		draw_circle(debug_dict["move_direction"], 10, Color.RED)
+		#print(Engine.get_frames_per_second())
 
 # not optimal function (maybe should I use "draw_texture" ?)
 func draw_tracks(texture: Texture2D) -> void:
@@ -308,6 +322,7 @@ func shoot_triggered() -> void:
 	b.translate_direction = velocity
 	b.bounce_bullet = bounce_bullet
 	b.lob_shot = lob_shot
+	b.lob_distance = lob_distance
 	b.transform = $Barrel/SpawnBullet.global_transform
 	b.add_to_group(GameState.GRP_RESPAWN)
 	parent_owner.add_child(b)

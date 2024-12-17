@@ -120,7 +120,6 @@ scale_amount_curve = SubResource("Curve_mgk5h")
 color_ramp = SubResource("Gradient_dlffp")
 
 [node name="UI" type="Node" parent="."]
-unique_name_in_owner = true
 
 [node name="ReloadBar" type="TextureProgressBar" parent="UI"]
 unique_name_in_owner = true
@@ -132,6 +131,11 @@ fill_mode = 4
 texture_progress = ExtResource("4_pbjan")
 
 [node name="ShootTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="LobShotTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+wait_time = 0.5
 one_shot = true
 
 [node name="KillAudio" type="AudioStreamPlayer" parent="."]
