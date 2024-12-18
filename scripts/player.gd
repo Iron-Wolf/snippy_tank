@@ -18,6 +18,7 @@ const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const bullet_casing_ps: PackedScene = preload("res://scenes/bullet_casing.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
+const invert_shader = preload("res://shader/invert_color.gdshader")
 # Need this because "_physics_process" can run during "respawn_process".
 # So, "velocity" could receive strange values from "move_and_slide".
 # Can be avoided with a high enought KNOCKBACK_ON_COLLIDE or a push back 
@@ -28,7 +29,7 @@ var time_before_active: SceneTreeTimer
 
 # constants
 const STEERING_ANGLE: float = 400
-const MAX_SPEED: float = 1000
+var MAX_SPEED: float = 1000
 const FRICTION: float = -55
 const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
@@ -37,6 +38,7 @@ const KNOCKBACK_ON_COLLIDE: int = 40
 const MAX_AMMO: int = 3 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
 const KNOCKBACK_ON_SHOOT: int = 0
+const INIT_LOB_DISTANCE: float = 200
 
 # variables
 var is_duplicate: bool = false
@@ -44,13 +46,16 @@ var is_killed: bool = false
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
+var inverse_control: bool = false
 var current_speed: float = 0
 var aim_direction: Vector2 = Vector2.ZERO
 var last_aim_direction: Vector2 = Vector2.ZERO
+var held_shot: float = 0 # wait frames then start "hold shot" logic
 var ammo_left: int
+var shoot_cooldown: float = PlayerState.shoot_timer
 var bounce_bullet: bool = false
 var lob_shot: bool = false
-var lob_distance: float = 300
+var lob_distance: float = INIT_LOB_DISTANCE
 var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
 var travel_place_track: float = 0 # loop to "0" every 100 units
@@ -73,7 +78,7 @@ func _ready() -> void:
 	
 	$Tank.texture = tank_texture
 	$Barrel.texture = barrel_texture
-	$ShootTimer.wait_time = PlayerState.shoot_timer
+	$ShootTimer.wait_time = shoot_cooldown
 	$ShootTimer.connect("timeout", func():
 		# reload ALL ammo
 		if ammo_left == 0:
@@ -82,7 +87,7 @@ func _ready() -> void:
 		# reload and restart timer, until we are maxed
 		ammo_left += 1
 		if ammo_left != MAX_AMMO:
-			$ShootTimer.start(PlayerState.shoot_timer))
+			$ShootTimer.start(shoot_cooldown))
 	%LobShotTimer.connect("timeout", func():
 		lob_shot = true)
 	%ReloadBar.value = 0
@@ -131,8 +136,18 @@ func _physics_process(delta) -> void:
 		# keep aim to the last inputed direction
 		apply_aim(last_aim_direction)
 	
-	if Input.is_action_just_pressed(f("shoot")):
+	if Input.is_action_pressed(f("shoot")):
+		if lob_shot:
+			held_shot += 1
+			if held_shot > 15: # wait some frames
+				lob_distance = lerpf(lob_distance, 500, 0.02)
+		else:
+			held_shot = 0
+			lob_distance = INIT_LOB_DISTANCE
+	elif Input.is_action_just_released(f("shoot")):
 		shoot_triggered()
+		held_shot = 0
+		lob_distance = INIT_LOB_DISTANCE
 	#endregion
 	
 	%ReloadBar.position = position
@@ -204,9 +219,10 @@ func _physics_process(delta) -> void:
 func update_debug(dict: Dictionary) -> void:
 	for key in dict:
 		debug_dict[key] = dict[key]
-	
+
 func _draw() -> void:
 	if lob_shot:
+		# draw a target (because I'm a dev, not a designer)
 		var offset_spawn_bullet = 55
 		var target_center = aim_direction.rotated(-rotation) * (lob_distance+offset_spawn_bullet)
 		draw_line(Vector2(target_center.x-10, target_center.y), \
@@ -236,6 +252,16 @@ func draw_tracks(texture: Texture2D) -> void:
 	spw_tracks.add_child(track_sprite)
 	_current_loaded_tracks.push_back(track_sprite)
 
+func inverse_color(b: bool) -> void:
+	if b:
+		var override_material = ShaderMaterial.new()
+		override_material.shader = invert_shader
+		$Tank.material = override_material
+		$Barrel.material = override_material
+	else:
+		$Tank.material = null
+		$Barrel.material = null
+
 #region movement inputs
 func _unhandled_input(_event: InputEvent) -> void:
 	var old_aim_direction = aim_direction
@@ -244,6 +270,9 @@ func _unhandled_input(_event: InputEvent) -> void:
 	aim_direction = Input.get_vector(
 		f("aim_left"), f("aim_right"), f("aim_up"), f("aim_down"))
 	steer_direction = move_direction.x * deg_to_rad(STEERING_ANGLE)
+	
+	if inverse_control:
+		move_direction *= -1
 	
 	if PlayerState.slingshot_scheme and \
 		old_aim_direction and !aim_direction:
@@ -339,9 +368,9 @@ func shoot_triggered() -> void:
 		.rotated($Barrel.global_rotation - deg_to_rad(90))
 	
 	if ammo_left == 0:
-		$ShootTimer.start(PlayerState.shoot_timer * 1.5)
+		$ShootTimer.start(shoot_cooldown * 1.5)
 	else:
-		$ShootTimer.start(PlayerState.shoot_timer * 0.75)
+		$ShootTimer.start(shoot_cooldown * 0.75)
 
 func _shoot_cooldown(color: Color) -> void:
 	$Tank.modulate = color

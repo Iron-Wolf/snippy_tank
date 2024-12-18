@@ -12,13 +12,17 @@ enum Scheme {
 	ARCADE, 
 	EXPERT,
 }
-# aim
+# keep the aim at the last known position
 var last_aim_scheme: bool = false
+# shot when the aim is released (need adjustment ?)
 var slingshot_scheme: bool = false
 
 enum PowerUpType {
-	BOUNCE_BULLET, 
-	DUPLICATE_PLAYER, 
+	BOUNCE_BULLET,
+	DUPLICATE_PLAYER,
+	SHOOT_COOLDOWN,
+	MOVE_SPEED,
+	INVERSE_CONTROL,
 	#SHIELD,
 	#TRIPLE_SHOT
 }

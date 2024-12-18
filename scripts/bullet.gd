@@ -74,11 +74,9 @@ func _physics_process(delta: float) -> void:
 	if progress < 50:
 		%Sprite.scale += _lob_scale
 		smoke.scale += _lob_scale
-		velocity *= 0.99 # slow "upward" bullet
 	else :
 		%Sprite.scale -= _lob_scale
 		smoke.scale -= _lob_scale
-		velocity *= 1.01 # accelerate "downward" bullet
 
 func _get_progress(travel: float, start: Vector2, end: Vector2) -> float:
 	var total_dist = start.distance_to(end)

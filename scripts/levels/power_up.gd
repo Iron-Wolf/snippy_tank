@@ -8,11 +8,14 @@ signal duplicated_player
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player_ps: PackedScene = preload("res://scenes/player.tscn")
 
-var type: PlayerState.PowerUpType = randi_range(0, 1) as PlayerState.PowerUpType
+var type: PlayerState.PowerUpType = randi_range(0, 4) as PlayerState.PowerUpType
 const ANIM_SHAKE_SPEED: int = 15
 var spawn_anim: bool = true
 var spawn_anim_size: float = 200
 var _snap_player: Player # reference to the player getting the power-up
+
+var _reset_shoot_cooldown: float
+var _reset_max_speed: float
 
 func _ready() -> void:
 	%Sprite.visible = false
@@ -84,11 +87,19 @@ func _on_body_entered(collided_body: Node) -> void:
 	if _snap_player == null:
 		return
 	
+	_reset_shoot_cooldown = _snap_player.shoot_cooldown
+	_reset_max_speed = _snap_player.MAX_SPEED
 	match type:
 		PlayerState.PowerUpType.BOUNCE_BULLET:
 			call_deferred("_bounce_bullet")
 		PlayerState.PowerUpType.DUPLICATE_PLAYER:
 			call_deferred("_duplicate_player")
+		PlayerState.PowerUpType.SHOOT_COOLDOWN:
+			call_deferred("_shoot_cooldown")
+		PlayerState.PowerUpType.MOVE_SPEED:
+			call_deferred("_move_speed")
+		PlayerState.PowerUpType.INVERSE_CONTROL:
+			call_deferred("_inverse_control")
 
 func _bounce_bullet() -> void:
 	_snap_player.bounce_bullet = true
@@ -105,9 +116,31 @@ func _duplicate_player() -> void:
 		print("end 'duplicate' power up")
 		dispawn())
 
+func _shoot_cooldown() -> void:
+	_snap_player.shoot_cooldown *= 0.2
+	reparent(_snap_player.get_node("%PowerUpSnap"))
+	_disable_collision()
+
+func _move_speed() -> void:
+	_snap_player.MAX_SPEED *= 2
+	reparent(_snap_player.get_node("%PowerUpSnap"))
+	_disable_collision()
+
+func _inverse_control() -> void:
+	_snap_player.inverse_control = true
+	_snap_player.inverse_color(true)
+	reparent(_snap_player.get_node("%PowerUpSnap"))
+	_disable_collision()
+
+# also call by the WORLD scene, to reset vars on each round
 func dispawn() -> void:
 	if _snap_player:
 		_snap_player.bounce_bullet = false
+		_snap_player.shoot_cooldown = _reset_shoot_cooldown
+		_snap_player.MAX_SPEED = _reset_max_speed
+		_snap_player.inverse_control = false
+		_snap_player.inverse_color(false)
+		
 	# notify the level that we can spawn a new power up
 	despawned.emit()
 	queue_free()

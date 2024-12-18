@@ -17,8 +17,8 @@ size = Vector2(16, 19)
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_tr22s"]
-size = Vector2(26, 27.5)
+[sub_resource type="CircleShape2D" id="CircleShape2D_f8rem"]
+radius = 18.0156
 
 [node name="Bullet" type="RigidBody2D"]
 gravity_scale = 0.0
@@ -79,4 +79,4 @@ unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AreaLobbed"]
 position = Vector2(0, -5.75)
-shape = SubResource("RectangleShape2D_tr22s")
+shape = SubResource("CircleShape2D_f8rem")
