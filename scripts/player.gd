@@ -6,11 +6,11 @@ class_name Player extends CharacterBody2D
 @export var tank_texture: Texture2D
 @export var barrel_texture: Texture2D
 var parent_owner: Node # reference to the scene (the level) containing the player
+var spw_tracks: Marker2D
 signal fight_started
 signal player_killed
 
-@onready var screen_size:Vector2 = get_viewport_rect().size
-@onready var spw_tracks:Marker2D = parent_owner.get_node_or_null("%SpawnTracks")
+@onready var screen_size:Vector2 = get_viewport_rect().size 
 @onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
@@ -96,11 +96,14 @@ func _ready() -> void:
 #endregion
 
 func _physics_process(delta) -> void:
+	%ReloadBar.position = position
+	%ReloadBar.position.x += 20
+	%ReloadBar.position.y += 20
+	
 	if time_before_active.time_left != 0 or is_killed:
 		return
 	
 	#region movement
-	# TODO : move this in each level's script
 	position = Utils.apply_screen_wrap(position, screen_size)
 	var position_before = position # call this AFTER screen warping
 	
@@ -149,10 +152,6 @@ func _physics_process(delta) -> void:
 		held_shot = 0
 		lob_distance = INIT_LOB_DISTANCE
 	#endregion
-	
-	%ReloadBar.position = position
-	%ReloadBar.position.x += 20
-	%ReloadBar.position.y += 20
 	
 	#region miscellaneous feedback
 	@warning_ignore("integer_division")
@@ -394,6 +393,8 @@ func respawn_process() -> void:
 	is_killed = false
 	$Barrel.visible = true
 	%KillSmoke.emitting = false
+	if parent_owner.name == "World":
+		spw_tracks = parent_owner.spw_tracks
 	# reset game logic
 	ammo_left = MAX_AMMO
 	_shoot_cooldown(Color.WHITE)

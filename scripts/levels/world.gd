@@ -1,12 +1,14 @@
-extends Control
+class_name World extends Control
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
 @onready var power_up: PackedScene = preload("res://scenes/levels/power_up.tscn")
-@onready var spw_power_up_1:Marker2D = get_node_or_null("%SpawnPowerUp1")
 @onready var t_show_banner: Timer = %ShowBannerTimer
 @onready var t_hide_banner: Timer = %HideBannerTimer
 @onready var t_spw_item: Timer = %SpawnItemTimer
+var spw_power_up_1:Marker2D # node name : SpawnPowerUp1
+var spw_power_up_2:Marker2D # node name : SpawnPowerUp2
+var spw_tracks:Marker2D # node name : SpawnTracks
 
 const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
@@ -19,6 +21,7 @@ var _power_up: PowerUp
 
 func _ready() -> void:
 	_respawn_process()
+	_change_map()
 	if (GameState.p_infos.is_empty()): 
 		GameState.reset_state()
 	
@@ -111,11 +114,12 @@ func _add_common_properties(p: Player) -> void:
 	p.connect("player_killed", _on_player_killed)
 
 func _spawn_power_up() -> void:
-	if spw_power_up_1 == null or \
+	var spw_power_up: Marker2D = _get_rand_spw_power_up()
+	if spw_power_up == null or \
 		_power_up != null: 
 		return
 	var pu: PowerUp = power_up.instantiate()
-	pu.parent_owner = spw_power_up_1
+	pu.parent_owner = spw_power_up
 	pu.despawned.connect(func():
 		# allow a new power up to spawn
 		_power_up = null
@@ -132,9 +136,18 @@ func _spawn_power_up() -> void:
 		add_child(p)
 		_players_dup.push_back(p))
 	
-	spw_power_up_1.add_child(pu)
+	spw_power_up.add_child(pu)
 	# only 1 Power Up at a time
 	_power_up = pu
+
+# return a random spawn location
+func _get_rand_spw_power_up() -> Marker2D:
+	match randi_range(1, 2):
+		2:
+			return spw_power_up_2
+		_:
+			# default value
+			return spw_power_up_1
 
 func _on_player_killed() -> void:	
 	var dead_count:int = 0
@@ -153,6 +166,19 @@ func _on_player_killed() -> void:
 		# 1 or 0 player left
 		_reload_level()
 
+func _change_map() -> void:
+	# set id from "1" to "max" number of level
+	GameState.current_lvl_id = 1 + (GameState.current_lvl_id % 3)
+	for child in %Map.get_children():
+		%Map.remove_child(child)
+	
+	var lvl: PackedScene = load("res://scenes/levels/lvl%s.tscn"%GameState.current_lvl_id)
+	var lvlI: Node = lvl.instantiate()
+	spw_power_up_1 = lvlI.get_node("SpawnPowerUp1")
+	spw_power_up_2 = lvlI.get_node("SpawnPowerUp2")
+	spw_tracks = lvlI.get_node("SpawnTracks")
+	%Map.add_child(lvlI)
+
 func _reload_level() -> void:
 	# wait before reloading/changing the scene
 	await get_tree().create_timer(1).timeout
@@ -168,7 +194,7 @@ func _reload_level() -> void:
 		return
 	
 	if GameState.current_round % GameState.max_round_by_level == 0:
-		print("changing level... when there will be more...")
+		_change_map()
 	
 	%RoundLabel.text = "Round %s" % (GameState.current_round + 1)
 	t_show_banner.start()

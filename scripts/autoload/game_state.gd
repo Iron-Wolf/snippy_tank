@@ -6,7 +6,7 @@ var player_number: int = 2
 # score to win the game
 var winning_score: int = 5
 # number of round for a level before switching to the next one
-var max_round_by_level: int = 4 
+var max_round_by_level: int = 4
 
 # === INTERNAL VARIABLES ===
 # track player's info between levels
@@ -15,6 +15,8 @@ var p_infos: Dictionary = {
 }
 # track round number
 var current_round: int = 0
+# curent loaded level
+var current_lvl_id: int = 0
 # "true" for full feature gameplay scenes 
 # and "false" for others (like : user control)
 var in_game_scene: bool = true

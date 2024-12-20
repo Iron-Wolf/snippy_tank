@@ -9,7 +9,7 @@ func _ready() -> void:
 		(screen_size.x/2, screen_size.y/2)
 	
 	if GameState.player_number >= 1:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P1"
 		p.player_id = 1
 		p.tank_texture = PlayerState.p1_tank_texture
@@ -19,7 +19,7 @@ func _ready() -> void:
 		add_child(p)
 	
 	if GameState.player_number >= 2:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P2"
 		p.player_id = 2
 		p.tank_texture = PlayerState.p2_tank_texture
@@ -29,7 +29,7 @@ func _ready() -> void:
 		add_child(p)
 		
 	if GameState.player_number >= 3:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P3"
 		p.player_id = 3
 		p.tank_texture = PlayerState.p3_tank_texture
@@ -39,7 +39,7 @@ func _ready() -> void:
 		add_child(p)
 		
 	if GameState.player_number >= 4:
-		var p:CharacterBody2D = player.instantiate()
+		var p:Player = player.instantiate()
 		p.name = "P4"
 		p.player_id = 4
 		p.tank_texture = PlayerState.p4_tank_texture

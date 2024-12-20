@@ -2,25 +2,23 @@ extends Node
 
 @onready var g_screen_size: Vector2 = get_viewport().size
 
-func apply_screen_wrap(position: Vector2, screen_size: Vector2) -> Vector2:
-	# basic screen wrap
-	#position.x = wrapf(position.x, 0, screen_size.x)
-	#position.y = wrapf(position.y, 0, screen_size.y)
-	
-	# custom screen wrap
-	if position.x > screen_size.x:
-		position.x = 0
-		position.y -= 700
-	if position.x < 0:
-		position.x = screen_size.x
-		position.y += 700
-	if position.y > screen_size.y:
-		position.x += 800
-		position.y = 0
-	if position.y < 0:
-		position.x -= 800 
-		position.y = screen_size.y
-	
+func apply_screen_wrap(position: Vector2,
+		screen_size: Vector2,
+		lvl_id: int = GameState.current_lvl_id) -> Vector2:
+	if lvl_id == 1:
+		# custom screen wrap
+		if position.x > screen_size.x: 
+			position.x = 0; position.y -= 700
+		if position.x < 0: 
+			position.x = screen_size.x; position.y += 700
+		if position.y > screen_size.y: 
+			position.x += 800; position.y = 0
+		if position.y < 0: 
+			position.x -= 800; position.y = screen_size.y
+	else:
+		# basic screen wrap
+		position.x = wrapf(position.x, 0, screen_size.x)
+		position.y = wrapf(position.y, 0, screen_size.y)
 	return position
 
 func log_error(message: String, with_alert: bool = false) -> void:
