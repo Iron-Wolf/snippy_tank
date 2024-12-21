@@ -13,6 +13,11 @@ var clock_sign: int = 1
 
 func _ready() -> void:
 	GameState.reset_state()
+	if GameState.main_audio_playback != -1:
+		%BackGroundAudio.play(GameState.main_audio_playback)
+	else:
+		%BackGroundAudio.play(0.5)
+	
 	# alternate sign on each clock cycle
 	%Clock.connect("timeout", func():
 		clock_sign *= -1)
@@ -36,10 +41,13 @@ func _process(_delta: float) -> void:
 	soon_tm.scale += clock_sign * Vector2(clock_size, clock_size)
 
 func on_vs_mode_pressed() -> void:
+	# reset audio and load the game scene
+	GameState.main_audio_playback = -1
 	get_tree().change_scene_to_file("res://scenes/levels/world.tscn")
 
 func on_control_pressed():
 	await Utils.scene_cr(self)
+	GameState.main_audio_playback = %BackGroundAudio.get_playback_position()
 	get_tree().change_scene_to_file("res://scenes/levels/user_control.tscn")
 
 func on_settings_pressed() -> void:

@@ -8,6 +8,8 @@ extends Control
 @onready var back_btn:Button = get_node("%BackBtn")
 
 func _ready() -> void:
+	back_btn.grab_focus()
+	
 	#region GENERAL
 	winning_score.value = GameState.winning_score
 	winning_score.value_changed.connect(func(value: int):

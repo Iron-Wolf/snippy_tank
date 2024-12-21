@@ -4,6 +4,8 @@ extends Control
 @onready var player: PackedScene = preload("res://scenes/player.tscn")
 
 func _ready() -> void:
+	if GameState.main_audio_playback != -1:
+		%BackGroundAudio.play(GameState.main_audio_playback)
 	GameState.in_game_scene = false
 	var screen_center: Vector2 = Vector2 \
 		(screen_size.x/2, screen_size.y/2)
@@ -53,6 +55,7 @@ func _ready() -> void:
 func _unhandled_input(_event: InputEvent) -> void:
 	if Input.is_action_just_pressed("p_start"):
 		await Utils.scene_cl(self)
+		GameState.main_audio_playback = %BackGroundAudio.get_playback_position()
 		get_tree().change_scene_to_file("res://scenes/menus/main.tscn")
 
 func _exit_tree() -> void:

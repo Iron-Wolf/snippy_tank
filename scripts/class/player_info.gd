@@ -1,5 +1,6 @@
 class_name PlayerInfo
 
+var player_id: int = -1
 var name: String = ""
 var score: int = 0
 var color: Color = Color.WHITE

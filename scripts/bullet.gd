@@ -119,6 +119,11 @@ func _on_body_entered(collided_body) -> void:
 		# let's "_physics_process()" handle the bounce
 		return
 	
+	var b: Bullet = collided_body as Bullet
+	if b:
+		# kind of janky because the 2 bullets play the sound
+		%BulletHitBullet.play(1.1)
+	
 	goodbye_little_one()
 
 func goodbye_little_one() -> void:

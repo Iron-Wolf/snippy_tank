@@ -294,7 +294,6 @@ one_shot = true
 stream = SubResource("AudioStreamSynchronized_j0fkd")
 volume_db = -5.0
 script = ExtResource("11_60sg1")
-mute = true
 
 [node name="time_in_fight" type="Timer" parent="BackgroundAudio"]
 

@@ -6,6 +6,7 @@ class_name World extends Control
 @onready var t_show_banner: Timer = %ShowBannerTimer
 @onready var t_hide_banner: Timer = %HideBannerTimer
 @onready var t_spw_item: Timer = %SpawnItemTimer
+@onready var camera: CameraWorld = $Camera2D
 var spw_power_up_1:Marker2D # node name : SpawnPowerUp1
 var spw_power_up_2:Marker2D # node name : SpawnPowerUp2
 var spw_tracks:Marker2D # node name : SpawnTracks
@@ -109,8 +110,8 @@ func _add_common_properties(p: Player) -> void:
 	p.add_to_group(GameState.GRP_RESPAWN)
 	p.parent_owner = self
 	p.connect("fight_started", $BackgroundAudio.on_fight_started)
-	p.connect("fight_started", $Camera2D.on_fight_started)
-	p.connect("player_killed", $Camera2D.on_player_killed)
+	p.connect("fight_started", camera.on_fight_started)
+	p.connect("player_killed", camera.on_player_killed)
 	p.connect("player_killed", _on_player_killed)
 
 func _spawn_power_up() -> void:
@@ -190,7 +191,10 @@ func _reload_level() -> void:
 		.size()
 	if winner_count >= 1:
 		# at least one player has win
-		get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
+		if get_tree():
+			# check the tree, because he can be null (if players kill
+			# each other on the "same" frames)
+			get_tree().change_scene_to_file("res://scenes/menus/end_results.tscn")
 		return
 	
 	if GameState.current_round % GameState.max_round_by_level == 0:

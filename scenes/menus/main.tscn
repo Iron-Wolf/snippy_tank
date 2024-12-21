@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://llrdda7eqe8k"]
+[gd_scene load_steps=6 format=3 uid="uid://llrdda7eqe8k"]
 
 [ext_resource type="Script" path="res://scripts/menus/main.gd" id="1_50ggu"]
 [ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="2_q2v8e"]
 [ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="3_1mea8"]
+[ext_resource type="AudioStream" uid="uid://bwe0ed1vo2lt0" path="res://assets/sound/funk-beat_freesound_community.mp3" id="4_g3xmq"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kiaen"]
 texture = ExtResource("2_q2v8e")
@@ -35,8 +36,11 @@ offset_left = -336.5
 offset_right = 336.5
 offset_bottom = 135.0
 grow_horizontal = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_y = 5
+theme_override_constants/shadow_offset_x = 5
 bbcode_enabled = true
-text = "[wave amp=50 freq=5][rainbow freq=0.5][p align=c][font_size=90]Snippy Tank"
+text = "[wave amp=50 freq=5][rainbow freq=0.1][p align=c][font_size=90]Snippy Tank"
 
 [node name="HBoxMain" type="HBoxContainer" parent="."]
 layout_mode = 1
@@ -130,3 +134,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 50
 text = "Exit"
+
+[node name="BackGroundAudio" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("4_g3xmq")
