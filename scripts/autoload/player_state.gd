@@ -18,11 +18,11 @@ var last_aim_scheme: bool = false
 var slingshot_scheme: bool = false
 
 enum PowerUpType {
-	BOUNCE_BULLET,
-	DUPLICATE_PLAYER,
-	SHOOT_COOLDOWN,
-	MOVE_SPEED,
-	INVERSE_CONTROL,
+	BOUNCE_BULLET, # 0
+	DUPLICATE_PLAYER, # 1
+	INFINITE_AMMO, # 2
+	MOVE_SPEED, # 3
+	INVERSE_CONTROL, # 4
 	#SHIELD,
 	#TRIPLE_SHOT
 }

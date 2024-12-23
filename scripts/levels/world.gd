@@ -13,7 +13,6 @@ var spw_tracks:Marker2D # node name : SpawnTracks
 
 const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
-const TIMER_POWER_UP: float = 60
 
 var _win_banner_base_speed: float = 1
 var _players: Array[Player] = []
@@ -32,7 +31,7 @@ func _ready() -> void:
 	t_show_banner.connect("timeout", func():
 		t_hide_banner.start())
 	
-	t_spw_item.wait_time = TIMER_POWER_UP
+	t_spw_item.wait_time = GameState.timer_power_up
 	t_spw_item.start()
 	t_spw_item.connect("timeout", func():
 		_spawn_power_up())

@@ -19,7 +19,7 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_f8rem"]
-radius = 18.0156
+radius = 18.0
 
 [node name="Bullet" type="RigidBody2D"]
 gravity_scale = 0.0

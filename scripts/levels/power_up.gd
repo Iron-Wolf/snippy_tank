@@ -16,6 +16,7 @@ var _snap_player: Player # reference to the player getting the power-up
 
 var _reset_shoot_cooldown: float
 var _reset_max_speed: float
+var _reset_max_ammo: int
 
 func _ready() -> void:
 	%Sprite.visible = false
@@ -89,13 +90,14 @@ func _on_body_entered(collided_body: Node) -> void:
 	
 	_reset_shoot_cooldown = _snap_player.shoot_cooldown
 	_reset_max_speed = _snap_player.MAX_SPEED
+	_reset_max_ammo = _snap_player.MAX_AMMO
 	match type:
 		PlayerState.PowerUpType.BOUNCE_BULLET:
 			call_deferred("_bounce_bullet")
 		PlayerState.PowerUpType.DUPLICATE_PLAYER:
 			call_deferred("_duplicate_player")
-		PlayerState.PowerUpType.SHOOT_COOLDOWN:
-			call_deferred("_shoot_cooldown")
+		PlayerState.PowerUpType.INFINITE_AMMO:
+			call_deferred("_infinite_ammo")
 		PlayerState.PowerUpType.MOVE_SPEED:
 			call_deferred("_move_speed")
 		PlayerState.PowerUpType.INVERSE_CONTROL:
@@ -116,8 +118,13 @@ func _duplicate_player() -> void:
 		print("end 'duplicate' power up")
 		dispawn())
 
-func _shoot_cooldown() -> void:
-	_snap_player.shoot_cooldown *= 0.2
+func _infinite_ammo() -> void:
+	_snap_player.shoot_cooldown = 0.1
+	# trigger an infinite reload animation
+	# (during the "ShootTimer" timeout function of the player)
+	_snap_player.MAX_AMMO = -1
+	_snap_player.ammo_left = 99
+	_snap_player.sprite_modulate(Color.WHITE)
 	reparent(_snap_player.get_node("%PowerUpSnap"))
 	_disable_collision()
 
@@ -138,6 +145,8 @@ func dispawn() -> void:
 		_snap_player.bounce_bullet = false
 		_snap_player.shoot_cooldown = _reset_shoot_cooldown
 		_snap_player.MAX_SPEED = _reset_max_speed
+		_snap_player.MAX_AMMO = _reset_max_ammo
+		_snap_player.ammo_left = _reset_max_ammo
 		_snap_player.inverse_control = false
 		_snap_player.inverse_color(false)
 		

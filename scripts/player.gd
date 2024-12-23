@@ -35,7 +35,7 @@ const DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
 const KNOCKBACK_ON_COLLIDE: int = 40
-const MAX_AMMO: int = 3 # "-1" for infinite
+var MAX_AMMO: int = 3 # "-1" for infinite
 const ANIM_SHAKE_SPEED: int = 15
 const KNOCKBACK_ON_SHOOT: int = 0
 const INIT_LOB_DISTANCE: float = 200
@@ -80,8 +80,9 @@ func _ready() -> void:
 	$Barrel.texture = barrel_texture
 	$ShootTimer.wait_time = shoot_cooldown
 	$ShootTimer.connect("timeout", func():
-		# reload ALL ammo
-		if ammo_left == 0:
+		# reload ALL ammo (with the power up, 
+		# ammo_left can be reset during a cooldown)
+		if ammo_left == 0 or ammo_left == MAX_AMMO:
 			ammo_left = MAX_AMMO
 			return
 		# reload and restart timer, until we are maxed
@@ -164,7 +165,7 @@ func _physics_process(delta) -> void:
 	# animate brightness related to shoot cooldown
 	var percent_time_left: float = $ShootTimer.time_left / $ShootTimer.wait_time
 	if $ShootTimer.time_left == 0:
-		_shoot_cooldown(Color.WHITE)
+		sprite_modulate(Color.WHITE)
 	elif ammo_left <= 0 and $ShootTimer.time_left < 0.5:
 		$Tank.modulate.v = 1.0 if shake == 1 else 0.3
 		$Barrel.self_modulate.v = 1.0 if shake == 1 else 0.3
@@ -358,9 +359,10 @@ func shoot_triggered() -> void:
 	var bc = bullet_casing_ps.instantiate()
 	bc.transform = $Barrel/SpawnBullet.global_transform
 	if (spw_tracks != null):
-		spw_tracks.add_child(bc)
+		spw_tracks.add_child(bc)  
 	
 	fight_started.emit()
+	Input.start_joy_vibration(player_id-1, 0.3, 0, 0.1) # weak vibration  
 	$ShootAudio.play(0.4)
 	%ShootSmoke.emitting = true
 	velocity -= Vector2(KNOCKBACK_ON_SHOOT, 0) \
@@ -371,7 +373,7 @@ func shoot_triggered() -> void:
 	else:
 		$ShootTimer.start(shoot_cooldown * 0.75)
 
-func _shoot_cooldown(color: Color) -> void:
+func sprite_modulate(color: Color) -> void:
 	$Tank.modulate = color
 	$Barrel.self_modulate = color
 #endregion
@@ -397,7 +399,7 @@ func respawn_process() -> void:
 		spw_tracks = parent_owner.spw_tracks
 	# reset game logic
 	ammo_left = MAX_AMMO
-	_shoot_cooldown(Color.WHITE)
+	sprite_modulate(Color.WHITE)
 	$ShootTimer.stop()
 	time_before_active = get_tree().create_timer(0.3)
 	# reset positions

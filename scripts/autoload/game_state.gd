@@ -7,6 +7,8 @@ var player_number: int = 2
 var winning_score: int = 5
 # number of round for a level before switching to the next one
 var max_round_by_level: int = 4
+# time to wait before a Power Up is spawned
+var timer_power_up: float = 60
 
 # === INTERNAL VARIABLES ===
 # track player's info between levels
@@ -22,7 +24,7 @@ var current_lvl_id: int = 0
 var in_game_scene: bool = true
 # max number (used in the settings)
 const MAX_PLAYER: int = 4
-# current playback position of the main screen audio
+# keep track of the main screen audio playback position
 var main_audio_playback: float = -1
 
 # === OTHER ===

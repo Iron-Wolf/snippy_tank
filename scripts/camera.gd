@@ -31,6 +31,8 @@ func on_fight_started() -> void:
 
 func on_player_killed() -> void:
 	trauma = 0.8
+	for p: PlayerInfo in GameState.p_infos.values():
+		Input.start_joy_vibration(p.player_id-1, 0, 1, 0.5) # strong vibration
 
 func follow_player(players: Array[Player]) -> void:
 	var winner_id: int = GameState.get_players_by_score()[0].player_id

@@ -1,4 +1,3 @@
-# https://www.youtube.com/watch?v=be-Xjg8oPbQ
 extends Control
 
 @onready var winning_score:SpinBox = get_node("%WinningScore")
@@ -41,3 +40,11 @@ func _ready() -> void:
 	back_btn.pressed.connect(func():
 		GameState.reset_state()
 		hide())
+
+# TODO : does not resolve all controls on gamepad (keyboard is fine by default)
+func _input(_event: InputEvent) -> void:
+	# trigger GamePad action on Button
+	if Input.is_action_just_pressed("p_btn0"):
+		var gui = get_viewport().gui_get_focus_owner()
+		if gui != null and gui is Button:
+			gui.pressed.emit()
