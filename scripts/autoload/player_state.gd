@@ -23,8 +23,8 @@ enum PowerUpType {
 	INFINITE_AMMO, # 2
 	MOVE_SPEED, # 3
 	INVERSE_CONTROL, # 4
+	TRIPLE_SHOT, # 5
 	#SHIELD,
-	#TRIPLE_SHOT
 }
 
 # === OTHER ===

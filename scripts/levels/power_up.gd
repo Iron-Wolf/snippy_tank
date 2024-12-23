@@ -8,7 +8,7 @@ signal duplicated_player
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player_ps: PackedScene = preload("res://scenes/player.tscn")
 
-var type: PlayerState.PowerUpType = randi_range(0, 4) as PlayerState.PowerUpType
+var type: PlayerState.PowerUpType = randi_range(0, 5) as PlayerState.PowerUpType
 const ANIM_SHAKE_SPEED: int = 15
 var spawn_anim: bool = true
 var spawn_anim_size: float = 200
@@ -102,6 +102,8 @@ func _on_body_entered(collided_body: Node) -> void:
 			call_deferred("_move_speed")
 		PlayerState.PowerUpType.INVERSE_CONTROL:
 			call_deferred("_inverse_control")
+		PlayerState.PowerUpType.TRIPLE_SHOT:
+			call_deferred("_triple_shot")
 
 func _bounce_bullet() -> void:
 	_snap_player.bounce_bullet = true
@@ -130,6 +132,7 @@ func _infinite_ammo() -> void:
 
 func _move_speed() -> void:
 	_snap_player.MAX_SPEED *= 2
+	_snap_player.ANIM_SHAKE_SPEED /= 2
 	reparent(_snap_player.get_node("%PowerUpSnap"))
 	_disable_collision()
 
@@ -139,14 +142,21 @@ func _inverse_control() -> void:
 	reparent(_snap_player.get_node("%PowerUpSnap"))
 	_disable_collision()
 
+func _triple_shot() -> void:
+	_snap_player.bullet_fired = 3
+	reparent(_snap_player.get_node("%PowerUpSnap"))
+	_disable_collision()
+
 # also call by the WORLD scene, to reset vars on each round
 func dispawn() -> void:
 	if _snap_player:
 		_snap_player.bounce_bullet = false
+		_snap_player.bullet_fired = 1
 		_snap_player.shoot_cooldown = _reset_shoot_cooldown
 		_snap_player.MAX_SPEED = _reset_max_speed
 		_snap_player.MAX_AMMO = _reset_max_ammo
 		_snap_player.ammo_left = _reset_max_ammo
+		_snap_player.ANIM_SHAKE_SPEED *= 2
 		_snap_player.inverse_control = false
 		_snap_player.inverse_color(false)
 		

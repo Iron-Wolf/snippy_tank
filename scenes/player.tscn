@@ -90,8 +90,14 @@ scale_amount_min = 8.76
 scale_amount_max = 21.51
 scale_amount_curve = SubResource("Curve_1g0q1")
 
-[node name="SpawnBullet" type="Marker2D" parent="Barrel"]
-position = Vector2(-0.000188239, -52)
+[node name="SpawnBullet1" type="Marker2D" parent="Barrel"]
+position = Vector2(-20.0002, -51.9999)
+
+[node name="SpawnBullet2" type="Marker2D" parent="Barrel"]
+position = Vector2(-0.000188828, -52)
+
+[node name="SpawnBullet3" type="Marker2D" parent="Barrel"]
+position = Vector2(19.9998, -52.0001)
 
 [node name="TankCollision" type="CollisionShape2D" parent="."]
 position = Vector2(2, 0)

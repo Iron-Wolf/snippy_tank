@@ -36,7 +36,7 @@ const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
 const KNOCKBACK_ON_COLLIDE: int = 40
 var MAX_AMMO: int = 3 # "-1" for infinite
-const ANIM_SHAKE_SPEED: int = 15
+var ANIM_SHAKE_SPEED: int = 15
 const KNOCKBACK_ON_SHOOT: int = 0
 const INIT_LOB_DISTANCE: float = 200
 
@@ -53,6 +53,8 @@ var last_aim_direction: Vector2 = Vector2.ZERO
 var held_shot: float = 0 # wait frames then start "hold shot" logic
 var ammo_left: int
 var shoot_cooldown: float = PlayerState.shoot_timer
+var bullet_fired: int = 1 # number of bullet fired on each shot
+var _multi_shot_max_angle: int = 15
 var bounce_bullet: bool = false
 var lob_shot: bool = false
 var lob_distance: float = INIT_LOB_DISTANCE
@@ -346,18 +348,29 @@ func shoot_triggered() -> void:
 	ammo_left -= 1
 	shot_total += 1
 	
-	var b:Bullet = bullet_ps.instantiate()
-	b.origin_body = self
-	b.translate_direction = velocity
-	b.bounce_bullet = bounce_bullet
-	b.lob_shot = lob_shot
-	b.lob_distance = lob_distance
-	b.transform = $Barrel/SpawnBullet.global_transform
-	b.add_to_group(GameState.GRP_RESPAWN)
-	parent_owner.add_child(b)
+	var spwn_bullet_id: int = 2 if bullet_fired == 1 else 1
+	for i:int in range(0, bullet_fired):
+		var b:Bullet = bullet_ps.instantiate()
+		b.origin_body = self
+		b.translate_direction = velocity
+		b.bounce_bullet = bounce_bullet
+		b.lob_shot = lob_shot
+		b.lob_distance = lob_distance
+		var spw = get_node("Barrel/SpawnBullet%s"%spwn_bullet_id)
+		b.transform = spw.global_transform
+		var rand_a: int = 0 # default bullet angle
+		if spwn_bullet_id == 1:
+			rand_a = randi_range(-_multi_shot_max_angle, 0)
+		elif spwn_bullet_id == 3:
+			rand_a = randi_range(0, _multi_shot_max_angle)
+		b.rotate(deg_to_rad(rand_a))
+		# next shot position
+		spwn_bullet_id += 1
+		b.add_to_group(GameState.GRP_RESPAWN)
+		parent_owner.add_child(b)
 	
 	var bc = bullet_casing_ps.instantiate()
-	bc.transform = $Barrel/SpawnBullet.global_transform
+	bc.transform = $Barrel/SpawnBullet2.global_transform
 	if (spw_tracks != null):
 		spw_tracks.add_child(bc)  
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://gfblg58edgbm"]
+[gd_scene load_steps=7 format=3 uid="uid://gfblg58edgbm"]
 
 [ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="1_jsc31"]
 [ext_resource type="Script" path="res://scripts/menus/end_results.gd" id="2_h67ut"]
@@ -10,6 +10,10 @@ shader = ExtResource("3_ac1ig")
 shader_parameter/strength = 0.593
 shader_parameter/speed = 0.1
 shader_parameter/angle = 30.0
+
+[sub_resource type="Gradient" id="Gradient_hbpnp"]
+offsets = PackedFloat32Array(0, 0.344697, 0.685606, 1)
+colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
 
 [node name="EndResults" type="Control"]
 layout_mode = 3
@@ -99,3 +103,25 @@ text = "[pulse]Press anything to quit"
 unique_name_in_owner = true
 stream = ExtResource("3_a02tl")
 volume_db = -5.0
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 40.0
+grow_horizontal = 2
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Container"]
+position = Vector2(0, -20)
+amount = 100
+lifetime = 2.0
+emission_shape = 3
+emission_rect_extents = Vector2(900, 1)
+angular_velocity_min = -720.0
+angular_velocity_max = 720.0
+scale_amount_min = 10.0
+scale_amount_max = 30.0
+color_initial_ramp = SubResource("Gradient_hbpnp")
