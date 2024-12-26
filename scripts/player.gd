@@ -18,7 +18,7 @@ const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const bullet_casing_ps: PackedScene = preload("res://scenes/bullet_casing.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
 const track_drift: Texture2D = preload("res://assets/Tanks/tracksSmall5.png")
-const invert_shader = preload("res://shader/invert_color.gdshader")
+const invert_shader: Shader = preload("res://shader/invert_color.gdshader")
 # Need this because "_physics_process" can run during "respawn_process".
 # So, "velocity" could receive strange values from "move_and_slide".
 # Can be avoided with a high enought KNOCKBACK_ON_COLLIDE or a push back 
