@@ -3,6 +3,7 @@ class_name Bullet extends RigidBody2D
 @onready var screen_size = get_viewport_rect().size
 @onready var smoke: CPUParticles2D = %Smoke
 @onready var explosion: CPUParticles2D = %Explosion
+@onready var barrel_part: PackedScene = preload("res://scenes/levels/barrel_part.tscn")
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 var bounce_bullet: float = false
 var lob_shot: float = false
@@ -166,8 +167,9 @@ func destroy_tile(tilemap: TileMapLayer):
 		# with the classic shot, the bullet position is not in a wall cell
 		# so, we push it into the wall to detect wich cell we hit
 		offset_front = -transform.y*20
+	# debug mode need a rotation to be accurate
 	debug_dict.push_back(offset_front.rotated(-rotation))
-	
+	# for the cell, we use a function that doesn't need the rotation
 	var cell_position: Vector2i = tilemap.local_to_map(position + offset_front)
 	if GameState.current_lvl_id == 1:
 		# on the first level, we don't want to hit the sourounding walls
@@ -181,6 +183,23 @@ func destroy_tile(tilemap: TileMapLayer):
 	if cell_source_id != -1: 
 		# set to -1, to delete tile
 		tilemap.set_cell(cell_position, -1)
+		# spawn a damaged barrel on the position
+		var parent = get_parent()
+		if parent:
+			var bp: RigidBody2D = barrel_part.instantiate()
+			# random start value to simulate the explosion momentum
+			var randx: int = randi_range(-100,100)
+			var randy: int = randi_range(-100,100)
+			bp.linear_velocity = Vector2(randx, randy)
+			# rotation is more or less linked to the velocity
+			bp.angular_velocity = bp.linear_velocity.length() * 0.2 * randi_range(-1, 1)
+			# spawn position in the world
+			bp.transform = global_transform
+			# push the spawn position a little bit in front of the actual
+			# position of the Bullet (to be somewhat in the center of the wall)
+			bp.translate(offset_front*2) # "*2" because offset is not quite far enough
+			parent.add_child(bp)
+			parent.move_child(bp, 1)
 
 func respawn_process() -> void:
 	# dispawn when level is restarting

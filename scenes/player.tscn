@@ -31,7 +31,8 @@ position = Vector2(2, 0)
 rotation = 1.5708
 texture = ExtResource("1_53oag")
 
-[node name="ColorRect" type="ColorRect" parent="Tank"]
+[node name="TestParentClipChildren" type="ColorRect" parent="Tank"]
+editor_description = "A test of a self modulate that use the parent's \"clip children\" property."
 visible = false
 offset_left = -50.0
 offset_top = -52.0

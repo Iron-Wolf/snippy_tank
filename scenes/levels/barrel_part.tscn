@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://05jbg70y7pw2"]
+
+[ext_resource type="Texture2D" uid="uid://bflkwpggrx65k" path="res://assets/Obstacles/barrelGrey_side_half.png" id="1_58l51"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cg704"]
+size = Vector2(40, 31)
+
+[node name="BarrelPart" type="RigidBody2D"]
+collision_layer = 2
+collision_mask = 3
+gravity_scale = 0.0
+linear_damp = 2.0
+angular_damp = 1.0
+
+[node name="Sprite" type="Sprite2D" parent="."]
+modulate = Color(0.20033, 0.20033, 0.20033, 1)
+texture = ExtResource("1_58l51")
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3.5)
+shape = SubResource("RectangleShape2D_cg704")
