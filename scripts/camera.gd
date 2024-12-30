@@ -29,7 +29,7 @@ func shake():
 func on_fight_started() -> void:
 	trauma = 0.3
 
-func on_player_killed() -> void:
+func on_player_killed(_killer_id: int, _killed_id: int) -> void:
 	trauma = 0.8
 	for p: PlayerInfo in GameState.p_infos.values():
 		Input.start_joy_vibration(p.player_id-1, 0, 1, 0.5) # strong vibration

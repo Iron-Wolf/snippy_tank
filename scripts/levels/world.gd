@@ -149,7 +149,11 @@ func _get_rand_spw_power_up() -> Marker2D:
 			# default value
 			return spw_power_up_1
 
-func _on_player_killed() -> void:	
+func _on_player_killed(killer_id: int, killed_id: int) -> void:
+	# TODO : could move "score_label" logic (from Player) inside this method
+	var particle = "%" + "P%sParticles" % killer_id
+	get_node(particle).emitting = true  
+	
 	var dead_count:int = 0
 	for p:Player in _players:
 		if p.is_killed:

@@ -16,6 +16,9 @@ The result is far from perfect, but very close to my expectations.
 - basic menus: https://www.youtube.com/watch?v=zHYkcJyE52g
 - advanced menus: https://www.youtube.com/watch?v=be-Xjg8oPbQ
 - spinner : https://www.youtube.com/watch?v=cAMvqny_Yww
+- shader : 
+  - speed lines : https://godotshaders.com/shader/speed-lines-shader-for-godot-4/
+  - shockwave : https://www.youtube.com/watch?v=SCHdglr35pk
 
 # Tools
 - create tilesheet : https://www.gamedeveloperstudio.com/tools/tile_sheet_creator/tile_sheet_creator.php

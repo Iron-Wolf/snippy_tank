@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=4 uid="uid://dok78wo6lur2l"]
+[gd_scene load_steps=26 format=4 uid="uid://dok78wo6lur2l"]
 
 [ext_resource type="Script" path="res://scripts/levels/world.gd" id="1_3vq77"]
 [ext_resource type="Texture2D" uid="uid://c4x5rsq50hpic" path="res://assets/Spritesheet/background_sheet.png" id="2_j5p3t"]
@@ -114,6 +114,10 @@ sources/1 = SubResource("TileSetAtlasSource_qurqc")
 [sub_resource type="Theme" id="Theme_j82xi"]
 default_font_size = 40
 
+[sub_resource type="Curve" id="Curve_wf6ih"]
+_data = [Vector2(0.136364, 0), 0.0, 0.0, 0, 0, Vector2(0.474026, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
 [sub_resource type="AudioStreamSynchronized" id="AudioStreamSynchronized_j0fkd"]
 stream_count = 2
 stream_0/stream = ExtResource("9_iihpq")
@@ -171,8 +175,26 @@ offset_right = 197.0
 offset_bottom = 112.0
 theme_override_colors/font_color = Color(0.750102, 0.254084, 0, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "test"
 script = ExtResource("7_dn5bt")
 player_id = 1
+
+[node name="P1Particles" type="CPUParticles2D" parent="UI/P1Score"]
+unique_name_in_owner = true
+emitting = false
+amount = 30
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+particle_flag_align_y = true
+direction = Vector2(1, 1)
+gravity = Vector2(0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 400.0
+scale_amount_min = 20.0
+scale_amount_max = 40.0
+scale_amount_curve = SubResource("Curve_wf6ih")
+color = Color(0.74902, 0.254902, 0, 1)
 
 [node name="P2Score" type="Label" parent="UI"]
 unique_name_in_owner = true
@@ -184,8 +206,26 @@ offset_right = 1737.0
 offset_bottom = 116.0
 theme_override_colors/font_color = Color(0.183202, 0.414188, 1, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "test"
 script = ExtResource("7_dn5bt")
 player_id = 2
+
+[node name="P2Particles" type="CPUParticles2D" parent="UI/P2Score"]
+unique_name_in_owner = true
+emitting = false
+amount = 30
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+particle_flag_align_y = true
+direction = Vector2(-1, 1)
+gravity = Vector2(0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 400.0
+scale_amount_min = 20.0
+scale_amount_max = 40.0
+scale_amount_curve = SubResource("Curve_wf6ih")
+color = Color(0.184314, 0.415686, 1, 1)
 
 [node name="P3Score" type="Label" parent="UI"]
 unique_name_in_owner = true
@@ -197,8 +237,26 @@ offset_right = 216.0
 offset_bottom = 964.0
 theme_override_colors/font_color = Color(0.825805, 0.776458, 0.635643, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "test"
 script = ExtResource("7_dn5bt")
 player_id = 3
+
+[node name="P3Particles" type="CPUParticles2D" parent="UI/P3Score"]
+unique_name_in_owner = true
+emitting = false
+amount = 30
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+particle_flag_align_y = true
+direction = Vector2(1, -1)
+gravity = Vector2(0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 400.0
+scale_amount_min = 20.0
+scale_amount_max = 40.0
+scale_amount_curve = SubResource("Curve_wf6ih")
+color = Color(0.592157, 0.537255, 0.380392, 1)
 
 [node name="P4Score" type="Label" parent="UI"]
 unique_name_in_owner = true
@@ -210,8 +268,26 @@ offset_right = 1725.0
 offset_bottom = 967.0
 theme_override_colors/font_color = Color(0, 0.537255, 0.168627, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+text = "test"
 script = ExtResource("7_dn5bt")
 player_id = 4
+
+[node name="P4Particles" type="CPUParticles2D" parent="UI/P4Score"]
+unique_name_in_owner = true
+emitting = false
+amount = 30
+one_shot = true
+emission_shape = 1
+emission_sphere_radius = 10.0
+particle_flag_align_y = true
+direction = Vector2(-1, -1)
+gravity = Vector2(0, 0)
+initial_velocity_min = 200.0
+initial_velocity_max = 400.0
+scale_amount_min = 20.0
+scale_amount_max = 40.0
+scale_amount_curve = SubResource("Curve_wf6ih")
+color = Color(0, 0.537255, 0.168627, 1)
 
 [node name="WinBanner" type="Control" parent="."]
 unique_name_in_owner = true

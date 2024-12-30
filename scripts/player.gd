@@ -8,7 +8,7 @@ class_name Player extends CharacterBody2D
 var parent_owner: Node # reference to the scene (the level) containing the player
 var spw_tracks: Marker2D
 signal fight_started
-signal player_killed
+signal player_killed(killer_id: int, killed_id: int)
 
 @onready var screen_size:Vector2 = get_viewport_rect().size 
 @onready var init_position: Vector2 = position
@@ -401,7 +401,7 @@ func killed(origin_player_id: int) -> void:
 	$Barrel.visible = false
 	%KillSmoke.emitting = true
 	# spread info when all is set
-	player_killed.emit()
+	player_killed.emit(origin_player_id, player_id)
 	$KillAudio.play()
 
 func respawn_process() -> void:
