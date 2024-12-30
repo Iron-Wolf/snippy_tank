@@ -26,3 +26,8 @@ The result is far from perfect, but very close to my expectations.
 # Credits
 - Graphics : https://www.kenney.nl
 - Audio : https://pixabay.com
+
+# Time on the project (underestimated)
+- 17/11/2024 - 24/11/2024 : ~30h
+- 25/11/2024 - 18/12/2024 : ~60h
+- 21/12/2024 - 31/12/2024 : ~10h
