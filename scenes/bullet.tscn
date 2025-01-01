@@ -11,8 +11,7 @@ point_count = 3
 [sub_resource type="Gradient" id="Gradient_ii6cg"]
 colors = PackedColorArray(0.808998, 0.808998, 0.808998, 1, 0.369107, 0.369107, 0.369107, 1)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_sql0q"]
-size = Vector2(16, 19)
+[sub_resource type="CircleShape2D" id="CircleShape2D_lwyey"]
 
 [sub_resource type="Curve" id="Curve_1g0q1"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -55,8 +54,8 @@ texture = ExtResource("2_f5gbg")
 
 [node name="Collision" type="CollisionShape2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(0, -5.5)
-shape = SubResource("RectangleShape2D_sql0q")
+position = Vector2(0, -7)
+shape = SubResource("CircleShape2D_lwyey")
 
 [node name="Explosion" type="CPUParticles2D" parent="."]
 unique_name_in_owner = true

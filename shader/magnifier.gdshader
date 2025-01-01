@@ -8,7 +8,7 @@ uniform float crop_edge: hint_range(0.0, 1.0, 0.1) = 0.0;
 uniform vec4 crop_color: source_color = vec4(0.0, 0.0, 0.0, 0.0);
 
 void fragment() {
-	
+
 	vec2 uv = UV;
 	vec2 resolution = 1.0 / TEXTURE_PIXEL_SIZE;
 	vec2 aspect_uv = uv;
@@ -22,7 +22,7 @@ void fragment() {
 		uv += mag_factor * (center - uv);
 	}
 	COLOR = texture(TEXTURE, uv);
-	
+
 	if (crop_edge > 0.0 && dist > radius - crop_edge){
 		COLOR = mix(COLOR, crop_color, crop_color.a);
 	}

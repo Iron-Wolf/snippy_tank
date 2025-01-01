@@ -6,7 +6,11 @@ class_name Bullet extends RigidBody2D
 @onready var barrel_part: PackedScene = preload("res://scenes/levels/barrel_part.tscn")
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 var bounce_bullet: float = false
-var lob_shot: float = false
+var lob_shot: bool: # keep track of the bullet behaviour when created
+	set(value):
+		lob_shot = value
+		lob_shot_process = value
+var lob_shot_process: bool = false # used for the "_physics_process" logic
 var lob_distance: float = 300 # maximum distance for the lobbed shot
 
 const SPEED: float = 1000
@@ -27,7 +31,7 @@ func _ready() -> void:
 	# prevent posibly "circling" bullets (from the physics collision)
 	lock_rotation=true
 	# continuous forward movement until we hit something
-	if lob_shot:
+	if lob_shot_process:
 		%Collision.disabled = true
 		bounce_bullet = false
 		velocity = -transform.y * SPEED/2
@@ -54,15 +58,15 @@ func _physics_process(delta: float) -> void:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
 	
-	var col_info = move_and_collide(velocity * delta)
+	var col_info: KinematicCollision2D = move_and_collide(velocity * delta)
 	if col_info:
-		_on_body_entered(col_info.get_collider())
+		_on_body_entered(col_info.get_collider(), col_info.get_collider_rid())
 		_apply_bounce(col_info.get_normal())
 	else:
 		remove_collision_exception_with(origin_body)
 	_spawned = false
 	
-	if !lob_shot:
+	if !lob_shot_process:
 		return
 	
 	travel_total += position_before.distance_to(position)
@@ -70,13 +74,13 @@ func _physics_process(delta: float) -> void:
 	if progress == 100:
 		# disable "lob" logic for all remaining frames
 		# (otherwise, we will trigger the "explosion" animation everytime)
-		lob_shot = false
+		lob_shot_process = false
 		var bodies:Array[Node2D] = %AreaLobbed.get_overlapping_bodies()
 		if bodies.size() == 0:
-			goodbye_little_one()
+			goodbye_little_one() # lob hit nothing
 			return
 		for b in bodies:
-			_on_body_entered(b)
+			_on_body_entered(b) # lob hit something
 		return
 	if progress < 50:
 		%Sprite.scale += _lob_scale
@@ -89,10 +93,14 @@ func _draw() -> void:
 	# this function is always called when the node is created
 	if !DEBUG:
 		return
-	# draw a circle in front of the bullet
-	draw_circle(Vector2(0,-20), 20, Color.VIOLET)
+	# draw a circle in front of the bullet (on the nose)
+	draw_circle(Vector2(0,-20), 5, Color.VIOLET)
+	# bullet center position
+	draw_circle(Vector2.ZERO, 5, Color.BLACK)
 	for entry in debug_dict:
-		draw_circle(entry, 10, Color.BLUE_VIOLET)
+		draw_line(entry, \
+			Vector2.ZERO, \
+			Color.BLUE_VIOLET, 3)
 		
 
 func _get_progress(travel: float, start: Vector2, end: Vector2) -> float:
@@ -113,7 +121,7 @@ func _apply_bounce(normal: Vector2) -> void:
 	var ro = v_before.angle_to(velocity)
 	rotate(ro)
 
-func _on_body_entered(collided_body) -> void:
+func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 	if !GameState.in_game_scene:
 		# doing nothing
 		queue_free()
@@ -139,8 +147,8 @@ func _on_body_entered(collided_body) -> void:
 	
 	# world destruction
 	var tml: TileMapLayer = collided_body as TileMapLayer
-	if tml :
-		destroy_tile(tml)
+	if tml:
+		destroy_tile(tml, rid)
 	
 	# other bullet
 	var b: Bullet = collided_body as Bullet
@@ -154,52 +162,56 @@ func goodbye_little_one() -> void:
 	# remove the bullet from the scene
 	velocity = Vector2.ZERO
 	%Collision.set_deferred("disabled", true)
+	%Sprite.visible = false
 	if DEBUG: return
 	
-	%Sprite.visible = false
 	explosion.emitting = true
 	smoke.emitting = false
 
-func destroy_tile(tilemap: TileMapLayer):
-	# on a lob shot, we don't want to offset the bullet position
-	var offset_front: Vector2 = Vector2.ZERO
-	if !lob_shot:
-		# with the classic shot, the bullet position is not in a wall cell
-		# so, we push it into the wall to detect wich cell we hit
-		offset_front = -transform.y*20
-	# debug mode need a rotation to be accurate
-	debug_dict.push_back(offset_front.rotated(-rotation))
-	# for the cell, we use a function that doesn't need the rotation
-	var cell_position: Vector2i = tilemap.local_to_map(position + offset_front)
+func destroy_tile(tilemap: TileMapLayer, rid: RID) -> void:
+	var cell_coords: Vector2i
+	if (rid.is_valid()):
+		# only when : straight shot on a Collision Node (physic collision)
+		cell_coords = tilemap.get_coords_for_body_rid(rid)
+	else:
+		# on a lob shot, we don't want to offset the bullet position
+		var offset_front: Vector2 = Vector2.ZERO
+		if !lob_shot:
+			# DEPRECATED : with the RID, this part should not be called anymore !
+			# with the classic shot, the bullet position is not in a wall cell
+			# so, we push it into the wall to detect which cell we hit
+			offset_front = -transform.y*30
+		# debug mode need a rotation to be accurate
+		debug_dict.push_back(offset_front.rotated(-rotation))
+		# for the cell, we use a function that doesn't need the rotation
+		cell_coords = tilemap.local_to_map(position + offset_front)
+	
 	if GameState.current_lvl_id == 1:
 		# on the first level, we don't want to hit the sourounding walls
 		# because there is no "warp" logic
-		if cell_position.x == 0 or cell_position.x == 28 \
-			or cell_position.y == 0 or cell_position.y == 15:
+		if cell_coords.x == 0 or cell_coords.x == 28 \
+			or cell_coords.y == 0 or cell_coords.y == 15:
 			return
 	
 	# check if it is actually a part of tilemap
-	var cell_source_id: int = tilemap.get_cell_source_id(cell_position)
-	if cell_source_id != -1: 
-		# set to -1, to delete tile
-		tilemap.set_cell(cell_position, -1)
+	var cell_source_id: int = tilemap.get_cell_source_id(cell_coords)
+	if cell_source_id != -1:
+		# set to -1, to delete tiled    
+		tilemap.set_cell(cell_coords, -1)
 		# spawn a damaged barrel on the position
-		var parent = get_parent()
+		var parent: World = get_parent()
 		if parent:
 			var bp: RigidBody2D = barrel_part.instantiate()
 			# random start value to simulate the explosion momentum
-			var randx: int = randi_range(-100,100)
-			var randy: int = randi_range(-100,100)
+			var randx: int = randi_range(-500,500)
+			var randy: int = randi_range(-500,500)
 			bp.linear_velocity = Vector2(randx, randy)
-			# rotation is more or less linked to the velocity
-			bp.angular_velocity = bp.linear_velocity.length() * 0.2 * randi_range(-1, 1)
+			bp.angular_velocity = randi_range(-10, 10)
 			# spawn position in the world
-			bp.transform = global_transform
-			# push the spawn position a little bit in front of the actual
-			# position of the Bullet (to be somewhat in the center of the wall)
-			bp.translate(offset_front*2) # "*2" because offset is not quite far enough
-			parent.add_child(bp)
-			parent.move_child(bp, 1)
+			var cell_center_pos = tilemap.map_to_local(cell_coords)
+			bp.position = cell_center_pos
+			# add it to the map (will be destroyed when lvl change)
+			parent.get_node("%Map").add_child(bp)
 
 func respawn_process() -> void:
 	# dispawn when level is restarting

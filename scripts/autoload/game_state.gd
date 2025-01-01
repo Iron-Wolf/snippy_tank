@@ -8,7 +8,7 @@ var winning_score: int = 5
 # number of round for a level before switching to the next one
 var max_round_by_level: int = 4
 # time to wait before a Power Up is spawned
-var timer_power_up: float = 60
+var timer_power_up: float = 30
 
 # === INTERNAL VARIABLES ===
 # track player's info between levels
