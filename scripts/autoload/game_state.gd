@@ -4,7 +4,7 @@ extends Node
 # number of player in game
 var player_number: int = 2
 # score to win the game
-var winning_score: int = 5
+var winning_score: int = 10
 # number of round for a level before switching to the next one
 var max_round_by_level: int = 4
 # time to wait before a Power Up is spawned
@@ -19,6 +19,8 @@ var p_infos: Dictionary = {
 var current_round: int = 0
 # curent loaded level
 var current_lvl_id: int = 0
+# max number of lvl (used to warp around to the first one, if needed)
+const MAX_LVL: int = 3
 # "true" for full feature gameplay scenes 
 # and "false" for others (like : user control)
 var in_game_scene: bool = true

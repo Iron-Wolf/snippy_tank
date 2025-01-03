@@ -20,8 +20,6 @@ var _players_dup: Array[Player] = []
 var _power_up: PowerUp
 
 func _ready() -> void:
-	_respawn_process()
-	_change_map()
 	if (GameState.p_infos.is_empty()): 
 		GameState.reset_state()
 	
@@ -42,7 +40,6 @@ func _ready() -> void:
 		p.player_id = 1
 		p.tank_texture = PlayerState.p1_tank_texture
 		p.barrel_texture = PlayerState.p1_barrel_texture
-		p.position = Vector2(100, screen_size.y/2) # middle left
 		_add_common_properties(p)
 		add_child(p)
 		_players.push_back(p)
@@ -54,7 +51,6 @@ func _ready() -> void:
 		p.player_id = 2
 		p.tank_texture = PlayerState.p2_tank_texture
 		p.barrel_texture = PlayerState.p2_barrel_texture
-		p.position = Vector2(screen_size.x - 100, screen_size.y/2) # middle right
 		p.rotate(deg_to_rad(180))
 		_add_common_properties(p)
 		add_child(p)
@@ -67,7 +63,6 @@ func _ready() -> void:
 		p.player_id = 3
 		p.tank_texture = PlayerState.p3_tank_texture
 		p.barrel_texture = PlayerState.p3_barrel_texture
-		p.position = Vector2(screen_size.x/2, 100) # middle up
 		p.rotate(deg_to_rad(90))
 		_add_common_properties(p)
 		add_child(p)
@@ -80,12 +75,14 @@ func _ready() -> void:
 		p.player_id = 4
 		p.tank_texture = PlayerState.p4_tank_texture
 		p.barrel_texture = PlayerState.p4_barrel_texture
-		p.position = Vector2(screen_size.x/2, screen_size.y-100) # middle down
 		p.rotate(deg_to_rad(-90))
 		_add_common_properties(p)
 		add_child(p)
 		_players.push_back(p)
 		%P4Score.visible = true
+	
+	_respawn_banner()
+	_change_map()
 
 func _process(_delta: float) -> void:
 	if t_show_banner.time_left > 0 :
@@ -98,9 +95,9 @@ func _process(_delta: float) -> void:
 		%WinnerBack.position.x = move_toward(%WinnerBack.position.x, -screen_size.x, _win_banner_base_speed)
 		%RoundLabel.position.x = move_toward(%RoundLabel.position.x, screen_size.x, _win_banner_base_speed)
 	else:
-		_respawn_process()
+		_respawn_banner()
 
-func _respawn_process() -> void:
+func _respawn_banner() -> void:
 	%WinBanner.visible = false
 	%WinnerBack.position.x = screen_size.x
 	%RoundLabel.position.x = -%RoundLabel.size.x
@@ -171,17 +168,22 @@ func _on_player_killed(killer_id: int, killed_id: int) -> void:
 		_reload_level()
 
 func _change_map() -> void:
-	# set id from "1" to "max" number of level
-	GameState.current_lvl_id = 1 + (GameState.current_lvl_id % 3)
+	# increase lvl id without exceeding the max number of lvl
+	GameState.current_lvl_id = 1 + (GameState.current_lvl_id % GameState.MAX_LVL)
+	# cleanup current level
 	for child in %Map.get_children():
 		%Map.remove_child(child)
-	
-	var lvl: PackedScene = load("res://scenes/levels/lvl%s.tscn"%GameState.current_lvl_id)
-	var lvlI: Node = lvl.instantiate()
-	spw_power_up_1 = lvlI.get_node("SpawnPowerUp1")
-	spw_power_up_2 = lvlI.get_node("SpawnPowerUp2")
-	spw_tracks = lvlI.get_node("SpawnTracks")
-	%Map.add_child(lvlI)
+	# load next level
+	var lvl_scn: PackedScene = load("res://scenes/levels/lvl%s.tscn"%GameState.current_lvl_id)
+	var l: Node = lvl_scn.instantiate()
+	spw_power_up_1 = l.get_node("%SpawnPowerUp1")
+	spw_power_up_2 = l.get_node("%SpawnPowerUp2")
+	spw_tracks = l.get_node("SpawnTracks")
+	%Map.add_child(l)
+	# add players
+	for p:Player in _players:
+		var spw_player = "%" + "P%sSpawn" % p.player_id
+		p.init_position = l.get_node(spw_player).position 
 
 func _reload_level() -> void:
 	# wait before reloading/changing the scene

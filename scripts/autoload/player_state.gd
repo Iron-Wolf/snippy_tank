@@ -24,7 +24,6 @@ enum PowerUpType {
 	MOVE_SPEED, # 3
 	INVERSE_CONTROL, # 4
 	TRIPLE_SHOT, # 5
-	#SHIELD,
 }
 
 # === OTHER ===

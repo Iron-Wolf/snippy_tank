@@ -11,7 +11,6 @@ signal fight_started
 signal player_killed(killer_id: int, killed_id: int)
 
 @onready var screen_size:Vector2 = get_viewport_rect().size 
-@onready var init_position: Vector2 = position
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
 const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
@@ -41,6 +40,8 @@ const KNOCKBACK_ON_SHOOT: int = 0
 const INIT_LOB_DISTANCE: float = 200
 
 # variables
+var init_position: Vector2:
+	set(value): init_position = value; position = value
 var is_duplicate: bool = false
 var is_killed: bool = false
 var acceleration: Vector2 = Vector2.ZERO
