@@ -26,7 +26,7 @@ func _process(_delta: float) -> void:
 	if mute:
 		return
 	
-	# TODO : add effects ?
+	# NOTE : maybe add effects ?
 	var _disto: AudioEffectDistortion = AudioServer.get_bus_effect(master_bus_idx, 0)
 	
 	if intro_audio.playing:

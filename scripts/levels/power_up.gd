@@ -7,18 +7,22 @@ signal duplicated_player
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player_ps: PackedScene = preload("res://scenes/player.tscn")
+@onready var parent: World = get_node("/root/World")
 
 var type: PlayerState.PowerUpType = randi_range(0, 5) as PlayerState.PowerUpType
 const ANIM_SHAKE_SPEED: int = 15
 var spawn_anim: bool = true
 var spawn_anim_size: float = 200
 var _snap_player: Player # reference to the player getting the power-up
+var tilemap: TileMapLayer
 
 var _reset_shoot_cooldown: float
 var _reset_max_speed: float
 var _reset_max_ammo: int
 
 func _ready() -> void:
+	if parent:
+		tilemap = parent.get_background_tilemap()
 	%Sprite.visible = false
 	modulate.a = 0
 	collision_layer = 0
@@ -32,12 +36,22 @@ func _ready() -> void:
 	# draw the circle
 	queue_redraw()
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if spawn_anim:
 		queue_redraw()
 		return
 	if !%Sprite.visible:
 		_spawn_item()
+	
+	if tilemap:
+		# need "global_position" because we are a child of a Marker2D, so the
+		# "position" will be relative to this Node, instead of the "World" scene
+		var cell_coords = tilemap.local_to_map(global_position * 2)
+		if tilemap.get_cell_source_id(cell_coords) == -1:
+			print(position, " ", cell_coords)
+			%Sprite.scale = clamp(%Sprite.scale - Vector2(delta, delta), 
+				Vector2.ZERO, Vector2.INF)
+			return
 	
 	var col_info = move_and_collide(Vector2.ZERO)
 	if col_info:

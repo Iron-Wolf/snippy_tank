@@ -5,7 +5,7 @@ class_name Player extends CharacterBody2D
 @export var player_id: int = 0
 @export var tank_texture: Texture2D
 @export var barrel_texture: Texture2D
-var parent_owner: Node # reference to the scene (the level) containing the player
+var parent_owner: World # reference to the scene (the level) containing the player
 var spw_tracks: Marker2D
 signal fight_started
 signal player_killed(killer_id: int, killed_id: int)
@@ -13,6 +13,7 @@ signal player_killed(killer_id: int, killed_id: int)
 @onready var screen_size:Vector2 = get_viewport_rect().size 
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
+@onready var index_position_in_parent: int = get_index() # WARNING: this "can" be wrong...
 const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const bullet_casing_ps: PackedScene = preload("res://scenes/bullet_casing.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
@@ -30,7 +31,7 @@ var time_before_active: SceneTreeTimer
 const STEERING_ANGLE: float = 400
 var MAX_SPEED: float = 1000
 const FRICTION: float = -55
-const DRAG: float = -0.06
+var DRAG: float = -0.06
 const BRAKING_SPEED: float = -800
 const STOP_THRESHOLD: float = 30  # stop when speed is below
 const KNOCKBACK_ON_COLLIDE: int = 40
@@ -100,16 +101,30 @@ func _ready() -> void:
 #endregion
 
 func _physics_process(delta) -> void:
+	# bullet reloading indicator
 	%ReloadBar.position = position
 	%ReloadBar.position.x += 20
 	%ReloadBar.position.y += 20
 	
+	if is_killed:
+		scale = clamp(scale - Vector2(delta, delta), Vector2.ZERO, Vector2.INF)
+		%EngineSmoke.emitting = false
+	
 	if time_before_active.time_left != 0 or is_killed:
 		return
 	
+	var tilemap: TileMapLayer = parent_owner.get_background_tilemap()
+	# the Sprite is larger than the base cell size, so we scale up the position
+	var cell_coords = tilemap.local_to_map(position * 2)
+	if tilemap.get_cell_source_id(cell_coords) == -1:
+		is_killed = true
+		parent_owner._on_player_killed(player_id, player_id)
+		# move player behind all background
+		parent_owner.move_child(self, 0)
+	
 	#region movement
 	position = Utils.apply_screen_wrap(position, screen_size)
-	var position_before = position # call this AFTER screen warping
+	var position_before = position # must call this AFTER screen warping
 	
 	acceleration = Vector2.ZERO
 	match PlayerState.control_scheme:
@@ -195,11 +210,14 @@ func _physics_process(delta) -> void:
 		# check if we place a track on the background
 		travel_place_track -= travel_actual
 		var track_texture = track_normal
+		DRAG = -0.06
 		if drifting:
 			# increase texture placing rate
 			# without too much clutering the background
 			travel_place_track /= 10
 			track_texture = track_drift
+			# speedup lob_shot position, with a high DRAG value
+			if !move_direction: DRAG = -3
 		if travel_place_track < 0:
 			# reset to place a track every 30 units
 			travel_place_track = 30
@@ -393,11 +411,6 @@ func sprite_modulate(color: Color) -> void:
 #endregion
 
 func killed(origin_player_id: int) -> void:
-	var score_label = "%" + "P%sScore" % origin_player_id
-	parent_owner \
-		.get_node(score_label) \
-		.push_score(1 if origin_player_id != player_id else -1)
-	
 	is_killed = true
 	$Barrel.visible = false
 	%KillSmoke.emitting = true
@@ -409,8 +422,6 @@ func respawn_process() -> void:
 	is_killed = false
 	$Barrel.visible = true
 	%KillSmoke.emitting = false
-	if parent_owner.name == "World":
-		spw_tracks = parent_owner.spw_tracks
 	# reset game logic
 	ammo_left = MAX_AMMO
 	sprite_modulate(Color.WHITE)
@@ -421,6 +432,8 @@ func respawn_process() -> void:
 	position = init_position
 	rotation = init_rotation
 	$Barrel.rotation = init_barrel_rotation
+	parent_owner.move_child(self, index_position_in_parent)
+	scale = Vector2(1, 1)
 	# free ressources
 	for track_sprite:Sprite2D in _current_loaded_tracks:
 		#track_sprite.queue_free()

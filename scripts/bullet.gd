@@ -139,16 +139,16 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 		p.killed(origin_body.player_id)
 	
 	# bounce logic
-	if collided_body.name == "Walls" and bounce_bullet:
+	var w: WallTileMap = collided_body as WallTileMap
+	if w and bounce_bullet:
 		# avoid infinite bounce inside a wall
 		if _spawned: queue_free()
 		# let's "_physics_process()" handle the bounce
 		return
 	
 	# world destruction
-	var tml: TileMapLayer = collided_body as TileMapLayer
-	if tml:
-		destroy_tile(tml, rid)
+	if w and w.is_destructible:
+		destroy_tile(w, rid)
 	
 	# other bullet
 	var b: Bullet = collided_body as Bullet
@@ -168,7 +168,7 @@ func goodbye_little_one() -> void:
 	explosion.emitting = true
 	smoke.emitting = false
 
-func destroy_tile(tilemap: TileMapLayer, rid: RID) -> void:
+func destroy_tile(tilemap: WallTileMap, rid: RID) -> void:
 	var cell_coords: Vector2i
 	if (rid.is_valid()):
 		# only when : straight shot on a Collision Node (physic collision)
@@ -185,13 +185,6 @@ func destroy_tile(tilemap: TileMapLayer, rid: RID) -> void:
 		debug_dict.push_back(offset_front.rotated(-rotation))
 		# for the cell, we use a function that doesn't need the rotation
 		cell_coords = tilemap.local_to_map(position + offset_front)
-	
-	if GameState.current_lvl_id == 1:
-		# on the first level, we don't want to hit the sourounding walls
-		# because there is no "warp" logic
-		if cell_coords.x == 0 or cell_coords.x == 28 \
-			or cell_coords.y == 0 or cell_coords.y == 15:
-			return
 	
 	# check if it is actually a part of tilemap
 	var cell_source_id: int = tilemap.get_cell_source_id(cell_coords)

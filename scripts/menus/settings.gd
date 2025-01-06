@@ -41,7 +41,7 @@ func _ready() -> void:
 		GameState.reset_state()
 		hide())
 
-# TODO : does not resolve all controls on gamepad (keyboard is fine by default)
+# NOTE : force input for gamepad because it's broken (keyboard is fine...)
 func _input(_event: InputEvent) -> void:
 	# trigger GamePad action on Button
 	if Input.is_action_just_pressed("p_btn0"):

@@ -6,7 +6,7 @@ var player_number: int = 2
 # score to win the game
 var winning_score: int = 10
 # number of round for a level before switching to the next one
-var max_round_by_level: int = 4
+var max_round_by_level: int = 3
 # time to wait before a Power Up is spawned
 var timer_power_up: float = 30
 
@@ -20,7 +20,7 @@ var current_round: int = 0
 # curent loaded level
 var current_lvl_id: int = 0
 # max number of lvl (used to warp around to the first one, if needed)
-const MAX_LVL: int = 3
+const MAX_LVL: int = 5
 # "true" for full feature gameplay scenes 
 # and "false" for others (like : user control)
 var in_game_scene: bool = true

@@ -19,6 +19,10 @@ var _players: Array[Player] = []
 var _players_dup: Array[Player] = []
 var _power_up: PowerUp
 
+func get_background_tilemap() -> TileMapLayer:
+	# TODO: I know it's omega dirty, but it will do the work (for now)
+	return get_node("%Map").get_child(0).get_child(0).get_child(0)
+
 func _ready() -> void:
 	if (GameState.p_infos.is_empty()): 
 		GameState.reset_state()
@@ -127,7 +131,7 @@ func _spawn_power_up() -> void:
 		p.player_id = op.player_id
 		p.tank_texture = op.tank_texture
 		p.barrel_texture = op.barrel_texture
-		p.position = op.position
+		p.init_position = op.position
 		p.is_duplicate = true
 		_add_common_properties(p)
 		add_child(p)
@@ -147,7 +151,10 @@ func _get_rand_spw_power_up() -> Marker2D:
 			return spw_power_up_1
 
 func _on_player_killed(killer_id: int, killed_id: int) -> void:
-	# TODO : could move "score_label" logic (from Player) inside this method
+	var score_label = "%" + "P%sScore" % killer_id
+	get_node(score_label) \
+		.push_score(1 if killer_id != killed_id else -1)
+	
 	var particle = "%" + "P%sParticles" % killer_id
 	get_node(particle).emitting = true  
 	
@@ -183,7 +190,8 @@ func _change_map() -> void:
 	# add players
 	for p:Player in _players:
 		var spw_player = "%" + "P%sSpawn" % p.player_id
-		p.init_position = l.get_node(spw_player).position 
+		p.init_position = l.get_node(spw_player).position
+		p.spw_tracks = spw_tracks
 
 func _reload_level() -> void:
 	# wait before reloading/changing the scene

@@ -1,5 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://05jbg70y7pw2"]
+[gd_scene load_steps=4 format=3 uid="uid://05jbg70y7pw2"]
 
+[ext_resource type="Script" path="res://scripts/levels/barrel_part.gd" id="1_4qsxi"]
 [ext_resource type="Texture2D" uid="uid://bflkwpggrx65k" path="res://assets/Obstacles/barrelGrey_side_half.png" id="1_58l51"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cg704"]
@@ -11,8 +12,10 @@ collision_mask = 3
 gravity_scale = 0.0
 linear_damp = 2.0
 angular_damp = 1.0
+script = ExtResource("1_4qsxi")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 modulate = Color(0.20033, 0.20033, 0.20033, 1)
 texture = ExtResource("1_58l51")
 
