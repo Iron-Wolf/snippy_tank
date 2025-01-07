@@ -1,5 +1,6 @@
+[![](https://img.shields.io/badge/Godot-v4.3-blue)](https://godotengine.org/)
+
 # Description
-Made in Godot 4.3.  
 This is a small-scoped projet, to really grasp the inner workings of Godot engine.  
 As a true first full-fledged projet, I stumbled upon many obstables.  
 So, don't expect top-quality code here.  
@@ -31,3 +32,7 @@ The result is far from perfect, but very close to my expectations.
 - 17/11/2024 - 24/11/2024 : ~30h
 - 25/11/2024 - 18/12/2024 : ~60h
 - 21/12/2024 - 31/12/2024 : ~10h
+
+# Dumping stuff for futur project (card game maybe ??)
+- Not made with Godot, but maybe some tricks to learn : https://github.com/simeydotme/pokemon-cards-css
+- Balatro card effect in Godot 4 : https://www.youtube.com/watch?v=Alwy-TH0WzE
