@@ -16,7 +16,7 @@ func _ready() -> void:
 		p.player_id = 1
 		p.tank_texture = PlayerState.p1_tank_texture
 		p.barrel_texture = PlayerState.p1_barrel_texture
-		p.position = screen_center + Vector2(-100, -100)
+		p.init_position = screen_center + Vector2(-100, -100)
 		p.parent_owner = self
 		add_child(p)
 	
@@ -26,7 +26,7 @@ func _ready() -> void:
 		p.player_id = 2
 		p.tank_texture = PlayerState.p2_tank_texture
 		p.barrel_texture = PlayerState.p2_barrel_texture
-		p.position = screen_center + Vector2(100, -100)
+		p.init_position = screen_center + Vector2(100, -100)
 		p.parent_owner = self
 		add_child(p)
 		
@@ -36,7 +36,7 @@ func _ready() -> void:
 		p.player_id = 3
 		p.tank_texture = PlayerState.p3_tank_texture
 		p.barrel_texture = PlayerState.p3_barrel_texture
-		p.position = screen_center + Vector2(-100, 100)
+		p.init_position = screen_center + Vector2(-100, 100)
 		p.parent_owner = self
 		add_child(p)
 		
@@ -46,7 +46,7 @@ func _ready() -> void:
 		p.player_id = 4
 		p.tank_texture = PlayerState.p4_tank_texture
 		p.barrel_texture = PlayerState.p4_barrel_texture
-		p.position = screen_center + Vector2(100, 100)
+		p.init_position = screen_center + Vector2(100, 100)
 		p.parent_owner = self
 		add_child(p)
 	

@@ -5,7 +5,7 @@ class_name Player extends CharacterBody2D
 @export var player_id: int = 0
 @export var tank_texture: Texture2D
 @export var barrel_texture: Texture2D
-var parent_owner: World # reference to the scene (the level) containing the player
+var parent_owner # reference to the "level" containing the player
 var spw_tracks: Marker2D
 signal fight_started
 signal player_killed(killer_id: int, killed_id: int)
@@ -13,7 +13,8 @@ signal player_killed(killer_id: int, killed_id: int)
 @onready var screen_size:Vector2 = get_viewport_rect().size 
 @onready var init_rotation: float = rotation
 @onready var init_barrel_rotation: float = $Barrel.rotation
-@onready var index_position_in_parent: int = get_index() # WARNING: this "can" be wrong...
+# NOTICE: can be wrong if we change the position in the object tree
+@onready var index_position_in_parent: int = get_index()
 const bullet_ps: PackedScene = preload("res://scenes/bullet.tscn")
 const bullet_casing_ps: PackedScene = preload("res://scenes/bullet_casing.tscn")
 const track_normal: Texture2D = preload("res://assets/Tanks/tracksSmall2.png")
@@ -45,6 +46,7 @@ var init_position: Vector2:
 	set(value): init_position = value; position = value
 var is_duplicate: bool = false
 var is_killed: bool = false
+var is_killed_falling: bool = false
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
@@ -106,25 +108,30 @@ func _physics_process(delta) -> void:
 	%ReloadBar.position.x += 20
 	%ReloadBar.position.y += 20
 	
-	if is_killed:
+	if is_killed_falling:
 		scale = clamp(scale - Vector2(delta, delta), Vector2.ZERO, Vector2.INF)
 		%EngineSmoke.emitting = false
 	
 	if time_before_active.time_left != 0 or is_killed:
 		return
 	
-	var tilemap: TileMapLayer = parent_owner.get_background_tilemap()
-	# the Sprite is larger than the base cell size, so we scale up the position
-	var cell_coords = tilemap.local_to_map(position * 2)
-	if tilemap.get_cell_source_id(cell_coords) == -1:
-		is_killed = true
-		parent_owner._on_player_killed(player_id, player_id)
-		# move player behind all background
-		parent_owner.move_child(self, 0)
-	
 	#region movement
 	position = Utils.apply_screen_wrap(position, screen_size)
 	var position_before = position # must call this AFTER screen warping
+	
+	# check map tile AFTER warp position
+	var parent_world: World = parent_owner as World
+	if parent_world:
+		var tilemap: TileMapLayer = parent_world.get_background_tilemap()
+		# the Sprite is larger than the base cell size, so we scale up the position
+		var cell_coords = tilemap.local_to_map(position * 2)
+		if tilemap.get_cell_source_id(cell_coords) == -1:
+			is_killed = true
+			is_killed_falling = true
+			# kill logic without the camera effect
+			parent_world._on_player_killed(player_id, player_id)
+			# move player behind all background
+			parent_world.move_child(self, 0)
 	
 	acceleration = Vector2.ZERO
 	match PlayerState.control_scheme:
@@ -420,6 +427,7 @@ func killed(origin_player_id: int) -> void:
 
 func respawn_process() -> void:
 	is_killed = false
+	is_killed_falling = false
 	$Barrel.visible = true
 	%KillSmoke.emitting = false
 	# reset game logic

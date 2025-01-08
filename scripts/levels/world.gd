@@ -1,7 +1,9 @@
 class_name World extends Control
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
-@onready var player: PackedScene = preload("res://scenes/player.tscn")
+# NOTICE: use "load" here, because I have a "bug" with "preload" ("instantiate" not working)
+# if we go to the "user_control" scene before this one
+@onready var player: PackedScene = load("res://scenes/player.tscn")
 @onready var power_up: PackedScene = preload("res://scenes/levels/power_up.tscn")
 @onready var t_show_banner: Timer = %ShowBannerTimer
 @onready var t_hide_banner: Timer = %HideBannerTimer

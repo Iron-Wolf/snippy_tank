@@ -48,7 +48,6 @@ func _physics_process(delta: float) -> void:
 		# "position" will be relative to this Node, instead of the "World" scene
 		var cell_coords = tilemap.local_to_map(global_position * 2)
 		if tilemap.get_cell_source_id(cell_coords) == -1:
-			print(position, " ", cell_coords)
 			%Sprite.scale = clamp(%Sprite.scale - Vector2(delta, delta), 
 				Vector2.ZERO, Vector2.INF)
 			return

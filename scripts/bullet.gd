@@ -4,8 +4,9 @@ class_name Bullet extends RigidBody2D
 @onready var smoke: CPUParticles2D = %Smoke
 @onready var explosion: CPUParticles2D = %Explosion
 @onready var barrel_part: PackedScene = preload("res://scenes/levels/barrel_part.tscn")
+@onready var position_before: Vector2 = position
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
-var bounce_bullet: float = false
+var bounce_bullet: bool
 var lob_shot: bool: # keep track of the bullet behaviour when created
 	set(value):
 		lob_shot = value
@@ -52,24 +53,32 @@ func _physics_process(delta: float) -> void:
 	if explosion.emitting:
 		return
 	
+	# because the "move_and_collide" doesn't actually move the object,
+	# we must handle travel positin before applying the screen warp
+	travel_total += position_before.distance_to(position)
 	position = Utils.apply_screen_wrap(position, screen_size)
-	var position_before = position # call this AFTER screen warping
 	if KEEP_VELOCITY:
 		# apply player momentum to the bullet
 		translate(translate_direction * delta)
 	
-	var col_info: KinematicCollision2D = move_and_collide(velocity * delta)
+	# the movement is provided by linear_velocity (not "move_and_collide")
+	var col_info: KinematicCollision2D = move_and_collide(Vector2.ZERO)
 	if col_info:
 		_on_body_entered(col_info.get_collider(), col_info.get_collider_rid())
 		_apply_bounce(col_info.get_normal())
 	else:
 		remove_collision_exception_with(origin_body)
-	_spawned = false
+	_spawned = false # must be set ASAP after the first collision check
+	
+	# Must be set AFTER "move_and_collide" (otherwise, collisions will be borked)
+	# Without this value, the velocity will not be transmitted correctly to
+	# other bodies (like the Power Up)
+	linear_velocity = velocity
+	position_before = position
 	
 	if !lob_shot_process:
 		return
 	
-	travel_total += position_before.distance_to(position)
 	var progress: float = _get_progress(travel_total, init_position, target_position)
 	if progress == 100:
 		# disable "lob" logic for all remaining frames
@@ -161,6 +170,7 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 func goodbye_little_one() -> void:
 	# remove the bullet from the scene
 	velocity = Vector2.ZERO
+	linear_velocity = Vector2.ZERO # dont wait the _physics_proces loop
 	%Collision.set_deferred("disabled", true)
 	%Sprite.visible = false
 	if DEBUG: return
