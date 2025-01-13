@@ -65,7 +65,7 @@ var lob_distance: float = INIT_LOB_DISTANCE
 var shot_total: int = 0 # cumulated number of shot
 var travel_total: float = 0 # cumulated distance traveled
 var travel_place_track: float = 0 # loop to "0" every 100 units
-var _current_loaded_tracks: Array = []
+var _current_loaded_tracks: Array[Sprite2D] = []
 
 var debug_dict: Dictionary = {}
 const DEBUG: bool = false
@@ -101,6 +101,16 @@ func _ready() -> void:
 
 	respawn_process()
 #endregion
+
+func _process(_delta: float) -> void:
+	var parent_world: World = parent_owner as World
+	if parent_world:
+		var tilemap: TileMapLayer = parent_world.get_background_tilemap()
+		for track_sprite:Sprite2D in _current_loaded_tracks:
+			if !track_sprite: continue
+			var cell_coords = tilemap.local_to_map(track_sprite.position * 2)
+			if tilemap.get_cell_source_id(cell_coords) == -1:
+				track_sprite.queue_free()
 
 func _physics_process(delta) -> void:
 	# bullet reloading indicator
@@ -443,10 +453,10 @@ func respawn_process() -> void:
 	parent_owner.move_child(self, index_position_in_parent)
 	scale = Vector2(1, 1)
 	# free ressources
-	for track_sprite:Sprite2D in _current_loaded_tracks:
-		#track_sprite.queue_free()
-		pass
-	_current_loaded_tracks = []
+	#for track_sprite:Sprite2D in _current_loaded_tracks:
+	#	track_sprite.queue_free()
+	#	pass
+	#_current_loaded_tracks = []
 
 func _exit_tree() -> void:
 	var pi: PlayerInfo = GameState.p_infos[player_id]

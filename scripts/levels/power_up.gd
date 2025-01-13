@@ -10,8 +10,9 @@ signal duplicated_player
 @onready var parent: World = get_node("/root/World")
 
 var type: PlayerState.PowerUpType = randi_range(0, 5) as PlayerState.PowerUpType
-const ANIM_SHAKE_SPEED: int = 15
 var spawn_anim: bool = true
+var active_power_up: bool = true
+const ANIM_SHAKE_SPEED: int = 15
 var spawn_anim_size: float = 200
 var _snap_player: Player # reference to the player getting the power-up
 var tilemap: TileMapLayer
@@ -25,14 +26,15 @@ func _ready() -> void:
 		tilemap = parent.get_background_tilemap()
 	%Sprite.visible = false
 	modulate.a = 0
-	collision_layer = 0
-	collision_mask = 1
+	collision_layer = 2 # layers: 2
+	collision_mask = 3 # layers: 1, 2
 	# wait the starting animation before colliding
 	%Collision.disabled = true
 	# setup mandatory properties to have collisions
 	contact_monitor = true
 	max_contacts_reported = 1
-	connect("body_entered", _on_body_entered)
+	if active_power_up:
+		connect("body_entered", _on_body_entered)
 	# draw the circle
 	queue_redraw()
 

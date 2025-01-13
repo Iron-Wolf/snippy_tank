@@ -46,6 +46,7 @@ func _ready() -> void:
 		p.player_id = 1
 		p.tank_texture = PlayerState.p1_tank_texture
 		p.barrel_texture = PlayerState.p1_barrel_texture
+		p.rotate(deg_to_rad(-90))
 		_add_common_properties(p)
 		add_child(p)
 		_players.push_back(p)
@@ -57,7 +58,7 @@ func _ready() -> void:
 		p.player_id = 2
 		p.tank_texture = PlayerState.p2_tank_texture
 		p.barrel_texture = PlayerState.p2_barrel_texture
-		p.rotate(deg_to_rad(180))
+		p.rotate(deg_to_rad(-90))
 		_add_common_properties(p)
 		add_child(p)
 		_players.push_back(p)
@@ -69,7 +70,7 @@ func _ready() -> void:
 		p.player_id = 3
 		p.tank_texture = PlayerState.p3_tank_texture
 		p.barrel_texture = PlayerState.p3_barrel_texture
-		p.rotate(deg_to_rad(90))
+		p.rotate(deg_to_rad(-90))
 		_add_common_properties(p)
 		add_child(p)
 		_players.push_back(p)
@@ -123,6 +124,9 @@ func _spawn_power_up() -> void:
 		return
 	var pu: PowerUp = power_up.instantiate()
 	pu.parent_owner = spw_power_up
+	if GameState.current_lvl_id == 6:
+		# disable spawn animation on this specific level
+		pu.spawn_anim = false
 	pu.despawned.connect(func():
 		# allow a new power up to spawn
 		_power_up = null
@@ -217,7 +221,7 @@ func _reload_level() -> void:
 	
 	%RoundLabel.text = "Round %s" % (GameState.current_round + 1)
 	t_show_banner.start()
-	t_spw_item.start()
+	t_spw_item.start(1 if GameState.current_lvl_id == 6 else GameState.timer_power_up)
 	
 	# respawn ALL objetcs
 	get_tree().call_group(GameState.GRP_RESPAWN, GameState.GRP_RESPAWN)
