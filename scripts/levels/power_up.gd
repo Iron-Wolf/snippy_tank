@@ -9,7 +9,7 @@ signal duplicated_player
 @onready var player_ps: PackedScene = preload("res://scenes/player.tscn")
 @onready var parent: World = get_node("/root/World")
 
-var type: PlayerState.PowerUpType = randi_range(0, 5) as PlayerState.PowerUpType
+var type: PlayerState.PowerUpType = randi_range(0, 6) as PlayerState.PowerUpType
 var spawn_anim: bool = true
 var active_power_up: bool = true
 const ANIM_SHAKE_SPEED: int = 15
@@ -119,6 +119,8 @@ func _on_body_entered(collided_body: Node) -> void:
 			call_deferred("_inverse_control")
 		PlayerState.PowerUpType.TRIPLE_SHOT:
 			call_deferred("_triple_shot")
+		PlayerState.PowerUpType.MINUS:
+			call_deferred("_minus")
 
 func _bounce_bullet() -> void:
 	_snap_player.bounce_bullet = true
@@ -162,6 +164,11 @@ func _triple_shot() -> void:
 	reparent(_snap_player.get_node("%PowerUpSnap"))
 	_disable_collision()
 
+func _minus() -> void:
+	_snap_player.scale = Vector2(0.5, 0.5)
+	reparent(_snap_player.get_node("%PowerUpSnap"))
+	_disable_collision()
+
 # also call by the WORLD scene, to reset vars on each round
 func dispawn() -> void:
 	if _snap_player:
@@ -174,6 +181,7 @@ func dispawn() -> void:
 		_snap_player.ANIM_SHAKE_SPEED *= 2
 		_snap_player.inverse_control = false
 		_snap_player.inverse_color(false)
+		_snap_player.scale = Vector2(1, 1)
 		
 	# notify the level that we can spawn a new power up
 	despawned.emit()
