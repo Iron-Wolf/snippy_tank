@@ -149,7 +149,8 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 	
 	# bounce logic
 	var w: WallTileMap = collided_body as WallTileMap
-	if w and bounce_bullet:
+	var m: MovingWall = collided_body as MovingWall
+	if (w or m) and bounce_bullet:
 		# avoid infinite bounce inside a wall
 		if _spawned: queue_free()
 		# let's "_physics_process()" handle the bounce

@@ -337,7 +337,7 @@ func apply_friction(delta):
 func apply_collision() -> void:
 	var c:KinematicCollision2D = get_last_slide_collision()
 	if c.get_collider() is CharacterBody2D:
-		# Certainly a one of a kind fix to a weird bug.
+		# NOTE : Certainly a one of a kind fix to a weird bug.
 		# CharacterBody2D must have :
 		# 	- Motion Mode to "Grounded" (better game feel)
 		#   - Moving Plateform "On Leave" to "Do Nothing" (we are top down)
