@@ -46,7 +46,7 @@ var init_position: Vector2:
 	set(value): init_position = value; position = value
 var is_duplicate: bool = false
 var is_killed: bool = false
-var is_killed_falling: bool = false
+var is_falling: bool = false
 var acceleration: Vector2 = Vector2.ZERO
 var steer_direction: float = 0
 var move_direction: Vector2 = Vector2.ZERO
@@ -118,7 +118,7 @@ func _physics_process(delta) -> void:
 	%ReloadBar.position.x += 20
 	%ReloadBar.position.y += 20
 	
-	if is_killed_falling:
+	if is_falling:
 		scale = clamp(scale - Vector2(delta, delta), Vector2.ZERO, Vector2.INF)
 		%EngineSmoke.emitting = false
 	
@@ -137,7 +137,7 @@ func _physics_process(delta) -> void:
 		var cell_coords = tilemap.local_to_map(position * 2)
 		if tilemap.get_cell_source_id(cell_coords) == -1:
 			is_killed = true
-			is_killed_falling = true
+			is_falling = true
 			# kill logic without the camera effect
 			parent_world._on_player_killed(player_id, player_id)
 			# move player behind all background
@@ -437,14 +437,14 @@ func killed(origin_player_id: int) -> void:
 
 func respawn_process() -> void:
 	is_killed = false
-	is_killed_falling = false
+	is_falling = false
 	$Barrel.visible = true
 	%KillSmoke.emitting = false
 	# reset game logic
 	ammo_left = MAX_AMMO
 	sprite_modulate(Color.WHITE)
 	$ShootTimer.stop()
-	time_before_active = get_tree().create_timer(0.3)
+	time_before_active = get_tree().create_timer(1)
 	# reset positions
 	velocity = Vector2.ZERO
 	position = init_position

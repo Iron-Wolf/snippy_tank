@@ -16,6 +16,7 @@ const ANIM_SHAKE_SPEED: int = 15
 var spawn_anim_size: float = 200
 var _snap_player: Player # reference to the player getting the power-up
 var tilemap: TileMapLayer
+var _is_falling: bool = false
 
 var _reset_shoot_cooldown: float
 var _reset_max_speed: float
@@ -45,14 +46,18 @@ func _physics_process(delta: float) -> void:
 	if !%Sprite.visible:
 		_spawn_item()
 	
+	if _is_falling:
+		%Sprite.scale = clamp(%Sprite.scale - Vector2(delta, delta), 
+				Vector2.ZERO, Vector2.INF)
+		linear_velocity = Vector2.ZERO
+		return
+	
 	if tilemap:
 		# need "global_position" because we are a child of a Marker2D, so the
 		# "position" will be relative to this Node, instead of the "World" scene
 		var cell_coords = tilemap.local_to_map(global_position * 2)
 		if tilemap.get_cell_source_id(cell_coords) == -1:
-			%Sprite.scale = clamp(%Sprite.scale - Vector2(delta, delta), 
-				Vector2.ZERO, Vector2.INF)
-			return
+			_is_falling = true
 	
 	var col_info = move_and_collide(Vector2.ZERO)
 	if col_info:

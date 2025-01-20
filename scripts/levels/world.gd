@@ -112,6 +112,9 @@ func _respawn_banner() -> void:
 func _add_common_properties(p: Player) -> void:
 	p.add_to_group(GameState.GRP_RESPAWN)
 	p.parent_owner = self
+	# added this because the "MovingWall" doesn't display behind the "WinBanner"
+	# so I use "top_level" on the player, the banner and the bullet to keep the effect
+	p.top_level = true
 	p.connect("fight_started", $BackgroundAudio.on_fight_started)
 	p.connect("fight_started", camera.on_fight_started)
 	p.connect("player_killed", camera.on_player_killed)

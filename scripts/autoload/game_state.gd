@@ -20,7 +20,7 @@ var current_round: int = 0
 # curent loaded level
 var current_lvl_id: int = 0
 # max number of lvl (used to warp around to the first one, if needed)
-const MAX_LVL: int = 9
+const MAX_LVL: int = 14
 # "true" for full feature gameplay scenes 
 # and "false" for others (like : user control)
 var in_game_scene: bool = true

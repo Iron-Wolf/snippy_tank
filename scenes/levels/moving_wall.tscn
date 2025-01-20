@@ -10,6 +10,9 @@ size = Vector2(42, 62)
 gravity_scale = 0.0
 script = ExtResource("1_232yj")
 
+[node name="WaitStopTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+
 [node name="Sprite2D" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = ExtResource("1_f602e")

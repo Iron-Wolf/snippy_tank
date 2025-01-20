@@ -5,7 +5,7 @@ extends Node
 func apply_screen_wrap(position: Vector2,
 		screen_size: Vector2,
 		lvl_id: int = GameState.current_lvl_id) -> Vector2:
-	if lvl_id == 1:
+	if lvl_id == 1 or lvl_id == 11:
 		# custom screen wrap
 		if position.x > screen_size.x: 
 			position.x = 0; position.y -= 700

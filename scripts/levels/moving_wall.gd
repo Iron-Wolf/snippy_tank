@@ -18,6 +18,8 @@ enum Direction {
 @export_range(0, 100) var wait_start: int = 0
 ## time to wait when stoping the Node
 @export_range(0, 100) var wait_stop: int = 0
+## will stop after reaching "wait_stop" timer
+@export var one_shot: bool = true
 var stop_moving: bool = false
 
 func _ready() -> void:
@@ -26,13 +28,25 @@ func _ready() -> void:
 	contact_monitor = true
 	max_contacts_reported = 1
 	
-	if wait_stop != 0:
-		get_tree().create_timer(wait_stop).connect("timeout", func():
+	%WaitStopTimer.connect("timeout", func():
+		if one_shot:
 			stop_moving = true
-		)
-	
-	if wall_size == 0:
-		return
+		else:
+			# inverse direction
+			match move_direction:
+				Direction.LEFT:
+					move_direction = Direction.RIGHT
+				Direction.RIGHT:
+					move_direction = Direction.LEFT
+				Direction.UP:
+					move_direction = Direction.DOWN
+				Direction.DOWN:
+					move_direction = Direction.UP
+			# inverse rotation
+			rotate_direction *= -1
+			%WaitStopTimer.start())
+	if wait_stop != 0:
+		%WaitStopTimer.start(wait_stop)
 	
 	for idx in range(1, wall_size):
 		_duplicate_sprite(1, idx)
