@@ -444,7 +444,7 @@ func respawn_process() -> void:
 	ammo_left = MAX_AMMO
 	sprite_modulate(Color.WHITE)
 	$ShootTimer.stop()
-	time_before_active = get_tree().create_timer(1)
+	time_before_active = get_tree().create_timer(0.3)
 	# reset positions
 	velocity = Vector2.ZERO
 	position = init_position

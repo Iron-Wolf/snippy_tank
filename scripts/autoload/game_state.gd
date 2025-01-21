@@ -4,7 +4,7 @@ extends Node
 # number of player in game
 var player_number: int = 2
 # score to win the game
-var winning_score: int = 10
+var winning_score: int = 20
 # number of round for a level before switching to the next one
 var max_round_by_level: int = 3
 # time to wait before a Power Up is spawned
@@ -73,3 +73,14 @@ func get_players_by_score() -> Array[PlayerInfo]:
 			if pi.score == i: 
 				order.push_back(pi)
 	return order
+
+## one player killed every other one
+func get_player_perfect_score(duplicate: int = 0) -> PlayerInfo:
+	for pi:PlayerInfo in GameState.p_infos.values():
+		if pi.score_round == (player_number-1) + duplicate:
+			return pi
+	return null
+
+func reset_score_round() -> void:
+	for pi:PlayerInfo in GameState.p_infos.values():
+		pi.score_round = 0

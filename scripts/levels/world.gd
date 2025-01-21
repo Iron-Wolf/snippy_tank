@@ -96,11 +96,13 @@ func _process(_delta: float) -> void:
 		%WinBanner.visible = true
 		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, 0, WIN_BANNER_SPEED)
 		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x/2-%RoundLabel.size.x/2, WIN_BANNER_SPEED/2)
+		%PlayerLabel.position.x = lerpf(%PlayerLabel.position.x, screen_size.x/2-%PlayerLabel.size.x/2, WIN_BANNER_SPEED/2)
 		_win_banner_base_speed = 1
 	elif t_hide_banner.time_left > 0 :
 		_win_banner_base_speed *= 1.1
 		%WinnerBack.position.x = move_toward(%WinnerBack.position.x, -screen_size.x, _win_banner_base_speed)
 		%RoundLabel.position.x = move_toward(%RoundLabel.position.x, screen_size.x, _win_banner_base_speed)
+		%PlayerLabel.position.x = move_toward(%PlayerLabel.position.x, screen_size.x, _win_banner_base_speed)
 	else:
 		_respawn_banner()
 
@@ -108,6 +110,7 @@ func _respawn_banner() -> void:
 	%WinBanner.visible = false
 	%WinnerBack.position.x = screen_size.x
 	%RoundLabel.position.x = -%RoundLabel.size.x
+	%PlayerLabel.position.x = -%PlayerLabel.size.x
 
 func _add_common_properties(p: Player) -> void:
 	p.add_to_group(GameState.GRP_RESPAWN)
@@ -165,18 +168,32 @@ func _on_player_killed(killer_id: int, killed_id: int) -> void:
 		.push_score(1 if killer_id != killed_id else -1)
 	
 	var particle = "%" + "P%sParticles" % killer_id
-	get_node(particle).emitting = true  
+	get_node(particle).emitting = true
 	
 	var dead_count:int = 0
+	# loop on player (not duplicate):
+	# ----+-----+----
+	# ply | dup | cnt
+	# a:b | x:y | 0:0
+	# ----+-----+----
+	# 1 . | . . | a . (=1)
+	# 1 1 | . . | a b (=2)
+	# . . | 1 . | . . (=0)
+	# 1 . | 1 . | x . (=1)
+	# 1 1 | 1 . | x b (=2)
 	for p:Player in _players:
 		if p.is_killed:
-			var dup = _players_dup \
+			# check if player has a duplicate
+			var dup: Array[Player] = _players_dup \
 				.filter(func(dp): if dp.player_id == p.player_id:
 					return dp)
+			# increase counter only if the duplicate is dead
+			# (player is also dead, so we count 1 death for both)
 			if dup.size() > 0:
 				if dup.any(func(dp): return dp.is_killed):
 					dead_count += 1
 			else:
+				# no duplicate, count as 1 death
 				dead_count += 1
 	
 	if dead_count >= GameState.player_number - 1:
@@ -222,6 +239,14 @@ func _reload_level() -> void:
 	if GameState.current_round % GameState.max_round_by_level == 0:
 		_change_map()
 	
+	var pi = GameState.get_player_perfect_score(_players_dup.size())
+	if pi:
+		%PlayerLabel.text = "perfect: %s" % pi.name
+		%PlayerLabel.add_theme_color_override("font_color", pi.color)
+	else:
+		%PlayerLabel.text = "..."
+		%PlayerLabel.add_theme_color_override("font_color", Color.BLACK)
+	
 	%RoundLabel.text = "Round %s" % (GameState.current_round + 1)
 	t_show_banner.start()
 	t_spw_item.start(1 if GameState.current_lvl_id == 6 else GameState.timer_power_up)
@@ -235,3 +260,4 @@ func _reload_level() -> void:
 	for p:Player in _players_dup:
 		p.queue_free()
 	_players_dup = []
+	GameState.reset_score_round()

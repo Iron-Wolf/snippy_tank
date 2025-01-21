@@ -10,6 +10,7 @@ func _ready() -> void:
 
 func push_score(add: int) -> void:
 	GameState.p_infos[player_id].score += add
+	GameState.p_infos[player_id].score_round += add
 	_update_score()
 
 func _update_score() -> void:

@@ -2,7 +2,8 @@ class_name PlayerInfo
 
 var player_id: int = -1
 var name: String = ""
-var score: int = 0
+var score: int = 0 # number of kill for a game
+var score_round: int = 0 # number of kill for a round
 var color: Color = Color.WHITE
 var travel_total: float = 0
 var shot_total: int = 0
