@@ -4,6 +4,8 @@ class_name Bullet extends RigidBody2D
 @onready var smoke: CPUParticles2D = %Smoke
 @onready var explosion: CPUParticles2D = %Explosion
 @onready var barrel_part: PackedScene = preload("res://scenes/levels/barrel_part.tscn")
+var upward_txt: Texture2D = preload("res://assets/Bullets/bulletBeigeSilver_outline_upward.png")
+var downward_txt: Texture2D = preload("res://assets/Bullets/bulletBeigeSilver_outline_downward.png")
 @onready var position_before: Vector2 = position
 var origin_body: CharacterBody2D # use for a kill feed (or the end screen)
 var bounce_bullet: bool
@@ -92,9 +94,11 @@ func _physics_process(delta: float) -> void:
 			_on_body_entered(b) # lob hit something
 		return
 	if progress < 50:
+		%Sprite.texture = upward_txt
 		%Sprite.scale += _lob_scale
 		smoke.scale += _lob_scale
-	else :
+	else:
+		%Sprite.texture = downward_txt
 		%Sprite.scale -= _lob_scale
 		smoke.scale -= _lob_scale
 
@@ -163,7 +167,7 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 	# other bullet
 	var b: Bullet = collided_body as Bullet
 	if b:
-		# kind of janky because the 2 bullets play the sound
+		# TODO : change this because the sound is played 2 times
 		%BulletHitBullet.play(1.1)
 	
 	goodbye_little_one()
