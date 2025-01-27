@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://dok78wo6lur2l"]
+[gd_scene load_steps=27 format=4 uid="uid://dok78wo6lur2l"]
 
 [ext_resource type="Script" path="res://scripts/levels/world.gd" id="1_3vq77"]
 [ext_resource type="Texture2D" uid="uid://c4x5rsq50hpic" path="res://assets/Spritesheet/background_sheet.png" id="2_j5p3t"]
@@ -14,6 +14,7 @@
 [ext_resource type="AudioStream" uid="uid://cv1qjfwqtme64" path="res://assets/sound/March_and_Play_intro.mp3" id="12_utc0u"]
 [ext_resource type="AudioStream" uid="uid://riokircuj4t0" path="res://assets/sound/arcade-ui-2_floraphonic.mp3" id="13_gxkew"]
 [ext_resource type="Script" path="res://scripts/camera.gd" id="14_idchc"]
+[ext_resource type="AudioStream" uid="uid://d1s700so68ty7" path="res://assets/sound/sword-clash-1_freesound_community.mp3" id="14_il8ej"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_80m1b"]
 texture = ExtResource("2_j5p3t")
@@ -383,6 +384,11 @@ volume_db = -5.0
 [node name="NewRoundAudio" type="AudioStreamPlayer" parent="BackgroundAudio"]
 stream = ExtResource("13_gxkew")
 volume_db = -5.0
+
+[node name="BulletClash" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("14_il8ej")
+pitch_scale = 1.5
 
 [node name="SpawnItemTimer" type="Timer" parent="."]
 unique_name_in_owner = true

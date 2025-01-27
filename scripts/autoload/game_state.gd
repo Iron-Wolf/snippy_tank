@@ -75,9 +75,9 @@ func get_players_by_score() -> Array[PlayerInfo]:
 	return order
 
 ## one player killed every other one
-func get_player_perfect_score(duplicate: int = 0) -> PlayerInfo:
+func get_player_perfect_score(duplicate_number: int = 0) -> PlayerInfo:
 	for pi:PlayerInfo in GameState.p_infos.values():
-		if pi.score_round == (player_number-1) + duplicate:
+		if pi.score_round == (player_number-1) + duplicate_number:
 			return pi
 	return null
 

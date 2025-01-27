@@ -3,7 +3,7 @@ class_name PowerUp extends RigidBody2D
 # used to replace the power-up in the original scene
 var parent_owner: Node
 signal despawned
-signal duplicated_player
+signal duplicated_player(snaped_player: Player)
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
 @onready var player_ps: PackedScene = preload("res://scenes/player.tscn")

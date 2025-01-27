@@ -1,8 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://cgeymtn3bii3y"]
+[gd_scene load_steps=8 format=3 uid="uid://cgeymtn3bii3y"]
 
 [ext_resource type="Script" path="res://scripts/bullet.gd" id="1_t843r"]
 [ext_resource type="Texture2D" uid="uid://b37uvjebqvrpw" path="res://assets/Bullets/bulletBeigeSilver_outline.png" id="2_f5gbg"]
-[ext_resource type="AudioStream" uid="uid://d1s700so68ty7" path="res://assets/sound/sword-clash-1_freesound_community.mp3" id="3_c5ome"]
 
 [sub_resource type="Curve" id="Curve_n6gax"]
 _data = [Vector2(0, 0.302857), 0.0, 0.0, 0, 0, Vector2(0.196226, 1), 0.0, 0.0, 0, 0, Vector2(0.498113, 0.489352), 0.0, 0.0, 0, 0]
@@ -80,7 +79,3 @@ unique_name_in_owner = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AreaLobbed"]
 position = Vector2(0, -5.75)
 shape = SubResource("CircleShape2D_f8rem")
-
-[node name="BulletHitBullet" type="AudioStreamPlayer" parent="."]
-unique_name_in_owner = true
-stream = ExtResource("3_c5ome")

@@ -123,6 +123,10 @@ func _add_common_properties(p: Player) -> void:
 	p.connect("player_killed", camera.on_player_killed)
 	p.connect("player_killed", _on_player_killed)
 
+func play_bullet_clash() -> void:
+	if !%BulletClash.playing:
+		%BulletClash.play(1.1)
+
 func _spawn_power_up() -> void:
 	var spw_power_up: Marker2D = _get_rand_spw_power_up()
 	if spw_power_up == null or \
@@ -171,7 +175,7 @@ func _on_player_killed(killer_id: int, killed_id: int) -> void:
 	get_node(particle).emitting = true
 	
 	var dead_count:int = 0
-	# loop on player (not duplicate):
+	# loop on real players (not duplicates):
 	# ----+-----+----
 	# ply | dup | cnt
 	# a:b | x:y | 0:0
@@ -225,8 +229,8 @@ func _reload_level() -> void:
 	GameState.current_round += 1
 	
 	var winner_count: int = GameState.p_infos.values() \
-		.filter(func(pi: PlayerInfo): 
-			return pi.score >= GameState.winning_score) \
+		.filter(func(p: PlayerInfo): 
+			return p.score >= GameState.winning_score) \
 		.size()
 	if winner_count >= 1:
 		# at least one player has win

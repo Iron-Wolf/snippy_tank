@@ -167,8 +167,8 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 	# other bullet
 	var b: Bullet = collided_body as Bullet
 	if b:
-		# TODO : change this because the sound is played 2 times
-		%BulletHitBullet.play(1.1)
+		var parent: World = get_parent()
+		if parent: parent.play_bullet_clash()
 	
 	goodbye_little_one()
 

@@ -81,7 +81,7 @@ func _physics_process(delta: float) -> void:
 		Direction.DOWN:
 			velocity = Vector2(0, move_speed)
 	
-	var col_info = move_and_collide(velocity * delta)
+	var _col_info = move_and_collide(velocity * delta)
 	var bodies = get_colliding_bodies()
 	# NOTE : colliding with a moving wall will "snap" the player to it
 	# we must apply a knockback to fix this
