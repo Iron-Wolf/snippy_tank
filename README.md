@@ -15,6 +15,7 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
 - basic menus: https://www.youtube.com/watch?v=zHYkcJyE52g
 - advanced menus: https://www.youtube.com/watch?v=be-Xjg8oPbQ
 - spinner : https://www.youtube.com/watch?v=cAMvqny_Yww
+- light : https://catlikecoding.com/godot/true-top-down-2d/4-light-and-shadow/
 - shader : 
   - speed lines : https://godotshaders.com/shader/speed-lines-shader-for-godot-4/
   - shockwave : https://www.youtube.com/watch?v=SCHdglr35pk
@@ -34,6 +35,8 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
   - https://pixabay.com/music/funk-funk-beat-14624/
   - https://pixabay.com/fr/sound-effects/plasma-gun-fire-162136/
   - https://pixabay.com/sound-effects/sword-clash-1-6917/
+  - https://pixabay.com/fr/sound-effects/thunder-245174/
+  - https://pixabay.com/fr/sound-effects/lightning-189909/
 
 # Time on the project (underestimated)
 - 17/11/2024 - 24/11/2024 : ~30h

@@ -394,10 +394,12 @@ func shoot_triggered() -> void:
 		b.lob_distance = lob_distance
 		var spw = get_node("Barrel/SpawnBullet%s"%spwn_bullet_id)
 		b.transform = spw.global_transform
-		var rand_a: int = 0 # default bullet angle
+		var rand_a: int = 0 # by default: no bullet angle 
 		if spwn_bullet_id == 1:
+			# negative angle from the central bullet
 			rand_a = randi_range(-_multi_shot_max_angle, 0)
 		elif spwn_bullet_id == 3:
+			# positive angle from the central bullet
 			rand_a = randi_range(0, _multi_shot_max_angle)
 		b.rotate(deg_to_rad(rand_a))
 		# next shot position

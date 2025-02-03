@@ -9,6 +9,8 @@ var winning_score: int = 20
 var max_round_by_level: int = 3
 # time to wait before a Power Up is spawned
 var timer_power_up: int = 30
+# activate the "storm light" effect in level
+var lightning: bool = true
 
 # === INTERNAL VARIABLES ===
 # track player's info between levels
@@ -54,10 +56,10 @@ func reset_state() -> void:
 				pi.color = COLOR_4
 		p_infos[k] = pi
 
-var COLOR_1: Color = Color.from_string("#bf4100", Color.RED)
-var COLOR_2: Color = Color.from_string("#2f6aff", Color.BLUE)
-var COLOR_3: Color = Color.from_string("#978961", Color.BEIGE)
-var COLOR_4: Color = Color.from_string("#00892b", Color.FOREST_GREEN)
+const COLOR_1: Color = Color("#bf4100")
+const COLOR_2: Color = Color("#2f6aff")
+const COLOR_3: Color = Color("#978961")
+const COLOR_4: Color = Color("#00892b")
 
 var GRP_RESPAWN = "respawn_process"
 

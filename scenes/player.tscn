@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cocrreaiubffw"]
+[gd_scene load_steps=13 format=3 uid="uid://cocrreaiubffw"]
 
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="1_53oag"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_mooqp"]
@@ -21,6 +21,18 @@ point_count = 2
 [sub_resource type="CircleShape2D" id="CircleShape2D_x1tm4"]
 radius = 36.0139
 
+[sub_resource type="Gradient" id="Gradient_ek4mx"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_pv0xb"]
+gradient = SubResource("Gradient_ek4mx")
+width = 255
+height = 300
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.1, 0.5)
+metadata/_snap_enabled = true
+
 [node name="player" type="CharacterBody2D"]
 platform_on_leave = 2
 script = ExtResource("1_mooqp")
@@ -32,7 +44,8 @@ rotation = 1.5708
 texture = ExtResource("1_53oag")
 
 [node name="TestParentClipChildren" type="ColorRect" parent="Tank"]
-editor_description = "A test of a self modulate that use the parent's \"clip children\" property."
+editor_description = "A test of a \"hand made\" modulate.
+The parent set \"clip children\" property to \"children + draw\"."
 visible = false
 offset_left = -50.0
 offset_top = -52.0
@@ -151,3 +164,10 @@ stream = ExtResource("4_u2mkc")
 [node name="ShootAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_hf28c")
 volume_db = -5.0
+
+[node name="PlayerLight" type="PointLight2D" parent="."]
+visible = false
+position = Vector2(4.5, -1.5)
+scale = Vector2(1.67188, 1.45312)
+shadow_enabled = true
+texture = SubResource("GradientTexture2D_pv0xb")

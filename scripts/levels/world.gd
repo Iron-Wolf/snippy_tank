@@ -8,6 +8,7 @@ class_name World extends Control
 @onready var t_show_banner: Timer = %ShowBannerTimer
 @onready var t_hide_banner: Timer = %HideBannerTimer
 @onready var t_spw_item: Timer = %SpawnItemTimer
+@onready var t_lightning: Timer = %LightningTimer
 @onready var camera: CameraWorld = $Camera2D
 var spw_power_up_1:Marker2D # node name : SpawnPowerUp1
 var spw_power_up_2:Marker2D # node name : SpawnPowerUp2
@@ -15,11 +16,15 @@ var spw_tracks:Marker2D # node name : SpawnTracks
 
 const WIN_BANNER_SPEED: float = 0.05
 const TIMER_WIN_BANNER: float = 1.5
+const LIGHT_FLASH_ON: Color = Color.WHITE
+const LIGHT_FLASH_OFF: Color = Color("#0a0c15")
 
 var _win_banner_base_speed: float = 1
 var _players: Array[Player] = []
 var _players_dup: Array[Player] = []
 var _power_up: PowerUp
+var _is_lightning_active: bool = false
+var _is_cloud_active: bool = false
 
 func get_background_tilemap() -> TileMapLayer:
 	# TODO: I know it's omega dirty, but it will do the work (for now)
@@ -39,6 +44,13 @@ func _ready() -> void:
 	t_spw_item.start()
 	t_spw_item.connect("timeout", func():
 		_spawn_power_up())
+	
+	t_lightning.start()
+	t_lightning.connect("timeout", func():
+		%WorldShadow.color = LIGHT_FLASH_ON
+		%LightningAudio.play()
+		# random value for the next flash
+		t_lightning.wait_time = randf_range(0.1, 8))
 	
 	if GameState.player_number >= 1:
 		var p:Player = player.instantiate()
@@ -92,17 +104,28 @@ func _ready() -> void:
 	_change_map()
 
 func _process(_delta: float) -> void:
+	if GameState.lightning and _is_lightning_active:
+		%WorldShadow.color = lerp(%WorldShadow.color, LIGHT_FLASH_OFF, 0.005)
+	else:
+		%WorldShadow.color = lerp(%WorldShadow.color, LIGHT_FLASH_ON, 0.005)
+	
 	if t_show_banner.time_left > 0 :
 		%WinBanner.visible = true
-		%WinnerBack.position.x = lerpf(%WinnerBack.position.x, 0, WIN_BANNER_SPEED)
-		%RoundLabel.position.x = lerpf(%RoundLabel.position.x, screen_size.x/2-%RoundLabel.size.x/2, WIN_BANNER_SPEED/2)
-		%PlayerLabel.position.x = lerpf(%PlayerLabel.position.x, screen_size.x/2-%PlayerLabel.size.x/2, WIN_BANNER_SPEED/2)
+		%WinnerBack.position.x = \
+			lerpf(%WinnerBack.position.x, 0, WIN_BANNER_SPEED)
+		%RoundLabel.position.x = \
+			lerpf(%RoundLabel.position.x, screen_size.x/2-%RoundLabel.size.x/2, WIN_BANNER_SPEED/2)
+		%PlayerLabel.position.x = \
+			lerpf(%PlayerLabel.position.x, screen_size.x/2-%PlayerLabel.size.x/2, WIN_BANNER_SPEED/2)
 		_win_banner_base_speed = 1
 	elif t_hide_banner.time_left > 0 :
 		_win_banner_base_speed *= 1.1
-		%WinnerBack.position.x = move_toward(%WinnerBack.position.x, -screen_size.x, _win_banner_base_speed)
-		%RoundLabel.position.x = move_toward(%RoundLabel.position.x, screen_size.x, _win_banner_base_speed)
-		%PlayerLabel.position.x = move_toward(%PlayerLabel.position.x, screen_size.x, _win_banner_base_speed)
+		%WinnerBack.position.x = \
+			move_toward(%WinnerBack.position.x, -screen_size.x, _win_banner_base_speed)
+		%RoundLabel.position.x = \
+			move_toward(%RoundLabel.position.x, screen_size.x, _win_banner_base_speed)
+		%PlayerLabel.position.x = \
+			move_toward(%PlayerLabel.position.x, screen_size.x, _win_banner_base_speed)
 	else:
 		_respawn_banner()
 
@@ -222,6 +245,10 @@ func _change_map() -> void:
 		var spw_player = "%" + "P%sSpawn" % p.player_id
 		p.init_position = l.get_node(spw_player).position
 		p.spw_tracks = spw_tracks
+	# add one of the weather effect
+	_is_lightning_active = randi_range(0, 5) == 0
+	_is_cloud_active = !_is_lightning_active and randi_range(0, 5) == 0
+	%CloudParticle.emitting = _is_cloud_active
 
 func _reload_level() -> void:
 	# wait before reloading/changing the scene
