@@ -191,7 +191,6 @@ tile_map_data = PackedByteArray("AAAAAAQAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAYAAAABAAA
 tile_set = SubResource("TileSet_mb338")
 
 [node name="UI" type="Control" parent="."]
-z_index = 90
 material = SubResource("CanvasItemMaterial_1kvc5")
 layout_mode = 3
 anchors_preset = 0
@@ -335,7 +334,6 @@ color = Color(0, 0.537255, 0.168627, 1)
 unique_name_in_owner = true
 visible = false
 top_level = true
-z_index = 90
 material = SubResource("CanvasItemMaterial_nyxi3")
 layout_mode = 1
 anchors_preset = 14
@@ -459,7 +457,6 @@ max_polyphony = 6
 
 [node name="CloudParticle" type="CPUParticles2D" parent="."]
 unique_name_in_owner = true
-z_index = 10
 position = Vector2(-293, 498)
 emitting = false
 amount = 90

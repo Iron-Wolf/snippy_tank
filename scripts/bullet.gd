@@ -88,6 +88,7 @@ func _physics_process(delta: float) -> void:
 		lob_shot_process = false
 		var bodies:Array[Node2D] = %AreaLobbed.get_overlapping_bodies()
 		if bodies.size() == 0:
+			%WorldDestroyAudio.play()
 			goodbye_little_one() # lob hit nothing
 			return
 		for b in bodies:
@@ -157,12 +158,15 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 	if (w or m) and bounce_bullet:
 		# avoid infinite bounce inside a wall
 		if _spawned: queue_free()
+		%BounceAudio.play()
 		# let's "_physics_process()" handle the bounce
 		return
 	
 	# world destruction
-	if w and w.is_destructible:
-		destroy_tile(w, rid)
+	if w:
+		%WorldDestroyAudio.play(0.9)
+		if w.is_destructible:
+			destroy_tile(w, rid)
 	
 	# other bullet
 	var b: Bullet = collided_body as Bullet

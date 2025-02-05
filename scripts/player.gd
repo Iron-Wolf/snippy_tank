@@ -229,18 +229,23 @@ func _physics_process(delta) -> void:
 		var track_texture = track_normal
 		DRAG = -0.06
 		if drifting:
+			if !$DriftingAudio.playing:
+				$DriftingAudio.play()
 			# increase texture placing rate
 			# without too much clutering the background
 			travel_place_track /= 10
 			track_texture = track_drift
 			# speedup lob_shot position, with a high DRAG value
 			if !move_direction: DRAG = -3
+		else:
+			$DriftingAudio.stop()
 		if travel_place_track < 0:
 			# reset to place a track every 30 units
 			travel_place_track = 30
 			draw_tracks(track_texture)
 	else:
 		# not moving
+		$DriftingAudio.stop()
 		if !lob_shot and %LobShotTimer.is_stopped():
 			%LobShotTimer.start()
 	#endregion

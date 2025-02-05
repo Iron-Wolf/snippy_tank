@@ -31,6 +31,11 @@ func get_background_tilemap() -> TileMapLayer:
 	return get_node("%Map").get_child(0).get_child(0).get_child(0)
 
 func _ready() -> void:
+	# z_index
+	$UI.z_index = 10
+	%WinBanner.z_index = 10
+	%CloudParticle.z_index = 20
+	
 	if (GameState.p_infos.is_empty()): 
 		GameState.reset_state()
 	
@@ -45,7 +50,6 @@ func _ready() -> void:
 	t_spw_item.connect("timeout", func():
 		_spawn_power_up())
 	
-	t_lightning.start()
 	t_lightning.connect("timeout", func():
 		%WorldShadow.color = LIGHT_FLASH_ON
 		%LightningAudio.play()
@@ -141,6 +145,7 @@ func _add_common_properties(p: Player) -> void:
 	# added this because the "MovingWall" doesn't display behind the "WinBanner"
 	# so I use "top_level" on the player, the banner and the bullet to keep the effect
 	p.top_level = true
+	p.z_index = 11
 	p.connect("fight_started", $BackgroundAudio.on_fight_started)
 	p.connect("fight_started", camera.on_fight_started)
 	p.connect("player_killed", camera.on_player_killed)
@@ -246,8 +251,12 @@ func _change_map() -> void:
 		p.init_position = l.get_node(spw_player).position
 		p.spw_tracks = spw_tracks
 	# add one of the weather effect
-	_is_lightning_active = randi_range(0, 5) == 0
-	_is_cloud_active = !_is_lightning_active and randi_range(0, 5) == 0
+	_is_lightning_active = randi_range(0, 9) == 0
+	if _is_lightning_active:
+		t_lightning.start()
+	else:
+		t_lightning.stop()
+	_is_cloud_active = !_is_lightning_active and randi_range(0, 9) == 0
 	%CloudParticle.emitting = _is_cloud_active
 
 func _reload_level() -> void:

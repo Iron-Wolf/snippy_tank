@@ -37,6 +37,9 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
   - https://pixabay.com/sound-effects/sword-clash-1-6917/
   - https://pixabay.com/fr/sound-effects/thunder-245174/
   - https://pixabay.com/fr/sound-effects/lightning-189909/
+  - https://pixabay.com/fr/sound-effects/missile-explosion-168600/
+  - https://pixabay.com/fr/sound-effects/boing-2-44164/
+  - https://pixabay.com/fr/sound-effects/rubber-tire-screech-2-202531/
 
 # Time on the project (underestimated)
 - 17/11/2024 - 24/11/2024 : ~30h
