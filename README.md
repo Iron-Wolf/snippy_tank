@@ -19,6 +19,7 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
 - shader : 
   - speed lines : https://godotshaders.com/shader/speed-lines-shader-for-godot-4/
   - shockwave : https://www.youtube.com/watch?v=SCHdglr35pk
+  - line animation : https://godotshaders.com/shader/line2d-animation/
 
 # Tools
 - create tilesheet : https://www.gamedeveloperstudio.com/tools/tile_sheet_creator/tile_sheet_creator.php
