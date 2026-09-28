@@ -1,9 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://dfjer4rq1r45l"]
+[gd_scene format=3 uid="uid://dfjer4rq1r45l"]
 
 [ext_resource type="Theme" uid="uid://ckwi2b4wkjmq7" path="res://assets/ui/ui_settings_theme.tres" id="1_epsj4"]
-[ext_resource type="Script" path="res://scripts/menus/settings.gd" id="2_jfttx"]
+[ext_resource type="Script" uid="uid://bh5uaqvhi8aqk" path="res://scripts/menus/settings.gd" id="2_jfttx"]
 
-[node name="Option" type="Control"]
+[node name="Option" type="Control" unique_id=1728063721]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1480.0
@@ -11,16 +11,16 @@ offset_bottom = 903.0
 theme = ExtResource("1_epsj4")
 script = ExtResource("2_jfttx")
 
-[node name="ColorRect" type="ColorRect" parent="."]
-layout_mode = 2
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1871219673]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.588235, 0.388235, 1, 0.862745)
 
-[node name="TabContainer" type="TabContainer" parent="."]
-layout_mode = 2
+[node name="TabContainer" type="TabContainer" parent="." unique_id=297187968]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -28,11 +28,11 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 40
 current_tab = 0
 
-[node name="General" type="TabBar" parent="TabContainer"]
+[node name="General" type="TabBar" parent="TabContainer" unique_id=1819919602]
 layout_mode = 2
 metadata/_tab_index = 0
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/General"]
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/General" unique_id=1470801492]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -43,15 +43,15 @@ offset_bottom = -123.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GridContainer" type="GridContainer" parent="TabContainer/General/MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="TabContainer/General/MarginContainer" unique_id=1583958935]
 layout_mode = 2
 columns = 2
 
-[node name="Label" type="Label" parent="TabContainer/General/MarginContainer/GridContainer"]
+[node name="Label" type="Label" parent="TabContainer/General/MarginContainer/GridContainer" unique_id=1052076584]
 layout_mode = 2
 text = "Score to Win"
 
-[node name="WinningScore" type="SpinBox" parent="TabContainer/General/MarginContainer/GridContainer"]
+[node name="WinningScore" type="SpinBox" parent="TabContainer/General/MarginContainer/GridContainer" unique_id=1943286874]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -59,21 +59,21 @@ min_value = 1.0
 max_value = 30.0
 value = 1.0
 
-[node name="Label2" type="Label" parent="TabContainer/General/MarginContainer/GridContainer"]
+[node name="Label2" type="Label" parent="TabContainer/General/MarginContainer/GridContainer" unique_id=544824355]
 layout_mode = 2
 text = "Number of player"
 
-[node name="PlayerCount" type="OptionButton" parent="TabContainer/General/MarginContainer/GridContainer"]
+[node name="PlayerCount" type="OptionButton" parent="TabContainer/General/MarginContainer/GridContainer" unique_id=837405118]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 
-[node name="Gameplay" type="TabBar" parent="TabContainer"]
+[node name="Gameplay" type="TabBar" parent="TabContainer" unique_id=1754588022]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Gameplay"]
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/Gameplay" unique_id=3866370]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -85,38 +85,38 @@ offset_bottom = -121.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GridContainer" type="GridContainer" parent="TabContainer/Gameplay/MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="TabContainer/Gameplay/MarginContainer" unique_id=117356357]
 layout_mode = 2
 columns = 2
 
-[node name="Label" type="Label" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+[node name="Label" type="Label" parent="TabContainer/Gameplay/MarginContainer/GridContainer" unique_id=17887672]
 layout_mode = 2
 text = "Controls"
 
-[node name="Control" type="OptionButton" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+[node name="Control" type="OptionButton" parent="TabContainer/Gameplay/MarginContainer/GridContainer" unique_id=1357242438]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 theme_override_constants/modulate_arrow = 1
 
-[node name="Label2" type="Label" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+[node name="Label2" type="Label" parent="TabContainer/Gameplay/MarginContainer/GridContainer" unique_id=225402376]
 layout_mode = 2
 text = "Shot cooldown"
 
-[node name="ShotCooldown" type="SpinBox" parent="TabContainer/Gameplay/MarginContainer/GridContainer"]
+[node name="ShotCooldown" type="SpinBox" parent="TabContainer/Gameplay/MarginContainer/GridContainer" unique_id=835545021]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
 max_value = 3.0
 
-[node name="Audio" type="TabBar" parent="TabContainer"]
+[node name="Audio" type="TabBar" parent="TabContainer" unique_id=2044136956]
 visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
-[node name="BackBtn" type="Button" parent="."]
+[node name="BackBtn" type="Button" parent="." unique_id=1715019015]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5

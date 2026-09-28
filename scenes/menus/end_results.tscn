@@ -1,9 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://gfblg58edgbm"]
+[gd_scene format=3 uid="uid://gfblg58edgbm"]
 
 [ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="1_jsc31"]
-[ext_resource type="Script" path="res://scripts/menus/end_results.gd" id="2_h67ut"]
+[ext_resource type="Script" uid="uid://bh0dw1vhhr73x" path="res://scripts/menus/end_results.gd" id="2_h67ut"]
 [ext_resource type="AudioStream" uid="uid://d0ttjg5qh204n" path="res://assets/sound/bugablue_freesound_community.mp3" id="3_a02tl"]
-[ext_resource type="Shader" path="res://shader/rainbow.gdshader" id="3_ac1ig"]
+[ext_resource type="Shader" uid="uid://n067pamiull0" path="res://shader/rainbow.gdshader" id="3_ac1ig"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_icckc"]
 shader = ExtResource("3_ac1ig")
@@ -15,7 +15,7 @@ shader_parameter/angle = 30.0
 offsets = PackedFloat32Array(0, 0.344697, 0.685606, 1)
 colors = PackedColorArray(1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1)
 
-[node name="EndResults" type="Control"]
+[node name="EndResults" type="Control" unique_id=1655808729]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,7 +25,7 @@ grow_vertical = 2
 theme = ExtResource("1_jsc31")
 script = ExtResource("2_h67ut")
 
-[node name="Panel" type="ColorRect" parent="."]
+[node name="Panel" type="ColorRect" parent="." unique_id=1357978248]
 material = SubResource("ShaderMaterial_icckc")
 layout_mode = 1
 anchors_preset = 15
@@ -35,7 +35,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.171637, 0.171637, 0.171637, 1)
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1001226952]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -46,42 +46,42 @@ offset_bottom = 244.0
 grow_horizontal = 2
 theme_override_colors/default_color = Color(0.901961, 0.803922, 0.215686, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 5
-theme_override_constants/shadow_offset_x = 5
 theme_override_constants/shadow_outline_size = 5
+theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
 bbcode_enabled = true
 text = "[tornado freq=5] WINNER WINNER
  CHICKEN DINNER !"
 
-[node name="ScoreBoard" type="VBoxContainer" parent="."]
+[node name="ScoreBoard" type="VBoxContainer" parent="." unique_id=2050116012]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
 offset_left = 162.0
 offset_top = 276.0
 offset_right = 817.0
 offset_bottom = 933.0
 
-[node name="Label" type="Label" parent="ScoreBoard"]
+[node name="Label" type="Label" parent="ScoreBoard" unique_id=1708770904]
 layout_mode = 2
 theme_override_constants/outline_size = 25
 text = "Scores"
 horizontal_alignment = 1
 
-[node name="GameStats" type="VBoxContainer" parent="."]
+[node name="GameStats" type="VBoxContainer" parent="." unique_id=1884348398]
 unique_name_in_owner = true
-layout_mode = 2
+layout_mode = 0
 offset_left = 998.0
 offset_top = 277.0
 offset_right = 1649.0
 offset_bottom = 938.0
 
-[node name="Label" type="Label" parent="GameStats"]
+[node name="Label" type="Label" parent="GameStats" unique_id=1470652678]
 layout_mode = 2
 theme_override_constants/outline_size = 25
 text = "Distance|Shot"
 horizontal_alignment = 1
 
-[node name="BottomLabel" type="RichTextLabel" parent="."]
+[node name="BottomLabel" type="RichTextLabel" parent="." unique_id=2085956732]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 7
@@ -99,12 +99,12 @@ theme_override_constants/shadow_outline_size = 15
 bbcode_enabled = true
 text = "[pulse]Press anything to quit"
 
-[node name="BackGround" type="AudioStreamPlayer" parent="."]
+[node name="BackGround" type="AudioStreamPlayer" parent="." unique_id=1439011962]
 unique_name_in_owner = true
 stream = ExtResource("3_a02tl")
 volume_db = -5.0
 
-[node name="Container" type="Control" parent="."]
+[node name="Container" type="Control" parent="." unique_id=1800863723]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -114,7 +114,7 @@ offset_right = 20.0
 offset_bottom = 40.0
 grow_horizontal = 2
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="Container"]
+[node name="CPUParticles2D" type="CPUParticles2D" parent="Container" unique_id=2066425877]
 position = Vector2(0, -20)
 amount = 100
 lifetime = 2.0

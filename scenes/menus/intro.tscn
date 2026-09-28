@@ -1,13 +1,13 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8orh6vco5k6d"]
+[gd_scene format=3 uid="uid://c8orh6vco5k6d"]
 
 [ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="1_2ac3j"]
 [ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="1_pdx40"]
-[ext_resource type="Script" path="res://scripts/menus/intro.gd" id="1_x65vl"]
+[ext_resource type="Script" uid="uid://d2wyfgwuhdb03" path="res://scripts/menus/intro.gd" id="1_x65vl"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ot3dr"]
 texture = ExtResource("1_pdx40")
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=757611706]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +17,7 @@ grow_vertical = 2
 theme = ExtResource("1_2ac3j")
 script = ExtResource("1_x65vl")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1258453070]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_ot3dr")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1372115101]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

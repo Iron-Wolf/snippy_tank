@@ -1,6 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://ccv7ioqdhgnpb"]
+[gd_scene format=3 uid="uid://ccv7ioqdhgnpb"]
 
-[ext_resource type="Script" path="res://scripts/levels/user_control.gd" id="1_qayxy"]
+[ext_resource type="Script" uid="uid://6byhpcs68iiy" path="res://scripts/levels/user_control.gd" id="1_qayxy"]
 [ext_resource type="Texture2D" uid="uid://dvnn80vwxft7e" path="res://assets/ui/Xbox_Control_Scheme.png" id="1_qgobq"]
 [ext_resource type="AudioStream" uid="uid://bwe0ed1vo2lt0" path="res://assets/sound/funk-beat_freesound_community.mp3" id="3_kll43"]
 
@@ -8,7 +8,7 @@
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.221174), 0.0, 0.0, 0, 0]
 point_count = 2
 
-[node name="UserControl" type="Control"]
+[node name="UserControl" type="Control" unique_id=224374680]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +17,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_qayxy")
 
-[node name="Panel" type="ColorRect" parent="."]
+[node name="Panel" type="ColorRect" parent="." unique_id=1262801967]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -26,7 +26,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.270222, 0.270222, 0.270222, 1)
 
-[node name="BaseImage" type="Control" parent="."]
+[node name="BaseImage" type="Control" parent="." unique_id=1102015871]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -36,10 +36,10 @@ anchor_bottom = 0.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Sprite2D" type="Sprite2D" parent="BaseImage"]
+[node name="Sprite2D" type="Sprite2D" parent="BaseImage" unique_id=598848150]
 texture = ExtResource("1_qgobq")
 
-[node name="Container" type="Control" parent="."]
+[node name="Container" type="Control" parent="." unique_id=35335632]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -47,12 +47,12 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MoveLine" type="Line2D" parent="Container"]
+[node name="MoveLine" type="Line2D" parent="Container" unique_id=32963265]
 position = Vector2(447, 394)
 points = PackedVector2Array(0, 0, 200, 0)
 width_curve = SubResource("Curve_pxdtg")
 
-[node name="MoveLabel" type="Label" parent="Container"]
+[node name="MoveLabel" type="Label" parent="Container" unique_id=787588179]
 layout_mode = 0
 offset_left = 173.0
 offset_top = 300.0
@@ -61,12 +61,12 @@ offset_bottom = 437.0
 theme_override_font_sizes/font_size = 100
 text = "Move"
 
-[node name="AmeLine" type="Line2D" parent="Container"]
+[node name="AmeLine" type="Line2D" parent="Container" unique_id=531736915]
 position = Vector2(1046, 528)
 points = PackedVector2Array(300, 0, 0, 0)
 width_curve = SubResource("Curve_pxdtg")
 
-[node name="AimLabel" type="Label" parent="Container"]
+[node name="AimLabel" type="Label" parent="Container" unique_id=1136355001]
 layout_mode = 0
 offset_left = 1357.0
 offset_top = 436.0
@@ -75,12 +75,12 @@ offset_bottom = 573.0
 theme_override_font_sizes/font_size = 100
 text = "Aim"
 
-[node name="ShootLine" type="Line2D" parent="Container"]
+[node name="ShootLine" type="Line2D" parent="Container" unique_id=747262667]
 position = Vector2(1140, 256)
 points = PackedVector2Array(200, 0, 0, 0)
 width_curve = SubResource("Curve_pxdtg")
 
-[node name="shootLabel" type="Label" parent="Container"]
+[node name="shootLabel" type="Label" parent="Container" unique_id=1926472425]
 layout_mode = 0
 offset_left = 1348.0
 offset_top = 164.0
@@ -90,12 +90,12 @@ theme_override_font_sizes/font_size = 100
 text = "Shoot
 "
 
-[node name="StartLine" type="Line2D" parent="."]
+[node name="StartLine" type="Line2D" parent="." unique_id=1950657955]
 position = Vector2(893, 827)
 points = PackedVector2Array(0, 0, 50, -400)
 width_curve = SubResource("Curve_pxdtg")
 
-[node name="StartLabel" type="RichTextLabel" parent="."]
+[node name="StartLabel" type="RichTextLabel" parent="." unique_id=503480601]
 layout_mode = 0
 offset_left = 504.0
 offset_top = 818.0
@@ -105,6 +105,6 @@ theme_override_font_sizes/normal_font_size = 100
 bbcode_enabled = true
 text = "[wave amp=50 freq=10]Return to menu"
 
-[node name="BackGroundAudio" type="AudioStreamPlayer" parent="."]
+[node name="BackGroundAudio" type="AudioStreamPlayer" parent="." unique_id=470077820]
 unique_name_in_owner = true
 stream = ExtResource("3_kll43")

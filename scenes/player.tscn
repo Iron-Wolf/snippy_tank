@@ -1,7 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://cocrreaiubffw"]
+[gd_scene format=3 uid="uid://cocrreaiubffw"]
 
 [ext_resource type="Texture2D" uid="uid://bi2olwm8vg44f" path="res://assets/Tanks/tankRed.png" id="1_53oag"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="1_mooqp"]
+[ext_resource type="Script" uid="uid://bbdik1n1o8a2k" path="res://scripts/player.gd" id="1_mooqp"]
 [ext_resource type="Texture2D" uid="uid://63v6o20qnq8t" path="res://assets/Tanks/barrelRed_outline.png" id="3_6jjgp"]
 [ext_resource type="Texture2D" uid="uid://bwcgj2a0gqcgk" path="res://assets/Bullets/bulletSilverSilver_outline.png" id="4_pbjan"]
 [ext_resource type="AudioStream" uid="uid://ccn3pxli06mon" path="res://assets/sound/explosion-v2_cyberwave_orchestra.mp3" id="4_u2mkc"]
@@ -34,17 +34,17 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.1, 0.5)
 metadata/_snap_enabled = true
 
-[node name="player" type="CharacterBody2D"]
+[node name="player" type="CharacterBody2D" unique_id=289147102]
 platform_on_leave = 2
 script = ExtResource("1_mooqp")
 
-[node name="Tank" type="Sprite2D" parent="."]
+[node name="Tank" type="Sprite2D" parent="." unique_id=531532853]
 clip_children = 2
 position = Vector2(2, 0)
 rotation = 1.5708
 texture = ExtResource("1_53oag")
 
-[node name="TestParentClipChildren" type="ColorRect" parent="Tank"]
+[node name="TestParentClipChildren" type="ColorRect" parent="Tank" unique_id=2093672755]
 editor_description = "A test of a \"hand made\" modulate.
 The parent set \"clip children\" property to \"children + draw\"."
 visible = false
@@ -54,7 +54,7 @@ offset_right = 49.0
 offset_bottom = 49.0
 color = Color(0, 0, 0, 0.603922)
 
-[node name="EngineSmoke" type="CPUParticles2D" parent="."]
+[node name="EngineSmoke" type="CPUParticles2D" parent="." unique_id=473882330]
 unique_name_in_owner = true
 position = Vector2(-34, -10)
 rotation = -3.14159
@@ -76,17 +76,17 @@ scale_amount_max = 25.0
 scale_amount_curve = SubResource("Curve_mgk5h")
 color_ramp = SubResource("Gradient_dlffp")
 
-[node name="PowerUpSnap" type="Marker2D" parent="."]
+[node name="PowerUpSnap" type="Marker2D" parent="." unique_id=432261464]
 unique_name_in_owner = true
 position = Vector2(-29, 3.0559e-10)
 rotation = 1.5708
 
-[node name="Barrel" type="Sprite2D" parent="."]
+[node name="Barrel" type="Sprite2D" parent="." unique_id=1208374249]
 rotation = 1.5708
 texture = ExtResource("3_6jjgp")
 offset = Vector2(0, -20)
 
-[node name="ShootSmoke" type="CPUParticles2D" parent="Barrel"]
+[node name="ShootSmoke" type="CPUParticles2D" parent="Barrel" unique_id=2096832683]
 unique_name_in_owner = true
 position = Vector2(-0.000184619, -51)
 rotation = -1.5708
@@ -105,21 +105,21 @@ scale_amount_min = 8.76
 scale_amount_max = 21.51
 scale_amount_curve = SubResource("Curve_1g0q1")
 
-[node name="SpawnBullet1" type="Marker2D" parent="Barrel"]
+[node name="SpawnBullet1" type="Marker2D" parent="Barrel" unique_id=982639396]
 position = Vector2(-20.0002, -51.9999)
 
-[node name="SpawnBullet2" type="Marker2D" parent="Barrel"]
+[node name="SpawnBullet2" type="Marker2D" parent="Barrel" unique_id=2000887804]
 position = Vector2(-0.000188828, -52)
 
-[node name="SpawnBullet3" type="Marker2D" parent="Barrel"]
+[node name="SpawnBullet3" type="Marker2D" parent="Barrel" unique_id=1686032572]
 position = Vector2(19.9998, -52.0001)
 
-[node name="TankCollision" type="CollisionShape2D" parent="."]
+[node name="TankCollision" type="CollisionShape2D" parent="." unique_id=1725450333]
 position = Vector2(2, 0)
 rotation = 1.5708
 shape = SubResource("CircleShape2D_x1tm4")
 
-[node name="KillSmoke" type="CPUParticles2D" parent="."]
+[node name="KillSmoke" type="CPUParticles2D" parent="." unique_id=1894505319]
 unique_name_in_owner = true
 emitting = false
 amount = 35
@@ -140,9 +140,9 @@ scale_amount_max = 25.0
 scale_amount_curve = SubResource("Curve_mgk5h")
 color_ramp = SubResource("Gradient_dlffp")
 
-[node name="UI" type="Node" parent="."]
+[node name="UI" type="Node" parent="." unique_id=1165438154]
 
-[node name="ReloadBar" type="TextureProgressBar" parent="UI"]
+[node name="ReloadBar" type="TextureProgressBar" parent="UI" unique_id=1333017491]
 unique_name_in_owner = true
 offset_right = 20.0
 offset_bottom = 34.0
@@ -151,27 +151,27 @@ value = 100.0
 fill_mode = 4
 texture_progress = ExtResource("4_pbjan")
 
-[node name="ShootTimer" type="Timer" parent="."]
+[node name="ShootTimer" type="Timer" parent="." unique_id=1950645664]
 one_shot = true
 
-[node name="LobShotTimer" type="Timer" parent="."]
+[node name="LobShotTimer" type="Timer" parent="." unique_id=1117090214]
 unique_name_in_owner = true
 wait_time = 0.5
 one_shot = true
 
-[node name="KillAudio" type="AudioStreamPlayer" parent="."]
+[node name="KillAudio" type="AudioStreamPlayer" parent="." unique_id=1812593502]
 stream = ExtResource("4_u2mkc")
 
-[node name="ShootAudio" type="AudioStreamPlayer" parent="."]
+[node name="ShootAudio" type="AudioStreamPlayer" parent="." unique_id=1435738913]
 stream = ExtResource("5_hf28c")
 volume_db = -5.0
 
-[node name="DriftingAudio" type="AudioStreamPlayer" parent="."]
+[node name="DriftingAudio" type="AudioStreamPlayer" parent="." unique_id=1788336314]
 stream = ExtResource("7_0k3l8")
 volume_db = -15.0
 parameters/looping = true
 
-[node name="PlayerLight" type="PointLight2D" parent="."]
+[node name="PlayerLight" type="PointLight2D" parent="." unique_id=83078983]
 visible = false
 position = Vector2(4.5, -1.5)
 scale = Vector2(1.67188, 1.45312)

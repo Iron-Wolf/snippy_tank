@@ -1,6 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://llrdda7eqe8k"]
+[gd_scene format=3 uid="uid://llrdda7eqe8k"]
 
-[ext_resource type="Script" path="res://scripts/menus/main.gd" id="1_50ggu"]
+[ext_resource type="Script" uid="uid://e6qixee4r1tu" path="res://scripts/menus/main.gd" id="1_50ggu"]
 [ext_resource type="Texture2D" uid="uid://b23nouux5iljg" path="res://assets/intro_screen.png" id="2_q2v8e"]
 [ext_resource type="Theme" uid="uid://fpmphtx6bpy0" path="res://assets/ui/ui_main_theme.tres" id="3_1mea8"]
 [ext_resource type="AudioStream" uid="uid://bwe0ed1vo2lt0" path="res://assets/sound/funk-beat_freesound_community.mp3" id="4_g3xmq"]
@@ -9,7 +9,7 @@
 texture = ExtResource("2_q2v8e")
 modulate_color = Color(0.430057, 0.430057, 0.430057, 1)
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=742890702]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -18,7 +18,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_50ggu")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1863726157]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +27,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_kiaen")
 
-[node name="Label" type="RichTextLabel" parent="."]
+[node name="Label" type="RichTextLabel" parent="." unique_id=988588162]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -37,12 +37,12 @@ offset_right = 336.5
 offset_bottom = 135.0
 grow_horizontal = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_y = 5
 theme_override_constants/shadow_offset_x = 5
+theme_override_constants/shadow_offset_y = 5
 bbcode_enabled = true
 text = "[wave amp=50 freq=5][rainbow freq=0.1][p align=c][font_size=90]Snippy Tank"
 
-[node name="HBoxMain" type="HBoxContainer" parent="."]
+[node name="HBoxMain" type="HBoxContainer" parent="." unique_id=547079252]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -58,19 +58,19 @@ grow_vertical = 2
 theme = ExtResource("3_1mea8")
 theme_override_constants/separation = 50
 
-[node name="PvpMode" type="Button" parent="HBoxMain"]
+[node name="PvpMode" type="Button" parent="HBoxMain" unique_id=2044497451]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "PVP"
 
-[node name="PveMode" type="Button" parent="HBoxMain"]
+[node name="PveMode" type="Button" parent="HBoxMain" unique_id=1332681563]
 layout_mode = 2
 size_flags_horizontal = 3
 disabled = true
 text = "PVE"
 
-[node name="SoonTm" type="Label" parent="HBoxMain/PveMode"]
+[node name="SoonTm" type="Label" parent="HBoxMain/PveMode" unique_id=814306895]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -92,12 +92,12 @@ theme_override_constants/shadow_offset_y = 5
 theme_override_font_sizes/font_size = 80
 text = "Soon™"
 
-[node name="Clock" type="Timer" parent="HBoxMain/PveMode/SoonTm"]
+[node name="Clock" type="Timer" parent="HBoxMain/PveMode/SoonTm" unique_id=1823120107]
 unique_name_in_owner = true
 wait_time = 0.5
 autostart = true
 
-[node name="HBoxMisc" type="HBoxContainer" parent="."]
+[node name="HBoxMisc" type="HBoxContainer" parent="." unique_id=1907183304]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -113,14 +113,14 @@ grow_vertical = 0
 theme = ExtResource("3_1mea8")
 theme_override_constants/separation = 20
 
-[node name="ControlBtn" type="Button" parent="HBoxMisc"]
+[node name="ControlBtn" type="Button" parent="HBoxMisc" unique_id=1385774489]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 50
 text = "Controls"
 
-[node name="SettingsBtn" type="Button" parent="HBoxMisc"]
+[node name="SettingsBtn" type="Button" parent="HBoxMisc" unique_id=1928895871]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -128,13 +128,13 @@ theme_override_font_sizes/font_size = 50
 text = "Settings
 "
 
-[node name="ExitBtn" type="Button" parent="HBoxMisc"]
+[node name="ExitBtn" type="Button" parent="HBoxMisc" unique_id=769666622]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_font_sizes/font_size = 50
 text = "Exit"
 
-[node name="BackGroundAudio" type="AudioStreamPlayer" parent="."]
+[node name="BackGroundAudio" type="AudioStreamPlayer" parent="." unique_id=2060047156]
 unique_name_in_owner = true
 stream = ExtResource("4_g3xmq")

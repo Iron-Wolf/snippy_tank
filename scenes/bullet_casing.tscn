@@ -1,11 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://dhbl8qhw3fqkw"]
+[gd_scene format=3 uid="uid://dhbl8qhw3fqkw"]
 
-[ext_resource type="Script" path="res://scripts/bullet_casing.gd" id="1_kbedw"]
+[ext_resource type="Script" uid="uid://dx0moo6rt42ft" path="res://scripts/bullet_casing.gd" id="1_kbedw"]
 
-[node name="BulletCasing" type="Sprite2D"]
+[node name="BulletCasing" type="Sprite2D" unique_id=337062370]
 script = ExtResource("1_kbedw")
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1714662377]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -19,7 +19,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(1, 0.843137, 0, 1)
 
-[node name="base" type="ColorRect" parent="."]
+[node name="base" type="ColorRect" parent="." unique_id=1618662948]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5

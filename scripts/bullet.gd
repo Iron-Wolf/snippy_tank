@@ -66,7 +66,8 @@ func _physics_process(delta: float) -> void:
 	# the movement is provided by linear_velocity (not "move_and_collide")
 	var col_info: KinematicCollision2D = move_and_collide(Vector2.ZERO)
 	if col_info:
-		_on_body_entered(col_info.get_collider(), col_info.get_collider_rid())
+		var hit_point: Vector2 = col_info.get_position() - col_info.get_normal() * 4.0
+		_on_body_entered(col_info.get_collider(), hit_point)
 		_apply_bounce(col_info.get_normal())
 	else:
 		remove_collision_exception_with(origin_body)
@@ -135,7 +136,7 @@ func _apply_bounce(normal: Vector2) -> void:
 	var ro = v_before.angle_to(velocity)
 	rotate(ro)
 
-func _on_body_entered(collided_body, rid: RID = RID()) -> void:
+func _on_body_entered(collided_body, hit_point: Vector2 = Vector2.INF) -> void:
 	if !GameState.in_game_scene:
 		# doing nothing
 		queue_free()
@@ -166,7 +167,7 @@ func _on_body_entered(collided_body, rid: RID = RID()) -> void:
 	if w:
 		%WorldDestroyAudio.play(0.9)
 		if w.is_destructible:
-			destroy_tile(w, rid)
+			destroy_tile(w, hit_point)
 	
 	# other bullet
 	var b: Bullet = collided_body as Bullet
@@ -187,11 +188,11 @@ func goodbye_little_one() -> void:
 	explosion.emitting = true
 	smoke.emitting = false
 
-func destroy_tile(tilemap: WallTileMap, rid: RID) -> void:
+func destroy_tile(tilemap: WallTileMap, hit_point: Vector2) -> void:
 	var cell_coords: Vector2i
-	if (rid.is_valid()):
+	if (hit_point.is_finite()):
 		# only when : straight shot on a Collision Node (physic collision)
-		cell_coords = tilemap.get_coords_for_body_rid(rid)
+		cell_coords = tilemap.local_to_map(tilemap.to_local(hit_point))
 	else:
 		# on a lob shot, we don't want to offset the bullet position
 		var offset_front: Vector2 = Vector2.ZERO
@@ -203,7 +204,7 @@ func destroy_tile(tilemap: WallTileMap, rid: RID) -> void:
 		# debug mode need a rotation to be accurate
 		debug_dict.push_back(offset_front.rotated(-rotation))
 		# for the cell, we use a function that doesn't need the rotation
-		cell_coords = tilemap.local_to_map(position + offset_front)
+		cell_coords = tilemap.local_to_map(position)
 	
 	# check if it is actually a part of tilemap
 	var cell_source_id: int = tilemap.get_cell_source_id(cell_coords)
