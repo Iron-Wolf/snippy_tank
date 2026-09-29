@@ -238,6 +238,7 @@ func _change_map() -> void:
 	# cleanup current level
 	for child in %Map.get_children():
 		%Map.remove_child(child)
+		child.queue_free()
 	# load next level
 	var lvl_scn: PackedScene = load("res://scenes/levels/lvl%s.tscn"%GameState.current_lvl_id)
 	var l: Node = lvl_scn.instantiate()

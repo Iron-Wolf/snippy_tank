@@ -14,11 +14,12 @@ enum Direction {
 @export_range(0, 180) var rotate_deg: int = 0
 ## number of wall elements
 @export var wall_size: int = 0
-## time to wait before moving the Node
+## time to wait before moving the wall
 @export_range(0, 100) var wait_start: int = 0
-## time to wait when stoping the Node
+## time to wait when stoping the wall
 @export_range(0, 100) var wait_stop: int = 0
-## will stop after reaching "wait_stop" timer
+## if "true", wall stop after reaching "wait_stop" timer.
+## Otherwise, the wall keep moving with inverted direction/rotation.
 @export var one_shot: bool = true
 var stop_moving: bool = false
 
@@ -43,14 +44,20 @@ func _ready() -> void:
 				Direction.DOWN:
 					move_direction = Direction.UP
 			# inverse rotation
-			rotate_direction *= -1
-			%WaitStopTimer.start())
-	if wait_stop != 0:
-		%WaitStopTimer.start(wait_stop)
-	
+			rotate_direction *= -1)
+
 	for idx in range(1, wall_size):
 		_duplicate_sprite(1, idx)
 		_duplicate_sprite(-1, idx)
+
+	# keep the wall still until "wait_start" is over
+	if wait_start != 0:
+		stop_moving = true
+		await get_tree().create_timer(wait_start).timeout
+		stop_moving = false
+
+	if wait_stop != 0:
+		%WaitStopTimer.start(wait_stop)
 
 func _duplicate_sprite(dir: int, index: int) -> void:
 	var c: CollisionShape2D = %Collision.duplicate()
@@ -65,9 +72,8 @@ func _duplicate_sprite(dir: int, index: int) -> void:
 func _physics_process(delta: float) -> void:
 	if stop_moving:
 		return
-	await get_tree().create_timer(wait_start).timeout
+
 	position = Utils.apply_screen_wrap(position, screen_size	)
-	
 	rotate(deg_to_rad(rotate_deg * rotate_direction * delta))
 	
 	var velocity:Vector2

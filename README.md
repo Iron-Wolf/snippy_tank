@@ -1,10 +1,17 @@
 [![](https://img.shields.io/badge/Godot-v4.3-blue)](https://godotengine.org/)
 
 # Description
-This is a small-scoped projet, to really grasp the inner workings of Godot engine.  
+This is a small-scoped projet, to learn Godot engine.  
 As a true first full-fledged projet, don't expect top-quality code here.  
 I tinkered with many things and rushed some stuff, so the result is not perfect
 (but close to my expectations).  
+
+## TODO
+- review all project to fix messy code
+- finish menu, options screen...
+- add a controller mapping menu (choose gamepad/keyboard/both)
+- fix performance issues
+- find why it's bugged on Itchi.io
 
 # Ressources and tuto
 - basic tuto (french): https://www.youtube.com/watch?v=tyWr0mo6aVo
