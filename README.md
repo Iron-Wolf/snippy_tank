@@ -10,8 +10,7 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
 - review all project to fix messy code
 - finish menu, options screen...
 - add a controller mapping menu (choose gamepad/keyboard/both)
-- fix performance issues
-- find why it's bugged on Itchi.io
+- find and fix performance issues
 
 # Ressources and tuto
 - basic tuto (french): https://www.youtube.com/watch?v=tyWr0mo6aVo
