@@ -1,4 +1,4 @@
-[![](https://img.shields.io/badge/Godot-v4.3-blue)](https://godotengine.org/)
+[![](https://img.shields.io/badge/Godot-v4.6-blue)](https://godotengine.org/)
 
 # Description
 This is a small-scoped projet, to learn Godot engine.  
@@ -7,6 +7,7 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
 (but close to my expectations).  
 
 ## TODO
+- add build number on startup screen
 - review all project to fix messy code
 - finish menu, options screen...
 - add a controller mapping menu (choose gamepad/keyboard/both)

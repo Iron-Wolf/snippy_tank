@@ -70,6 +70,25 @@ var _current_loaded_tracks: Array[Sprite2D] = []
 var debug_dict: Dictionary = {}
 const DEBUG: bool = false
 
+func setup_for_player(id: int) -> void:
+	player_id = id
+	name = "P%s" % id
+	match id:
+		1:
+			tank_texture = PlayerState.p1_tank_texture
+			barrel_texture = PlayerState.p1_barrel_texture
+		2:
+			tank_texture = PlayerState.p2_tank_texture
+			barrel_texture = PlayerState.p2_barrel_texture
+		3:
+			tank_texture = PlayerState.p3_tank_texture
+			barrel_texture = PlayerState.p3_barrel_texture
+		4:
+			tank_texture = PlayerState.p4_tank_texture
+			barrel_texture = PlayerState.p4_barrel_texture
+		_:
+			push_error("Unsupported player id: %s" % id)
+
 #region starting logic
 func _ready() -> void:
 	var falat_error: bool = false

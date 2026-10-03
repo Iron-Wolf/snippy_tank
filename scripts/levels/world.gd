@@ -56,53 +56,16 @@ func _ready() -> void:
 		# random value for the next flash
 		t_lightning.wait_time = randf_range(0.1, 8))
 	
-	if GameState.player_number >= 1:
-		var p:Player = player.instantiate()
-		p.name = "P1"
-		p.player_id = 1
-		p.tank_texture = PlayerState.p1_tank_texture
-		p.barrel_texture = PlayerState.p1_barrel_texture
+	for id in range(1, GameState.player_number + 1):
+		var p: Player = player.instantiate()
+		p.setup_for_player(id)
 		p.rotate(deg_to_rad(-90))
 		_add_common_properties(p)
 		add_child(p)
 		_players.push_back(p)
-		%P1Score.visible = true
-	
-	if GameState.player_number >= 2:
-		var p:Player = player.instantiate()
-		p.name = "P2"
-		p.player_id = 2
-		p.tank_texture = PlayerState.p2_tank_texture
-		p.barrel_texture = PlayerState.p2_barrel_texture
-		p.rotate(deg_to_rad(-90))
-		_add_common_properties(p)
-		add_child(p)
-		_players.push_back(p)
-		%P2Score.visible = true
-		
-	if GameState.player_number >= 3:
-		var p:Player = player.instantiate()
-		p.name = "P3"
-		p.player_id = 3
-		p.tank_texture = PlayerState.p3_tank_texture
-		p.barrel_texture = PlayerState.p3_barrel_texture
-		p.rotate(deg_to_rad(-90))
-		_add_common_properties(p)
-		add_child(p)
-		_players.push_back(p)
-		%P3Score.visible = true
-		
-	if GameState.player_number >= 4:
-		var p:Player = player.instantiate()
-		p.name = "P4"
-		p.player_id = 4
-		p.tank_texture = PlayerState.p4_tank_texture
-		p.barrel_texture = PlayerState.p4_barrel_texture
-		p.rotate(deg_to_rad(-90))
-		_add_common_properties(p)
-		add_child(p)
-		_players.push_back(p)
-		%P4Score.visible = true
+		var score_label = "%" + "P%sScore" % id
+		var score_node: Label = get_node(score_label)
+		score_node.visible = true
 	
 	_respawn_banner()
 	_change_map()
