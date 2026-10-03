@@ -35,6 +35,10 @@ window/size/viewport_width=1792
 window/size/viewport_height=1024
 window/stretch/mode="canvas_items"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+
 [input]
 
 p1_move_left={

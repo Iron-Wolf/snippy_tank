@@ -82,6 +82,7 @@ func _physics_process(delta: float) -> void:
 	if !lob_shot_process:
 		return
 	
+	# lob shot logic here
 	var progress: float = _get_progress(travel_total, init_position, target_position)
 	if progress == 100:
 		# disable "lob" logic for all remaining frames
@@ -116,8 +117,10 @@ func _draw() -> void:
 		draw_line(entry, \
 			Vector2.ZERO, \
 			Color.BLUE_VIOLET, 3)
-		
 
+## Returns [param travel] as a percentage of the path from [param start] to [param end], 
+## clamped to 0-100.  
+## A zero-length path is considered complete.
 func _get_progress(travel: float, start: Vector2, end: Vector2) -> float:
 	var total_dist = start.distance_to(end)
 	if total_dist == 0:
