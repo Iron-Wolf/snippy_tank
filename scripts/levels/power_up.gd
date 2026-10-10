@@ -23,6 +23,7 @@ var _reset_max_speed: float
 var _reset_max_ammo: int
 
 func _ready() -> void:
+	z_index = 2
 	if parent:
 		tilemap = parent.get_background_tilemap()
 	%Sprite.visible = false

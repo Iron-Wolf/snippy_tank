@@ -24,6 +24,7 @@ enum Direction {
 var stop_moving: bool = false
 
 func _ready() -> void:
+	z_index = 2
 	collision_layer = 1
 	collision_mask = 0
 	contact_monitor = true

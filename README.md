@@ -13,6 +13,13 @@ I tinkered with many things and rushed some stuff, so the result is not perfect
 - add a controller mapping menu (choose gamepad/keyboard/both)
 - find and fix performance issues
 
+## Battlefield lighting
+The `World` node in `scenes/levels/world.tscn` exposes the ambient tint and
+contact-shadow controls in the Inspector. Sprite shadows use texture alpha;
+obstacle tile shadows mirror the tile cells and follow destructible changes.
+The background tilemap remains at the named `BackTileMap/Background` path used
+by gameplay void checks.
+
 # Ressources and tuto
 - basic tuto (french): https://www.youtube.com/watch?v=tyWr0mo6aVo
 - even more basic tuto (french): https://www.youtube.com/watch?v=TbmkfzUAVyA

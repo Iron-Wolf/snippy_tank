@@ -10,6 +10,23 @@ class_name World extends Control
 @onready var t_spw_item: Timer = %SpawnItemTimer
 @onready var t_lightning: Timer = %LightningTimer
 @onready var camera: CameraWorld = $Camera2D
+@onready var _background_tilemap: TileMapLayer = %Map.get_node("BackTileMap/Background")
+
+@export_group("Lighting")
+## Neutral, even battlefield illumination. No directional light is used.
+@export var ambient_tint: Color = Color(0.97, 0.98, 1.0, 1.0)
+
+@export_group("Contact shadows")
+@export var shadows_enabled: bool = true
+@export var shadow_color: Color = Color(0.07, 0.09, 0.13, 1.0)
+@export_range(0.0, 1.0, 0.01) var shadow_opacity: float = 0.2
+## World-space direction; positive Y points down the screen.
+@export var shadow_direction: Vector2 = Vector2(0.7, 1.0)
+## Shadow displacement in world pixels.
+@export_range(0.0, 32.0, 0.5, "suffix:px") var shadow_length: float = 7.0
+## Blur radius for Sprite2D masks; tile-mask edges remain aligned to their atlas.
+@export_range(0.0, 8.0, 0.25, "suffix:px") var shadow_softness: float = 1.25
+
 var spw_power_up_1:Marker2D # node name : SpawnPowerUp1
 var spw_power_up_2:Marker2D # node name : SpawnPowerUp2
 var spw_tracks:Marker2D # node name : SpawnTracks
@@ -27,10 +44,12 @@ var _is_lightning_active: bool = false
 var _is_cloud_active: bool = false
 
 func get_background_tilemap() -> TileMapLayer:
-	# TODO: I know it's omega dirty, but it will do the work (for now)
-	return get_node("%Map").get_child(0).get_child(0).get_child(0)
+	return _background_tilemap
 
 func _ready() -> void:
+	%WorldShadow.color = ambient_tint
+	get_tree().node_added.connect(_on_node_added)
+
 	# z_index
 	$UI.z_index = 10
 	%WinBanner.z_index = 10
@@ -74,7 +93,7 @@ func _process(_delta: float) -> void:
 	if GameState.lightning and _is_lightning_active:
 		%WorldShadow.color = lerp(%WorldShadow.color, LIGHT_FLASH_OFF, 0.005)
 	else:
-		%WorldShadow.color = lerp(%WorldShadow.color, LIGHT_FLASH_ON, 0.005)
+		%WorldShadow.color = lerp(%WorldShadow.color, ambient_tint, 0.005)
 	
 	if t_show_banner.time_left > 0 :
 		%WinBanner.visible = true
@@ -113,6 +132,28 @@ func _add_common_properties(p: Player) -> void:
 	p.connect("fight_started", camera.on_fight_started)
 	p.connect("player_killed", camera.on_player_killed)
 	p.connect("player_killed", _on_player_killed)
+
+func _on_node_added(node: Node) -> void:
+	if not node is Sprite2D \
+	or node.has_meta("world_shadow_proxy") \
+	or node.has_meta("world_shadow_source"):
+		return
+	if %Map.is_ancestor_of(node) or node.get_parent() is Player:
+		node.set_meta("world_shadow_source", true)
+		call_deferred("_add_sprite_shadow", node)
+
+func _add_sprite_shadow(source: Sprite2D) -> void:
+	if not is_instance_valid(source) or not source.is_inside_tree():
+		return
+	var source_parent: Node = source.get_parent()
+	if source_parent == null:
+		return
+
+	var shadow := SpriteShadow.new()
+	shadow.name = "%sShadow" % source.name
+	shadow.set_meta("world_shadow_proxy", true)
+	shadow.configure(source, self)
+	source_parent.add_child(shadow)
 
 func play_bullet_clash() -> void:
 	if !%BulletClash.playing:
@@ -205,6 +246,7 @@ func _change_map() -> void:
 	# load next level
 	var lvl_scn: PackedScene = load("res://scenes/levels/lvl%s.tscn"%GameState.current_lvl_id)
 	var l: Node = lvl_scn.instantiate()
+	_background_tilemap = l.get_node("BackTileMap/Background") as TileMapLayer
 	spw_power_up_1 = l.get_node("%SpawnPowerUp1")
 	spw_power_up_2 = l.get_node("%SpawnPowerUp2")
 	spw_tracks = l.get_node("SpawnTracks")
